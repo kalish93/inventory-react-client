@@ -61,7 +61,7 @@ export const UserService = {
       );
 
       if (!response.ok) {
-        throw new Error("Error retrieving users");
+        throw new Error('registration failed');
       }
 
       const data = await response.json();

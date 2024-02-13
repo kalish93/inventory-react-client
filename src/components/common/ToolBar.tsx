@@ -1,8 +1,22 @@
-import React from "react";
-import { AppBar, Toolbar, IconButton, Typography } from "@mui/material";
-import AccountCircle from "@mui/icons-material/AccountCircle";
+import React from 'react';
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+} from '@mui/material';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { UserService } from '../../features/user/userService';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () =>{
+    UserService.logout()
+    navigate('/login')
+  }
   return (
     <div style={{ display: "flex" }}>
       <AppBar
@@ -30,6 +44,16 @@ const Navbar = () => {
             color="primary"
           >
             <AccountCircle />
+          </IconButton>
+
+          <IconButton
+            edge="end"
+            aria-label="logout"
+            aria-haspopup="true"
+            color="primary"
+            onClick={handleLogout}
+          >
+            <LogoutIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
