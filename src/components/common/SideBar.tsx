@@ -47,6 +47,13 @@ const Sidebar = () => {
           </ListItemIcon>
           <ListItemText primary="Users" />
         </ListItem>
+
+        <ListItem button component={Link} to="/customers" key="Customers" selected={isLinkActive('/customers')}>
+          <ListItemIcon>
+            <PeopleIcon />
+          </ListItemIcon>
+          <ListItemText primary="Customers" />
+        </ListItem>
       </List>
     </Drawer>
   );

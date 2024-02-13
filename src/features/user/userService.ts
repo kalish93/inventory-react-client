@@ -43,7 +43,7 @@ export const UserService = {
       });
   
       if (!response.ok) {
-        throw new Error('Login failed');
+        throw new Error('registration failed');
       }
   
       const data = await response.json();
