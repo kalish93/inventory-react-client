@@ -2,7 +2,7 @@ export interface CreateUser {
     userName: string;
     password: string;
     passwordConfirmation: string;
-    roleId: number;
+    roleId?: number;
 }
 
 export interface User{

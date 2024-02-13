@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Modal,
   Box,
@@ -13,6 +13,8 @@ import {
 } from '@mui/material';
 import { signUpUser } from '../../features/user/userActions' ;
 import { AppDispatch } from '../../app/store';
+import { getRoles } from '../../features/role/roleActions';
+import { Role } from '../../models/role';
 
 interface UserFormProps {
     open: boolean;
@@ -21,13 +23,18 @@ interface UserFormProps {
 
 const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const roles = useSelector((state: any) => state.role.roles);
   const [formData, setFormData] = useState({
     userName: '',
     password: '',
     passwordConfirmation: '',
-    roleId: 1, 
+    roleId: undefined, 
   });
 
+  useEffect(() => {
+    dispatch(getRoles());
+  },[dispatch]);
+  
   const handleChange = (e: { target: { name: any; value: any; }; }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -70,12 +77,15 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
           onChange={handleChange}
         />
         <FormControl fullWidth margin="normal">
-          <InputLabel>Role</InputLabel>
-          <Select name="roleId" value={formData.roleId} onChange={handleChange}>
-            <MenuItem value={1}>Admin</MenuItem>
-            {/* Add other roles here */}
-          </Select>
-        </FormControl>
+        <InputLabel>Role</InputLabel>
+        <Select name="roleId" value={formData.roleId} onChange={handleChange}>
+          { roles && roles.map((role: Role) => (
+            <MenuItem key={role.id} value={role.id}>
+              {role.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
         <Button variant="contained" color="primary" onClick={handleSubmit}>
           Submit
         </Button>
