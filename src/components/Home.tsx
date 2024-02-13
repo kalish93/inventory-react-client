@@ -4,6 +4,7 @@ import Navbar from "./common/ToolBar";
 import { Route, Routes } from "react-router-dom";
 import UsersList from "./auth/UsersList";
 import CustomerList from "./sales/customer/CustomerList";
+import DriversList from "./drivers/DriversList";
 
 
 const Home = () => {
@@ -15,6 +16,7 @@ const Home = () => {
             <Routes>
                 <Route path="/users" element={<UsersList />} />
                 <Route path="/customers" element={<CustomerList />} />
+                <Route path="/drivers" element={<DriversList />} />
             </Routes>
             </main>
         </div>

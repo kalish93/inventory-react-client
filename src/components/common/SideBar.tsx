@@ -1,9 +1,16 @@
-import React from 'react';
-import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import InventoryIcon from '@mui/icons-material/Inventory';
-import PeopleIcon from '@mui/icons-material/People';
-import { Link, useLocation } from 'react-router-dom';
+import React from "react";
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import PeopleIcon from "@mui/icons-material/People";
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import { Link, useLocation } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -17,31 +24,49 @@ const Sidebar = () => {
       sx={{
         width: drawerWidth,
         flexShrink: 0,
-        '& .MuiDrawer-paper': {
+        "& .MuiDrawer-paper": {
           width: drawerWidth,
-          boxSizing: 'border-box',
-          marginTop: '64px',
+          boxSizing: "border-box",
+          marginTop: "64px",
         },
       }}
       variant="permanent"
       anchor="left"
     >
       <List>
-        <ListItem button component={Link} to="/dashboard" key="Dashboard" selected={isLinkActive('/dashboard')}>
+        <ListItem
+          button
+          component={Link}
+          to="/dashboard"
+          key="Dashboard"
+          selected={isLinkActive("/dashboard")}
+        >
           <ListItemIcon>
             <DashboardIcon />
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
         </ListItem>
 
-        <ListItem button component={Link} to="/inventory" key="Inventory" selected={isLinkActive('/inventory')}>
+        <ListItem
+          button
+          component={Link}
+          to="/inventory"
+          key="Inventory"
+          selected={isLinkActive("/inventory")}
+        >
           <ListItemIcon>
             <InventoryIcon />
           </ListItemIcon>
           <ListItemText primary="Inventory" />
         </ListItem>
 
-        <ListItem button component={Link} to="/users" key="Users" selected={isLinkActive('/users')}>
+        <ListItem
+          button
+          component={Link}
+          to="/users"
+          key="Users"
+          selected={isLinkActive("/users")}
+        >
           <ListItemIcon>
             <PeopleIcon />
           </ListItemIcon>
@@ -53,6 +78,18 @@ const Sidebar = () => {
             <PeopleIcon />
           </ListItemIcon>
           <ListItemText primary="Customers" />
+          </ListItem>
+        <ListItem
+          button
+          component={Link}
+          to="/drivers"
+          key="drivers"
+          selected={isLinkActive("/drivers")}
+        >
+          <ListItemIcon>
+            <LocalShippingIcon />
+          </ListItemIcon>
+          <ListItemText primary="Drivers" />
         </ListItem>
       </List>
     </Drawer>

@@ -4,6 +4,7 @@ import React from "react";
 import Home from "../components/Home";
 import UsersList from "../components/auth/UsersList";
 import CustomerList from "../components/sales/customer/CustomerList";
+import DriversList from "../components/drivers/DriversList";
 
 const routes = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const routes = createBrowserRouter([
         path: 'customers',
         element: <CustomerList/>,
       },
+      {
+        path: 'drivers', 
+        element: <DriversList />,
+      }
     ],
   },
 {
