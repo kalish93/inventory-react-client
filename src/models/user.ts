@@ -1,13 +1,13 @@
 export interface CreateUser {
-    id?: string;
     userName: string;
     password: string;
-    confirmPassword: string;
-    roleId: string;
+    passwordConfirmation: string;
+    roleId: number;
 }
 
 export interface User{
     id?: string;
     userName: string;
     roleId: string;
+    role: any;
 }

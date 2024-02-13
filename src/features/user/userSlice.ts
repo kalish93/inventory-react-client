@@ -1,16 +1,25 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "../../models/user";
+import { PaginatedList } from "../../models/commons/paginatedList";
 
 interface UserState {
-  user: null | { username: string; token: string };
-  users: User[];
+  user: null | any;
+  accessToken: null | string;
+  users: PaginatedList<User> | undefined;
   loading: boolean;
-  error: string | null;
+  error: any | null;
 }
 
 const initialState: UserState = {
   user: null,
-  users: [],
+  accessToken: null,
+  users: {
+    items: [],
+    totalCount: 0,
+    pageSize: 0,
+    currentPage: 1,
+    totalPages: 1
+  },
   loading: false,
   error: null,
 };
@@ -25,9 +34,10 @@ const userSlice = createSlice({
     },
     loginSuccess: (
       state,
-      action: PayloadAction<{ username: string; token: string }>
+      action: PayloadAction<{ username: string; accessToken: string }>
     ) => {
       state.user = action.payload;
+      state.loading = false;
     },
 
     loginFailure: (state, action) => {
@@ -40,8 +50,17 @@ const userSlice = createSlice({
       state.error = null;
     },
     registerUserSuccess: (state, action) => {
-      state.loading = false;
-      state.users = [...state.users, action.payload];
+        const newUser = action.payload;
+        state.users = {
+            items: [...(state.users?.items || []), newUser],
+            totalCount: (state.users?.totalCount || 0) + 1,
+            pageSize: state.users?.pageSize || 10, 
+            currentPage: state.users?.currentPage || 1, 
+            totalPages: state.users?.totalPages || 1, 
+        };
+
+        state.loading = false;
+        
     },
     registerUserFailure: (state, action) => {
       state.loading = false;
@@ -50,6 +69,20 @@ const userSlice = createSlice({
 
     logoutUser: (state) => {
       state.user = null;
+      state.accessToken = null;
+    },
+
+    getUsersStart: (state) => {
+        state.loading = true;
+        state.error = null;
+      },
+    getUsersSuccess: (state, action) => {
+        state.users = action.payload;
+        state.loading = false;
+      },
+    getUsersFailure: (state, action) => {
+    state.loading = false;
+    state.error = action.payload;
     },
   },
 });
@@ -62,8 +95,12 @@ export const {
   registerUserStart,
   registerUserSuccess,
   registerUserFailure,
+  getUsersStart,
+  getUsersSuccess,
+  getUsersFailure
 } = userSlice.actions;
 
 export const selectUser = (state: { user: UserState }) => state.user.user;
+export const selectUsers = (state: {user: UserState}) => state.user.users
 
 export default userSlice.reducer;

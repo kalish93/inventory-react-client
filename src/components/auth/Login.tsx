@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../features/user/userActions';
 import { AppDispatch } from '../../app/store';
-import { LinearProgress, Card, CardContent, Typography, TextField, Button, CircularProgress, Snackbar, FormControl, FormHelperText } from '@mui/material';
+import { LinearProgress, Card, CardContent, Typography, TextField, Button, Snackbar, FormControl, FormHelperText } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const LoginComponent: React.FC = () => {
@@ -24,7 +24,7 @@ const LoginComponent: React.FC = () => {
         return;
       }
       await dispatch(login(username, password));
-      navigate('');
+      navigate('/');
     } catch (error) {
       console.error('Login failed:', error);
       setError({ username: 'Invalid username or password' });
@@ -37,9 +37,9 @@ const LoginComponent: React.FC = () => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+    {loading && <LinearProgress />}
       <Card>
         <CardContent>
-          {loading && <LinearProgress />}
           <Typography variant="h5" gutterBottom>
             Login
           </Typography>
@@ -75,7 +75,7 @@ const LoginComponent: React.FC = () => {
               onClick={handleLogin}
               disabled={loading || !username || !password}
             >
-              {loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
+               Login
             </Button>
           </form>
         </CardContent>

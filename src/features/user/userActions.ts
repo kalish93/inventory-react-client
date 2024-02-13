@@ -1,4 +1,4 @@
-import { loginFailure, loginStart, loginSuccess, logoutUser, registerUserFailure, registerUserStart, registerUserSuccess } from './userSlice';
+import { getUsersFailure, getUsersStart, getUsersSuccess, loginFailure, loginStart, loginSuccess, logoutUser, registerUserFailure, registerUserStart, registerUserSuccess } from './userSlice';
 import { UserService } from './userService';
 import { AppDispatch } from '../../app/store';
 import { CreateUser } from '../../models/user';
@@ -16,10 +16,20 @@ export const login = (username: string, password: string) => async (dispatch: Ap
 export const signUpUser = (userData: CreateUser) => async (dispatch: AppDispatch) => {
     try {
       dispatch(registerUserStart());
-      const response = await registerUser(userData);
+      const response = await UserService.registerUser(userData);
       dispatch(registerUserSuccess(response));
     } catch (error) {
       dispatch(registerUserFailure(error));
+    }
+  };
+
+export const getUsers = (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(getUsersStart());
+      const response = await UserService.getUsers(page, pageSize);
+      dispatch(getUsersSuccess(response));
+    } catch (error) {
+      dispatch(getUsersFailure(error));
     }
   };
 
@@ -27,7 +37,5 @@ export const logout = () => (dispatch: AppDispatch) => {
   UserService.logout();
   dispatch(logoutUser());
 };
-function registerUser(userData: CreateUser) {
-    throw new Error('Function not implemented.');
-}
+
 
