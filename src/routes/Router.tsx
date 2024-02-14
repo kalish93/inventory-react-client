@@ -1,35 +1,36 @@
-import {createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import LoginComponent from "../components/auth/Login";
 import React from "react";
 import Home from "../components/Home";
 import UsersList from "../components/auth/UsersList";
 import CustomerList from "../components/sales/customer/CustomerList";
 import DriversList from "../components/drivers/DriversList";
+import StoresList from "../components/store/StoresList";
 
 const routes = createBrowserRouter([
   {
-    path: '/',
-    element: <Home/> , 
+    path: "/",
+    element: <Home />,
     children: [
-      { 
-        path: 'users',
-        element: <UsersList/>,
-      },
-      { 
-        path: 'customers',
-        element: <CustomerList/>,
+      {
+        path: "users",
+        element: <UsersList />,
       },
       {
-        path: 'drivers', 
+        path: "customers",
+        element: <CustomerList />,
+      },
+      {
+        path: "drivers",
         element: <DriversList />,
-      }
+      },
+      { path: "stores", element: <StoresList /> },
     ],
   },
-{
+  {
     path: "/login",
-    element: <LoginComponent/> ,
+    element: <LoginComponent />,
   },
-]
-)
+]);
 
 export default routes;
