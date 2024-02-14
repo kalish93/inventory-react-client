@@ -4,6 +4,7 @@ import customerReducer from "../features/customer/customerSlice"
 import userReducer from "../features/user/userSlice";
 import driverReducer from "../features/driver/driverSlice";
 import storeReducer from "../features/store/storeSlice";
+import supplierReducer from "../features/supplier/supplierSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     customer: customerReducer,
     driver: driverReducer,
     store: storeReducer,
+    supplier: supplierReducer,
   },
 });
 

@@ -10,30 +10,37 @@ const LoginComponent: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<{ username?: string; password?: string }>({});
+  const [touched, setTouched] = useState<{ username?: boolean; password?: boolean }>({});
   const loading = useSelector((state: any) => state.user.loading);
   const isAuthenticated = useSelector((state: any) => state.user.isAuthenticated);
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/');
     }
   }, [isAuthenticated, navigate]);
+
   const handleLogin = async () => {
+    setError({});
+    if (!username || !password) {
+      setError({
+        username: !username ? 'Username is required' : undefined,
+        password: !password ? 'Password is required' : undefined,
+      });
+      return;
+    }
+
     try {
-      setError({});
-      if (!username || !password) {
-        setError({
-          username: !username ? 'Username is required' : undefined,
-          password: !password ? 'Password is required' : undefined,
-        });
-        return;
-      }
       await dispatch(login(username, password));
     } catch (error) {
       console.error('Login failed:', error);
       setError({ username: 'Invalid username or password' });
     }
+  };
+
+  const handleBlur = (field: 'username' | 'password') => {
+    setTouched({ ...touched, [field]: true });
   };
 
   const handleCloseSnackbar = () => {
@@ -42,13 +49,13 @@ const LoginComponent: React.FC = () => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-    {loading && <LinearProgress />}
+      {loading && <LinearProgress />}
       <Card>
         <CardContent>
           <Typography variant="h5" gutterBottom>
             Login
           </Typography>
-          <form>
+          <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
             <FormControl fullWidth margin="normal">
               <TextField
                 label="Username"
@@ -56,9 +63,10 @@ const LoginComponent: React.FC = () => {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                error={!!error.username}
+                error={!!error.username || (touched.username && !username)}
+                onBlur={() => handleBlur('username')}
               />
-              {error.username && <FormHelperText error>{error.username}</FormHelperText>}
+              {touched.username && !username && <FormHelperText error>Username is required</FormHelperText>}
             </FormControl>
             <FormControl fullWidth margin="normal">
               <TextField
@@ -68,19 +76,19 @@ const LoginComponent: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                error={!!error.password}
+                error={!!error.password || (touched.password && !password)}
+                onBlur={() => handleBlur('password')}
               />
-              {error.password && <FormHelperText error>{error.password}</FormHelperText>}
+              {touched.password && !password && <FormHelperText error>Password is required</FormHelperText>}
             </FormControl>
             <Button
-              type="button"
+              type="submit"
               variant="contained"
               color="primary"
               fullWidth
-              onClick={handleLogin}
               disabled={loading || !username || !password}
             >
-               Login
+              Login
             </Button>
           </form>
         </CardContent>

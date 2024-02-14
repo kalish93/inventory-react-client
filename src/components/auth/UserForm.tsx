@@ -10,6 +10,7 @@ import {
   Select,
   MenuItem,
   Button,
+  FormHelperText,
 } from '@mui/material';
 import { signUpUser } from '../../features/user/userActions' ;
 import { AppDispatch } from '../../app/store';
@@ -17,9 +18,9 @@ import { getRoles } from '../../features/role/roleActions';
 import { Role } from '../../models/role';
 
 interface UserFormProps {
-    open: boolean;
-    handleClose: () => void;
-  }
+  open: boolean;
+  handleClose: () => void;
+}
 
 const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -28,20 +29,36 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
     userName: '',
     password: '',
     passwordConfirmation: '',
-    roleId: undefined, 
+    roleId: undefined,
   });
+  const [touched, setTouched] = useState<{
+    userName?: boolean;
+    password?: boolean;
+    passwordConfirmation?: boolean;
+    roleId?: boolean;
+  }>({});
 
   useEffect(() => {
     dispatch(getRoles());
-  },[dispatch]);
-  
-  const handleChange = (e: { target: { name: any; value: any; }; }) => {
+  }, [dispatch]);
+
+  const handleChange = (e: { target: { name: any; value: any } }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleBlur = (field: keyof typeof formData) => {
+    setTouched({ ...touched, [field]: true });
   };
 
   const handleSubmit = () => {
     dispatch(signUpUser(formData));
     handleClose();
+    // setTouched({});
+  };
+
+  const handleCancel = () => {
+    handleClose();
+    // setTouched({});
   };
 
   return (
@@ -57,7 +74,11 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
           fullWidth
           margin="normal"
           onChange={handleChange}
+          required
+          error={touched.userName && !formData.userName}
+          onBlur={() => handleBlur('userName')}
         />
+        {touched.userName && !formData.userName && <FormHelperText error>Username is required</FormHelperText>}
         <TextField
           name="password"
           label="Password"
@@ -66,7 +87,11 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
           fullWidth
           margin="normal"
           onChange={handleChange}
+          required
+          error={touched.password && !formData.password}
+          onBlur={() => handleBlur('password')}
         />
+        {touched.password && !formData.password && <FormHelperText error>Password is required</FormHelperText>}
         <TextField
           name="passwordConfirmation"
           label="Confirm Password"
@@ -75,19 +100,50 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
           fullWidth
           margin="normal"
           onChange={handleChange}
+          required
+          error={touched.passwordConfirmation && !formData.passwordConfirmation}
+          onBlur={() => handleBlur('passwordConfirmation')}
         />
-        <FormControl fullWidth margin="normal">
-        <InputLabel>Role</InputLabel>
-        <Select name="roleId" value={formData.roleId} onChange={handleChange}>
-          { roles && roles.map((role: Role) => (
-            <MenuItem key={role.id} value={role.id}>
-              {role.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
+        {touched.passwordConfirmation && !formData.passwordConfirmation && <FormHelperText error>Confirmation is required</FormHelperText>}
+        <FormControl fullWidth margin="normal" variant='filled'>
+          <InputLabel>Role</InputLabel>
+          <Select
+            name="roleId"
+            value={formData.roleId}
+            onChange={handleChange}
+            required
+            error={touched.roleId && !formData.roleId}
+            onBlur={() => handleBlur('roleId')}
+          >
+            {roles &&
+              roles.map((role: Role) => (
+                <MenuItem key={role.id} value={role.id}>
+                  {role.name}
+                </MenuItem>
+              ))}
+          </Select>
+          {touched.roleId && !formData.roleId && <FormHelperText error>Role is required</FormHelperText>}
+        </FormControl>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+          disabled={
+            !formData.userName ||
+            !formData.password ||
+            !formData.passwordConfirmation ||
+            !formData.roleId
+          }
+        >
           Submit
+        </Button>
+        <Button
+          variant="outlined"
+          color="warning"
+          onClick={handleCancel}
+          sx={{ marginLeft: 1 }}
+        >
+          Cancel
         </Button>
       </Box>
     </Modal>
