@@ -49,6 +49,7 @@ const DriverForm: React.FC<DriverFormProps> = ({ open, handleClose }) => {
           Add Driver
         </Typography>
         <TextField
+          required
           name="name"
           label="name"
           variant="outlined"
