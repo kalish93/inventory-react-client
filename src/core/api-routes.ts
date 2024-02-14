@@ -4,3 +4,4 @@ export const USERS_URL = `${BASE_URL}/users`
 export const ROLES_URL = `${BASE_URL}/roles`
 export const CUSTOMERS_URL = `${BASE_URL}/customers`
 export const DRIVER_URL = `${BASE_URL}/drivers`
+export const STORE_URL = `${BASE_URL}/stores`

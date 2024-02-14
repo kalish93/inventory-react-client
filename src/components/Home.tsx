@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import UsersList from "./auth/UsersList";
 import CustomerList from "./sales/customer/CustomerList";
 import DriversList from "./drivers/DriversList";
+import StoresList from "./store/StoresList";
 
 
 const Home = () => {
@@ -17,6 +18,7 @@ const Home = () => {
                 <Route path="/users" element={<UsersList />} />
                 <Route path="/customers" element={<CustomerList />} />
                 <Route path="/drivers" element={<DriversList />} />
+                <Route path="/stores" element={<StoresList />} />
             </Routes>
             </main>
         </div>
