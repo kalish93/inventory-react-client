@@ -42,7 +42,7 @@ export const DriverService = {
         throw new Error("Failed to create driver");
       }
       const data = await response.json();
-      return { driver: data.driver };
+      return data;
     } catch (error) {
       console.log("Error", error);
       throw error;
