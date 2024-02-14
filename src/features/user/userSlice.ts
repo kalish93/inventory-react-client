@@ -8,6 +8,7 @@ interface UserState {
   users: PaginatedList<User> | undefined;
   loading: boolean;
   error: any | null;
+  isAuthenticated: boolean;
 }
 
 const initialState: UserState = {
@@ -22,6 +23,7 @@ const initialState: UserState = {
   },
   loading: false,
   error: null,
+  isAuthenticated: false,
 };
 
 const userSlice = createSlice({
@@ -37,6 +39,7 @@ const userSlice = createSlice({
       action: PayloadAction<{ username: string; accessToken: string }>
     ) => {
       state.user = action.payload;
+      state.isAuthenticated = true;
       state.loading = false;
     },
 
@@ -70,6 +73,7 @@ const userSlice = createSlice({
     logoutUser: (state) => {
       state.user = null;
       state.accessToken = null;
+      state.isAuthenticated = false;
     },
 
     getUsersStart: (state) => {

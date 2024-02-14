@@ -7,14 +7,17 @@ import {
 } from '@mui/material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { UserService } from '../../features/user/userService';
 import { useNavigate } from 'react-router-dom';
+import { logout } from '../../features/user/userActions';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../app/store';
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleLogout = () =>{
-    UserService.logout()
+    dispatch(logout())
     navigate('/login')
   }
   return (

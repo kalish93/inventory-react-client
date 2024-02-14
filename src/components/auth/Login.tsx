@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../features/user/userActions';
 import { AppDispatch } from '../../app/store';
@@ -11,8 +11,14 @@ const LoginComponent: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<{ username?: string; password?: string }>({});
   const loading = useSelector((state: any) => state.user.loading);
+  const isAuthenticated = useSelector((state: any) => state.user.isAuthenticated);
   const navigate = useNavigate();
-
+  
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
   const handleLogin = async () => {
     try {
       setError({});
@@ -24,7 +30,6 @@ const LoginComponent: React.FC = () => {
         return;
       }
       await dispatch(login(username, password));
-      navigate('/');
     } catch (error) {
       console.error('Login failed:', error);
       setError({ username: 'Invalid username or password' });

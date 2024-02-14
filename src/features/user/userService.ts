@@ -47,7 +47,7 @@ export const UserService = {
     }
 
     const data = await response.json();
-    return { user: data.user };
+    return data;
   },
 
   getUsers: async (page = 1, pageSize = 10) => {
