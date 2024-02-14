@@ -6,6 +6,7 @@ import UsersList from "../components/auth/UsersList";
 import CustomerList from "../components/sales/customer/CustomerList";
 import DriversList from "../components/drivers/DriversList";
 import StoresList from "../components/store/StoresList";
+import SupplierList from "../components/supplier/SupplierList";
 
 const routes = createBrowserRouter([
   {
@@ -25,6 +26,8 @@ const routes = createBrowserRouter([
         element: <DriversList />,
       },
       { path: "stores", element: <StoresList /> },
+      { path: "suppliers",
+        element: <SupplierList /> },
     ],
   },
   {

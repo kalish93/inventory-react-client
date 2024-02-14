@@ -55,7 +55,7 @@ const userSlice = createSlice({
     registerUserSuccess: (state, action) => {
         const newUser = action.payload;
         state.users = {
-            items: [...(state.users?.items || []), newUser],
+            items: [newUser, ...(state.users?.items || [])],
             totalCount: (state.users?.totalCount || 0) + 1,
             pageSize: state.users?.pageSize || 10, 
             currentPage: state.users?.currentPage || 1, 
