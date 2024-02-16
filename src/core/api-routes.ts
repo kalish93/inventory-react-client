@@ -6,3 +6,5 @@ export const CUSTOMERS_URL = `${BASE_URL}/customers`
 export const DRIVER_URL = `${BASE_URL}/drivers`
 export const STORE_URL = `${BASE_URL}/stores`
 export const SUPPLIERS_URL = `${BASE_URL}/suppliers`
+export const DECLARATIONS_URL = `${BASE_URL}/declarations`
+export const PRODUCTS_URL = `${BASE_URL}/products`

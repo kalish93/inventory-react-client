@@ -16,14 +16,15 @@ export const UserService = {
       },
       body: JSON.stringify({ userName, password }),
     });
+    console.log(response,'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
 
     if (!response.ok) {
-      throw new Error("Login failed");
+      throw new Error(response.statusText);
     }
 
     const data = await response.json();
     localStorage.setItem("accessToken", data.accessToken);
-
+    
     return { username: data.user.userName, accessToken: data.accessToken };
   },
 
@@ -43,7 +44,7 @@ export const UserService = {
     });
 
     if (!response.ok) {
-      throw new Error("Login failed");
+      throw new Error(response.statusText);
     }
 
     const data = await response.json();

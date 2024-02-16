@@ -7,6 +7,8 @@ import CustomerList from "./sales/customer/CustomerList";
 import DriversList from "./drivers/DriversList";
 import StoresList from "./store/StoresList";
 import SupplierList from "./supplier/SupplierList";
+import ProductList from "./product/ProductList";
+import DeclarationList from "./declaration/DeclarationList";
 
 
 const Home = () => {
@@ -21,6 +23,8 @@ const Home = () => {
                 <Route path="/drivers" element={<DriversList />} />
                 <Route path="/stores" element={<StoresList />} />
                 <Route path="/suppliers" element={<SupplierList />} />
+                <Route path="/products" element={<ProductList />} />
+                <Route path="/declarations" element={<DeclarationList />} />
             </Routes>
             </main>
         </div>
