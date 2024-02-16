@@ -12,20 +12,20 @@ import {
   Button,
 } from '@mui/material';
 import { AppDispatch } from '../../app/store';
-import { selectSupplier } from '../../features/supplier/supplierSlice';
-import { getSuppliers } from '../../features/supplier/supplierActions';
-import SupplierForm from './SupplierForm';
+import { selectDeclaration } from '../../features/declaration/declarationSlice';
+import { getDeclarations } from '../../features/declaration/declarationAction';
+import DeclarationForm from './DeclarationForm';
 
-const SupplierList = () => {
+const DeclarationList = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const supplierState = useSelector(selectSupplier);
-  const { items: suppliers = [], currentPage, totalCount } = supplierState.suppliers;
+  const declarationState = useSelector(selectDeclaration);
+  const { items: declarations = [], currentPage, totalCount } = declarationState.declarations;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
-    dispatch(getSuppliers(page + 1, rowsPerPage));
+    dispatch(getDeclarations(page + 1, rowsPerPage));
   }, [dispatch, page, rowsPerPage]);
 
   const handleChangePage = (_: any, newPage: React.SetStateAction<number>) => {
@@ -48,7 +48,7 @@ const SupplierList = () => {
   return (
     <div>
       <Button variant="contained" color="primary" onClick={handleOpenModal}>
-       Add Supplier
+       Add Declaration
       </Button>
       <TablePagination
          rowsPerPageOptions={[5, 10, 25]}
@@ -63,23 +63,23 @@ const SupplierList = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Address</TableCell>
+              <TableCell>Declaration Number</TableCell>
+              <TableCell>Declaration Date</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {suppliers.map((supplier: any) => (
-              <TableRow key={supplier.id}>
-                <TableCell>{supplier.name }</TableCell>
-                <TableCell>{supplier.address}</TableCell>
+            {declarations.map((declaration: any) => (
+              <TableRow key={declaration.id}>
+                <TableCell>{declaration.number }</TableCell>
+                <TableCell>{declaration.date}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <SupplierForm open={openModal} handleClose={handleCloseModal} />
+      <DeclarationForm open={openModal} handleClose={handleCloseModal} />
     </div>
   );
 };
 
-export default SupplierList;
+export default DeclarationList;

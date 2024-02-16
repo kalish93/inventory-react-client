@@ -5,6 +5,8 @@ import userReducer from "../features/user/userSlice";
 import driverReducer from "../features/driver/driverSlice";
 import storeReducer from "../features/store/storeSlice";
 import supplierReducer from "../features/supplier/supplierSlice";
+import productReducer from "../features/product/productSlice";
+import declarationReducer from "../features/declaration/declarationSlice";
 
 const store = configureStore({
   reducer: {
@@ -14,6 +16,9 @@ const store = configureStore({
     driver: driverReducer,
     store: storeReducer,
     supplier: supplierReducer,
+    declaration: declarationReducer,
+        product: productReducer,
+
   },
 });
 

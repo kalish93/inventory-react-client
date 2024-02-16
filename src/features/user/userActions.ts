@@ -8,8 +8,9 @@ export const login = (username: string, password: string) => async (dispatch: Ap
     dispatch(loginStart());
     const response = await UserService.login(username, password);
     dispatch(loginSuccess(response));
-  } catch (error) {
-    dispatch(loginFailure(error));
+  } catch (error: any) {
+    dispatch(loginFailure(error.response ? error.response.data.error : 'Unknown error'));
+    throw error;
   }
 };
 
@@ -20,6 +21,7 @@ export const signUpUser = (userData: CreateUser) => async (dispatch: AppDispatch
       dispatch(registerUserSuccess(response));
     } catch (error) {
       dispatch(registerUserFailure(error));
+      throw(error);
     }
   };
 
@@ -30,6 +32,7 @@ export const getUsers = (page: number, pageSize: number) => async (dispatch: App
       dispatch(getUsersSuccess(response));
     } catch (error) {
       dispatch(getUsersFailure(error));
+      throw(error);
     }
   };
 

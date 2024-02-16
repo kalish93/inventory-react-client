@@ -12,6 +12,8 @@ import PeopleIcon from "@mui/icons-material/People";
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import HandshakeIcon from '@mui/icons-material/Handshake';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import ArticleIcon from '@mui/icons-material/Article';
 import { Link, useLocation } from "react-router-dom";
 
 const drawerWidth = 240;
@@ -116,6 +118,32 @@ const Sidebar = () => {
             <HandshakeIcon />
           </ListItemIcon>
           <ListItemText primary="Suppliers" />
+        </ListItem>
+
+        <ListItem
+          button
+          component={Link}
+          to="/products"
+          key="Products"
+          selected={isLinkActive("/products")}
+        >
+          <ListItemIcon>
+            <ShoppingCartIcon />
+          </ListItemIcon>
+          <ListItemText primary="Products" />
+        </ListItem>
+
+        <ListItem
+          button
+          component={Link}
+          to="/declarations"
+          key="Declarations"
+          selected={isLinkActive("/declarations")}
+        >
+          <ListItemIcon>
+            <ArticleIcon />
+          </ListItemIcon>
+          <ListItemText primary="Declarations" />
         </ListItem>
       </List>
     </Drawer>

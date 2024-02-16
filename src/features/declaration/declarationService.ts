@@ -1,5 +1,5 @@
-import { SUPPLIERS_URL } from "../../core/api-routes";
-import { CreateSupplier } from "../../models/supplier";
+import { DECLARATIONS_URL } from "../../core/api-routes";
+import { CreateDeclaration } from "../../models/declaration";
 
 const accessToken = localStorage.getItem('accessToken');
 const headers = {
@@ -7,10 +7,10 @@ const headers = {
     'Authorization': `Bearer ${accessToken}`,
   };
 
-export const SupplierService = {
-    getSuppliers: async (page = 1, pageSize = 10) => {
+export const DeclarationService = {
+    getDeclarations: async (page = 1, pageSize = 10) => {
         try {
-          const response = await fetch(`${SUPPLIERS_URL}?page=${page}&pageSize=${pageSize}`, {
+          const response = await fetch(`${DECLARATIONS_URL}?page=${page}&pageSize=${pageSize}`, {
             method: 'GET',
             headers: headers,
           });
@@ -28,15 +28,15 @@ export const SupplierService = {
         }
       },
 
-      registerSupplier: async (SupplierData: CreateSupplier) => {
-        const response = await fetch(SUPPLIERS_URL, {
+      registerDeclaration: async (DeclarationData: CreateDeclaration) => {
+        const response = await fetch(DECLARATIONS_URL, {
           method: 'POST',
           headers: headers,
-          body: JSON.stringify(SupplierData),
+          body: JSON.stringify(DeclarationData),
         });
     
         if (!response.ok) {
-          throw new Error('Supplier creation failed');
+          throw new Error('Declaration creation failed');
         }
     
         const data = await response.json();

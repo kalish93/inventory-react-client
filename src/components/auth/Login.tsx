@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../features/user/userActions';
 import { AppDispatch } from '../../app/store';
-import { LinearProgress, Card, CardContent, Typography, TextField, Button, Snackbar, FormControl, FormHelperText } from '@mui/material';
+import { LinearProgress, Card, CardContent, Typography, TextField, Button, Snackbar, Alert, FormControl, FormHelperText } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const LoginComponent: React.FC = () => {
@@ -15,12 +15,22 @@ const LoginComponent: React.FC = () => {
   const isAuthenticated = useSelector((state: any) => state.user.isAuthenticated);
   const navigate = useNavigate();
 
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/');
     }
   }, [isAuthenticated, navigate]);
 
+  const showSnackbar = (message: string, severity: 'success' | 'error') => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+  
   const handleLogin = async () => {
     setError({});
     if (!username || !password) {
@@ -30,22 +40,24 @@ const LoginComponent: React.FC = () => {
       });
       return;
     }
-
+  
     try {
       await dispatch(login(username, password));
+      showSnackbar('Login successful!', 'success');
     } catch (error) {
-      console.error('Login failed:', error);
+      showSnackbar('Invalid username or password','error');
       setError({ username: 'Invalid username or password' });
     }
   };
-
+  
   const handleBlur = (field: 'username' | 'password') => {
     setTouched({ ...touched, [field]: true });
   };
 
   const handleCloseSnackbar = () => {
-    setError({});
+    setSnackbarOpen(false);
   };
+  
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
@@ -94,12 +106,19 @@ const LoginComponent: React.FC = () => {
         </CardContent>
       </Card>
       <Snackbar
-        open={!!error.username || !!error.password}
+        open={snackbarOpen}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
-        message={(error.username || '') + ' ' + (error.password || '')}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      />
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity as 'success' | 'error'}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

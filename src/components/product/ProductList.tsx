@@ -12,20 +12,21 @@ import {
   Button,
 } from '@mui/material';
 import { AppDispatch } from '../../app/store';
-import { selectSupplier } from '../../features/supplier/supplierSlice';
-import { getSuppliers } from '../../features/supplier/supplierActions';
-import SupplierForm from './SupplierForm';
+import { selectProduct } from '../../features/product/productSlice';
+import { getProducts } from '../../features/product/productActions';
+import ProductForm from './ProductForm';
 
-const SupplierList = () => {
+
+const ProductList = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const supplierState = useSelector(selectSupplier);
-  const { items: suppliers = [], currentPage, totalCount } = supplierState.suppliers;
+  const productState = useSelector(selectProduct);
+  const { items: products = [], currentPage, totalCount } = productState.products;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
-    dispatch(getSuppliers(page + 1, rowsPerPage));
+    dispatch(getProducts(page + 1, rowsPerPage));
   }, [dispatch, page, rowsPerPage]);
 
   const handleChangePage = (_: any, newPage: React.SetStateAction<number>) => {
@@ -48,7 +49,7 @@ const SupplierList = () => {
   return (
     <div>
       <Button variant="contained" color="primary" onClick={handleOpenModal}>
-       Add Supplier
+       Add Product
       </Button>
       <TablePagination
          rowsPerPageOptions={[5, 10, 25]}
@@ -64,22 +65,24 @@ const SupplierList = () => {
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
-              <TableCell>Address</TableCell>
+              <TableCell>Category</TableCell>
+              <TableCell>Unit of measurement</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {suppliers.map((supplier: any) => (
-              <TableRow key={supplier.id}>
-                <TableCell>{supplier.name }</TableCell>
-                <TableCell>{supplier.address}</TableCell>
+            {products.map((product: any) => (
+              <TableRow key={product.id}>
+                <TableCell>{product.name}</TableCell>
+                <TableCell>{product.category}</TableCell>
+                <TableCell>{product.unitOfMeasurement}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <SupplierForm open={openModal} handleClose={handleCloseModal} />
+      <ProductForm open={openModal} handleClose={handleCloseModal} />
     </div>
   );
 };
 
-export default SupplierList;
+export default ProductList;
