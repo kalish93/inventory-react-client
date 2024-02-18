@@ -11,6 +11,7 @@ import ProductList from "./product/ProductList";
 import DeclarationList from "./declaration/DeclarationList";
 import PurchaseList from "./purchase/PurchaseList";
 import DeclarationDetail from "./declaration/DeclarationDetail";
+import PurchaseDetail from "./purchase/purchaseDetail";
 
 
 const Home = () => {
@@ -29,6 +30,7 @@ const Home = () => {
                 <Route path="/declarations" element={<DeclarationList />} />
                 <Route path="/declarations/:id" element={<DeclarationDetail />} />
                 <Route path="/purchases" element={<PurchaseList />} />
+                <Route path="/purchases/:id" element={<PurchaseDetail />} />
             </Routes>
             </main>
         </div>

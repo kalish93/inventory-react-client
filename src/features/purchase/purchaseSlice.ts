@@ -6,6 +6,7 @@ interface PurchaseState {
   purchases: PaginatedList<Purchase>;
   loading: boolean;
   error: any | null;
+  purchase: any,
 }
 
 const initialState: PurchaseState = {
@@ -18,6 +19,7 @@ const initialState: PurchaseState = {
   },
   loading: false,
   error: null,
+  purchase: undefined
 };
 
 const purchaseSlice = createSlice({
@@ -58,6 +60,19 @@ const purchaseSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       },
+
+      getPurchaseByIdStart: (state) => {
+        state.loading = true;
+        state.error = null;
+      },
+      getPurchaseByIdSuccess: (state, action) => {
+        state.purchase = action.payload;
+        state.loading = false;
+      },
+      getPurchaseByIdFailure: (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      },
   },
 });
 
@@ -67,7 +82,10 @@ export const {
   getPurchasesFailure,
   registerPurchaseStart,
   registerPurchaseSuccess,
-  registerPurchaseFailure
+  registerPurchaseFailure,
+  getPurchaseByIdStart,
+  getPurchaseByIdSuccess,
+  getPurchaseByIdFailure
 } = purchaseSlice.actions;
 
 export const selectPurchase = (state: { purchase: PurchaseState }) => state.purchase;
