@@ -7,6 +7,7 @@ import storeReducer from "../features/store/storeSlice";
 import supplierReducer from "../features/supplier/supplierSlice";
 import productReducer from "../features/product/productSlice";
 import declarationReducer from "../features/declaration/declarationSlice";
+import purchaseReducer from "../features/purchase/purchaseSlice";
 
 const store = configureStore({
   reducer: {
@@ -17,8 +18,8 @@ const store = configureStore({
     store: storeReducer,
     supplier: supplierReducer,
     declaration: declarationReducer,
-        product: productReducer,
-
+    product: productReducer,
+    purchase: purchaseReducer,
   },
 });
 

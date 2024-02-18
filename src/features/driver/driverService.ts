@@ -3,21 +3,25 @@ import { DRIVER_URL } from "../../core/api-routes";
 import { CreateDriver } from "../../models/driver";
 
 export const DriverService = {
-  getDrivers: async (page = 1, pageSize = 10) => {
+  getDrivers: async (page?: number, pageSize?: number) => {
     try {
-      const response = await fetch(
-        `${DRIVER_URL}?page=${page}&pageSize=${pageSize}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
+      let url = DRIVER_URL;
+  
+      if (page && pageSize) {
+        url += `?page=${page}&pageSize=${pageSize}`;
+      }
+  
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
       if (!response.ok) {
         throw new Error("Failed to get drivers");
       }
+  
       const data = await response.json();
       return data;
     } catch (error) {
@@ -25,6 +29,7 @@ export const DriverService = {
       throw error;
     }
   },
+  
 
   createDriver: async (driverData: CreateDriver) => {
     try {

@@ -1,13 +1,13 @@
 export interface CreateDeclaration {
     number: string;
-    date: Date;
+    date: Date | null;
     declarationProducts: CreateDeclarationProduct[];
   }
 
 export interface CreateDeclarationProduct{
     productId: string;
-    declarationQuantity: number;
-    totalIncomeTax: number;
+    declarationQuantity: number | null;
+    totalIncomeTax: number | null;
 }
 
 export interface Declaration{

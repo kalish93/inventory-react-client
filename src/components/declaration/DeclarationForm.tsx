@@ -7,14 +7,21 @@ import {
   TextField,
   Button,
   FormHelperText,
-  Select,
-  MenuItem,
+  IconButton,
   SelectChangeEvent,
+  Autocomplete,
+  Card,
 } from "@mui/material";
+import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { AppDispatch } from "../../app/store";
 import { createDeclaration } from "../../features/declaration/declarationAction";
 import { getProducts } from "../../features/product/productActions";
+import {
+  CreateDeclaration,
+  CreateDeclarationProduct,
+} from "../../models/declaration";
 
+import dayjs from "dayjs";
 interface DeclarationFormProps {
   open: boolean;
   handleClose: () => void;
@@ -26,11 +33,11 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const products = useSelector((state: any) => state.product.products.items);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<CreateDeclaration>({
     number: "",
-    date: new Date(),
+    date: null,
     declarationProducts: [
-      { productId: "", declarationQuantity: 0, totalIncomeTax: 0 },
+      { productId: "", declarationQuantity: null, totalIncomeTax: null },
     ],
   });
   const [touched, setTouched] = useState<{
@@ -45,39 +52,121 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
     };
   }>({});
 
+  const [addedProducts, setAddedProducts] = useState<
+    CreateDeclarationProduct[]
+  >([]);
+
   useEffect(() => {
     dispatch(getProducts());
   }, [dispatch]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
+    setFormData((prevData: any) => ({
       ...prevData,
       [name]: value,
     }));
   };
 
-  const handleProductFormChange =
-    (index: number, field: keyof (typeof formData)["declarationProducts"][0]) =>
-    (e: React.ChangeEvent<{ value: unknown }>) => {
+  const handleProductChange =
+    (index: number, field: keyof CreateDeclarationProduct) =>
+    (e: SelectChangeEvent<string>) => {
       const newProducts = [...formData.declarationProducts];
       newProducts[index] = {
         ...newProducts[index],
         [field]: e.target.value as string,
       };
-      setFormData((prevData) => ({
+      setFormData((prevData: any) => ({
         ...prevData,
         declarationProducts: newProducts,
       }));
     };
 
-  const handleProductChange =
-    (index: number, field: keyof (typeof formData)["declarationProducts"][0]) =>
-    (e: SelectChangeEvent<string>) => {
+  const handleAddProduct = () => {
+    const newProduct = {
+      productId: formData.declarationProducts[0].productId,
+      declarationQuantity: formData.declarationProducts[0].declarationQuantity,
+      totalIncomeTax: formData.declarationProducts[0].totalIncomeTax,
+    };
+
+    setAddedProducts((prevProducts) => [...prevProducts, newProduct]);
+    setFormData((prevData: any) => ({
+      ...prevData,
+      declarationProducts: [
+        { productId: "", declarationQuantity: null, totalIncomeTax: null },
+      ],
+    }));
+  };
+
+  const handleRemoveProduct = (index: number) => () => {
+    setAddedProducts((prevProducts) =>
+      prevProducts.filter((_, i) => i !== index)
+    );
+  };
+
+  const handleEditProduct = (index: number) => () => {
+    const productToEdit = addedProducts[index];
+    setAddedProducts((prevProducts) =>
+      prevProducts.filter((_, i) => i !== index)
+    );
+    setFormData((prevData: any) => {
+      const newDeclarationProducts = [...prevData.declarationProducts];
+      newDeclarationProducts[index] = { ...productToEdit };
+      return {
+        ...prevData,
+        declarationProducts: newDeclarationProducts,
+      };
+    });
+  };
+
+  const handleSubmit = () => {
+    const formDataToSend = {
+      number: formData.number,
+      date: formData.date,
+      declarationProducts: addedProducts,
+    };
+
+    dispatch(createDeclaration(formDataToSend));
+    setFormData({
+      number: "",
+      date: null,
+      declarationProducts: [
+        {
+          productId: "",
+          declarationQuantity: null,
+          totalIncomeTax: null,
+        },
+      ],
+    });
+    setAddedProducts([]);
+    setTouched({});
+    handleClose();
+  };
+
+  const handleCancel = () => {
+    setFormData({
+      number: "",
+      date: null,
+      declarationProducts: [
+        {
+          productId: "",
+          declarationQuantity: null,
+          totalIncomeTax: null,
+        },
+      ],
+    });
+    setAddedProducts([]);
+    setTouched({});
+    handleClose();
+  };
+
+  const handleProductFormChange =
+    (index: number, field: keyof CreateDeclarationProduct) =>
+    (e: React.ChangeEvent<{ value: unknown }>) => {
       const newProducts = [...formData.declarationProducts];
       newProducts[index] = {
         ...newProducts[index],
-        [field]: e.target.value,
+        [field]: e.target.value as string | number,
       };
       setFormData((prevData) => ({
         ...prevData,
@@ -85,73 +174,41 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
       }));
     };
 
-  const handleBlur = (field: keyof typeof formData) => {
-    setTouched({ ...touched, [field]: true });
+  const isDeclarationFormValid = () => {
+    return (
+      formData.number.trim() !== "" &&
+      formData.date !== null &&
+      addedProducts.length > 0
+    );
   };
 
-  const handleProductBlur =
-    (index: number, field: keyof (typeof formData)["declarationProducts"][0]) =>
-    () => {
-      setTouched((prevTouched: any) => {
-        const declarationProducts = {
-          ...(prevTouched.declarationProducts || {}),
-        } as {
-          [key: number]: {
-            productId: boolean;
-            declarationQuantity: boolean;
-            totalIncomeTax: boolean;
-          };
-        };
-
-        declarationProducts[index] = {
-          ...(declarationProducts[index] || {}),
-          [field]: true,
-        };
-
-        return {
-          ...prevTouched,
-          declarationProducts,
-        };
-      });
-    };
-
-  const handleAddProduct = () => {
-    setFormData((prevData) => ({
-      ...prevData,
-      declarationProducts: [
-        ...prevData.declarationProducts,
-        { productId: "", declarationQuantity: 0, totalIncomeTax: 0 },
-      ],
-    }));
-  };
-
-  const handleRemoveProduct = (index: number) => () => {
-    const newProducts = [...formData.declarationProducts];
-    newProducts.splice(index, 1);
-    setFormData((prevData) => ({
-      ...prevData,
-      declarationProducts: newProducts,
-    }));
-  };
-
-  const handleSubmit = () => {
-    dispatch(createDeclaration(formData));
-    handleClose();
-  };
-
-  const handleCancel = () => {
-    handleClose();
+  const isAddProductButtonDisabled = () => {
+    return formData.declarationProducts.some(
+      (product) =>
+        !product.productId ||
+        product.productId === "" ||
+        product.declarationQuantity === null ||
+        product.declarationQuantity <= 0 ||
+        product.totalIncomeTax === null
+    );
   };
 
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal open={open} onClose={(e, reason) => {
+      if (reason === "backdropClick") {
+        return;
+      }
+      handleClose();
+    }}>
       <Box
         sx={{
           position: "absolute",
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 400,
+          width: 500,
+          maxHeight: "80vh",
+          overflowY: "auto",
           bgcolor: "background.paper",
           boxShadow: 24,
           p: 4,
@@ -162,58 +219,65 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
         </Typography>
         <TextField
           name="number"
-          label="Number"
+          label="Declaration Number"
           variant="outlined"
           fullWidth
           margin="normal"
           onChange={handleChange}
           required
           error={touched.number && !formData.number}
-          onBlur={() => handleBlur("number")}
+          onBlur={() => setTouched({ ...touched, number: true })}
         />
         {touched.number && !formData.number && (
           <FormHelperText error>Declaration number is required</FormHelperText>
         )}
+
         <TextField
           name="date"
-          label="Date"
+          label="Declaration Date"
           variant="outlined"
           fullWidth
           margin="normal"
+          type="date"
+          value={dayjs(formData.date).format("YYYY-MM-DD")}
           onChange={handleChange}
           required
           error={touched.date && !formData.date}
-          onBlur={() => handleBlur("date")}
+          onBlur={() => setTouched({ ...touched, date: true })}
         />
-        {touched.date && !formData.date && (
-          <FormHelperText error>Declaration date is required</FormHelperText>
-        )}
 
-        {formData.declarationProducts.map((product, index) => (
+        {formData.declarationProducts.map((product: any, index: any) => (
           <div key={index}>
-            <Select
-              name={`productId-${index}`}
-              label="Product ID"
-              variant="outlined"
-              fullWidth
-              value={product.productId}
-              onChange={handleProductChange(index, "productId")}
-              required
-              error={
-                touched.declarationProducts?.[index]?.productId &&
-                !product.productId
+            <Autocomplete
+              options={products}
+              getOptionLabel={(option) => option.name}
+              value={
+                products.find((p: { id: any }) => p.id === product.productId) ||
+                null
               }
-              onBlur={handleProductBlur(index, "productId")}
-            >
-              <MenuItem value="" disabled>
-                Select Product
-              </MenuItem>
-              {products.map((product: any) => (
-                <MenuItem key={product.id} value={product.id}>
-                  {product.name}
-                </MenuItem>
-              ))}
-            </Select>
+              onChange={(event, newValue) => {
+                handleProductChange(
+                  index,
+                  "productId"
+                )({
+                  target: { value: newValue ? newValue.id : "" },
+                } as SelectChangeEvent<string>);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Product"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  error={
+                    touched.declarationProducts?.[index]?.productId &&
+                    !product.productId
+                  }
+                  sx={{ marginBottom: 1 }}
+                />
+              )}
+            />
 
             <TextField
               name={`declarationQuantity-${index}`}
@@ -229,14 +293,7 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
                 touched.declarationProducts?.[index]?.declarationQuantity &&
                 !product.declarationQuantity
               }
-              onBlur={handleProductBlur(index, "declarationQuantity")}
             />
-            {touched.declarationProducts?.[index]?.declarationQuantity &&
-              !product.declarationQuantity && (
-                <FormHelperText error>
-                  Declaration Quantity is required
-                </FormHelperText>
-              )}
 
             <TextField
               name={`totalIncomeTax-${index}`}
@@ -252,44 +309,62 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
                 touched.declarationProducts?.[index]?.totalIncomeTax &&
                 !product.totalIncomeTax
               }
-              onBlur={handleProductBlur(index, "totalIncomeTax")}
             />
-            {touched.declarationProducts?.[index]?.totalIncomeTax &&
-              !product.totalIncomeTax && (
-                <FormHelperText error>
-                  Total Income Tax is required
-                </FormHelperText>
-              )}
-
-            <Button
-              variant="outlined"
-              color="warning"
-              onClick={handleRemoveProduct(index)}
-              sx={{ marginLeft: 1 }}
-            >
-              Remove Product
-            </Button>
           </div>
         ))}
-
-        <Button variant="contained" color="primary" onClick={handleAddProduct}>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={handleAddProduct}
+          disabled={isAddProductButtonDisabled()}
+          sx={{ borderRadius: 20, mt: 2 }}
+        >
           Add Product
         </Button>
+        {addedProducts.length > 0 && (
+          <Card sx={{ mt: 2, p: 2, bgcolor: "#f0f0f0" }}>
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ flexGrow: 1, marginBottom: 1 }}
+            >
+              Added Products
+            </Typography>
+            {addedProducts.map((product, index) => {
+              const productName =
+                products.find((p: any) => p.id === product.productId)?.name ||
+                "";
+              return (
+                <div key={index}>
+                  <Typography variant="body1" component="div">
+                    Product Name: {productName},Declaration Quantity:{" "}
+                    {product.declarationQuantity},Total Income Tax:{" "}
+                    {product.totalIncomeTax}
+                  </Typography>
+                  <IconButton
+                    onClick={handleEditProduct(index)}
+                    color="primary"
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={handleRemoveProduct(index)}
+                    color="secondary"
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </div>
+              );
+            })}
+          </Card>
+        )}
 
-        <Button
+<Button
           variant="contained"
           color="primary"
           onClick={handleSubmit}
-          disabled={
-            !formData.number ||
-            !formData.date ||
-            formData.declarationProducts.some(
-              (product) =>
-                !product.productId ||
-                !product.declarationQuantity ||
-                !product.totalIncomeTax
-            )
-          }
+          disabled={!isDeclarationFormValid()}
+          sx={{ mt: 2 }}
         >
           Submit
         </Button>
@@ -298,7 +373,7 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
           variant="outlined"
           color="warning"
           onClick={handleCancel}
-          sx={{ marginLeft: 1 }}
+          sx={{ marginLeft: 1, mt: 2 }}
         >
           Cancel
         </Button>
