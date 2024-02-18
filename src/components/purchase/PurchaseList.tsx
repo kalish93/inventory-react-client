@@ -16,6 +16,7 @@ import { selectPurchase } from '../../features/purchase/purchaseSlice';
 import { getPurchases } from '../../features/purchase/purchaseActions';
 import PurchaseForm from './PurchaseForm';
 import dayjs from 'dayjs';
+import { Link } from 'react-router-dom';
 
 const PurchaseList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -71,7 +72,7 @@ const PurchaseList = () => {
           </TableHead>
           <TableBody>
             {purchases.map((purchase: any) => (
-              <TableRow key={purchase.id}>
+              <TableRow key={purchase.id} component={Link} to={`/purchases/${purchase.id}`} style={{ textDecoration: 'none' }}>
                 <TableCell>{purchase.number }</TableCell>
                 <TableCell>{dayjs(purchase.date).format("YYYY-MM-DD")}</TableCell>
                 <TableCell>{purchase.truckNumber}</TableCell>

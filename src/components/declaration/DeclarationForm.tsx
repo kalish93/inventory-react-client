@@ -90,12 +90,23 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
     };
 
     setAddedProducts((prevProducts) => [...prevProducts, newProduct]);
-    setFormData((prevData: any) => ({
-      ...prevData,
+    // setFormData((prevData: any) => ({
+    //   ...prevData,
+    //   declarationProducts: [
+    //     { productId: "", declarationQuantity: null, totalIncomeTax: null },
+    //   ],
+    // }));
+    setFormData({
+      number: "",
+      date: null,
       declarationProducts: [
-        { productId: "", declarationQuantity: null, totalIncomeTax: null },
+        {
+          productId: "",
+          declarationQuantity: null,
+          totalIncomeTax: null,
+        },
       ],
-    }));
+    });
   };
 
   const handleRemoveProduct = (index: number) => () => {

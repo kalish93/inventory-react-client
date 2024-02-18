@@ -20,7 +20,6 @@ export const PurchaseService = {
           }
           
           const data = await response.json();
-          console.log(data,'rrrrrrrrrrrrrr')
           return data;
         
         } catch (error) {
@@ -41,9 +40,27 @@ export const PurchaseService = {
         }
     
         const data = await response.json();
-        console.log(data,'cccccccccccccccccccccc')
         return data;
       },
-  
+      getPurchaseById: async (purchaseId: string) => {
+        try {
+          const url = `${PURCHASES_URL}/${purchaseId}`;
+          
+          const response = await fetch(url, {
+            method: "GET",
+            headers: headers,
+          });
+    
+          if (!response.ok) {
+            throw new Error("Error retrieving purchase by ID");
+          }
+    
+          const data = await response.json();
+          return data;
+        } catch (error) {
+          console.error("Error :", error);
+          throw error;
+        }
+      },
 };
   

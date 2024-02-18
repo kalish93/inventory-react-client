@@ -1,7 +1,7 @@
 import { AppDispatch } from "../../app/store";
 import { CreatePurchase } from "../../models/purchase";
 import { PurchaseService } from "./purchaseService";
-import { getPurchasesFailure, getPurchasesStart, getPurchasesSuccess, registerPurchaseFailure, registerPurchaseStart, registerPurchaseSuccess } from "./purchaseSlice";
+import { getPurchaseByIdFailure, getPurchaseByIdStart, getPurchaseByIdSuccess, getPurchasesFailure, getPurchasesStart, getPurchasesSuccess, registerPurchaseFailure, registerPurchaseStart, registerPurchaseSuccess } from "./purchaseSlice";
 
 export const getPurchases = (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
     try {
@@ -20,6 +20,17 @@ export const createPurchase = (data: CreatePurchase) => async (dispatch: AppDisp
       dispatch(registerPurchaseSuccess(response));
     } catch (error) {
       dispatch(registerPurchaseFailure(error));
+      throw(error)
+    }
+  };
+
+  export const getPurchase = (id:any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(getPurchaseByIdStart());
+      const response = await PurchaseService.getPurchaseById(id);
+      dispatch(getPurchaseByIdSuccess(response));
+    } catch (error) {
+      dispatch(getPurchaseByIdFailure(error));
       throw(error)
     }
   };

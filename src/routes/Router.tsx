@@ -11,6 +11,7 @@ import ProductList from "../components/product/ProductList";
 import DeclarationList from "../components/declaration/DeclarationList";
 import PurchaseList from "../components/purchase/PurchaseList";
 import DeclarationDetail from "../components/declaration/DeclarationDetail";
+import PurchaseDetail from "../components/purchase/purchaseDetail";
 
 const routes = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ const routes = createBrowserRouter([
       { 
         path: "purchases",
         element: <PurchaseList /> 
+      },
+      { 
+        path: "purchases/:id",
+        element: <PurchaseDetail /> 
       },
     ],
   },
