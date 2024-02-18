@@ -4,6 +4,7 @@ import { Declaration } from "../../models/declaration";
 
 interface DeclarationState {
   declarations: PaginatedList<Declaration>;
+  declaration: any;
   loading: boolean;
   error: any | null;
 }
@@ -16,6 +17,7 @@ const initialState: DeclarationState = {
     currentPage: 1,
     totalPages: 1
   },
+  declaration: undefined,
   loading: false,
   error: null,
 };
@@ -58,7 +60,20 @@ const declarationSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       },
-  },
+
+      getDeclarationByIdStart: (state) => {
+        state.loading = true;
+        state.error = null;
+      },
+      getDeclarationByIdSuccess: (state, action) => {
+        state.declaration = action.payload;
+        state.loading = false;
+      },
+      getDeclarationByIdFailure: (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      },
+    },
 });
 
 export const {
@@ -67,7 +82,10 @@ export const {
   getDeclarationsFailure,
   registerDeclarationStart,
   registerDeclarationSuccess,
-  registerDeclarationFailure
+  registerDeclarationFailure,
+  getDeclarationByIdStart,
+  getDeclarationByIdSuccess,
+  getDeclarationByIdFailure,
 } = declarationSlice.actions;
 
 export const selectDeclaration = (state: { declaration: DeclarationState }) => state.declaration;

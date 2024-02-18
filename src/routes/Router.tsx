@@ -10,6 +10,7 @@ import SupplierList from "../components/supplier/SupplierList";
 import ProductList from "../components/product/ProductList";
 import DeclarationList from "../components/declaration/DeclarationList";
 import PurchaseList from "../components/purchase/PurchaseList";
+import DeclarationDetail from "../components/declaration/DeclarationDetail";
 
 const routes = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const routes = createBrowserRouter([
       { 
         path: "declarations",
         element: <DeclarationList /> 
+      },
+      { 
+        path: "declarations/:id",
+        element: <DeclarationDetail /> 
       },
       { 
         path: "purchases",

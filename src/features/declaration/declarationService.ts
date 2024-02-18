@@ -49,6 +49,25 @@ export const DeclarationService = {
         const data = await response.json();
         return data;
       },
-  
+
+  getDeclarationById: async (declarationId: string) => {
+    try {
+      const url = `${DECLARATIONS_URL}/${declarationId}`;
+      
+      const response = await fetch(url, {
+        method: "GET",
+        headers: headers,
+      });
+
+      if (!response.ok) {
+        throw new Error("Error retrieving declaration by ID");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error in getDeclarationById service:", error);
+      throw error;
+    }
+  },
 };
-  
