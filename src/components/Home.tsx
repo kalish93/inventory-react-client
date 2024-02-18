@@ -9,6 +9,7 @@ import StoresList from "./store/StoresList";
 import SupplierList from "./supplier/SupplierList";
 import ProductList from "./product/ProductList";
 import DeclarationList from "./declaration/DeclarationList";
+import PurchaseList from "./purchase/PurchaseList";
 
 
 const Home = () => {
@@ -25,6 +26,7 @@ const Home = () => {
                 <Route path="/suppliers" element={<SupplierList />} />
                 <Route path="/products" element={<ProductList />} />
                 <Route path="/declarations" element={<DeclarationList />} />
+                <Route path="/purchases" element={<PurchaseList />} />
             </Routes>
             </main>
         </div>

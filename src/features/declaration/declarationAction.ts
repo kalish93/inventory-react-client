@@ -3,7 +3,7 @@ import { CreateDeclaration } from "../../models/declaration";
 import { DeclarationService } from "./declarationService";
 import { getDeclarationsFailure, getDeclarationsStart, getDeclarationsSuccess, registerDeclarationFailure, registerDeclarationStart, registerDeclarationSuccess } from "./declarationSlice";
 
-export const getDeclarations = (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
+export const getDeclarations = (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
       dispatch(getDeclarationsStart());
       const response = await DeclarationService.getDeclarations(page, pageSize);

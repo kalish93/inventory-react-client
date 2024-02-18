@@ -9,6 +9,7 @@ import StoresList from "../components/store/StoresList";
 import SupplierList from "../components/supplier/SupplierList";
 import ProductList from "../components/product/ProductList";
 import DeclarationList from "../components/declaration/DeclarationList";
+import PurchaseList from "../components/purchase/PurchaseList";
 
 const routes = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ const routes = createBrowserRouter([
       { 
         path: "declarations",
         element: <DeclarationList /> 
+      },
+      { 
+        path: "purchases",
+        element: <PurchaseList /> 
       },
     ],
   },

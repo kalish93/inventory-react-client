@@ -8,3 +8,4 @@ export const STORE_URL = `${BASE_URL}/stores`
 export const SUPPLIERS_URL = `${BASE_URL}/suppliers`
 export const DECLARATIONS_URL = `${BASE_URL}/declarations`
 export const PRODUCTS_URL = `${BASE_URL}/products`
+export const PURCHASES_URL = `${BASE_URL}/purchases`

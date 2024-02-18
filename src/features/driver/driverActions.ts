@@ -17,7 +17,7 @@ import { AppDispatch } from "../../app/store";
 import { CreateDriver } from "../../models/driver";
 
 export const getDrivers =
-  (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
+  (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
       dispatch(getDriversStart());
       const response = await DriverService.getDrivers(page, pageSize);
