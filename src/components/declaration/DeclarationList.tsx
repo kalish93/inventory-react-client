@@ -16,6 +16,7 @@ import { selectDeclaration } from '../../features/declaration/declarationSlice';
 import { getDeclarations } from '../../features/declaration/declarationAction';
 import DeclarationForm from './DeclarationForm';
 import dayjs from 'dayjs';
+import { Link } from 'react-router-dom';
 
 const DeclarationList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -70,7 +71,7 @@ const DeclarationList = () => {
           </TableHead>
           <TableBody>
             {declarations.map((declaration: any) => (
-              <TableRow key={declaration.id}>
+              <TableRow key={declaration.id} component={Link} to={`/declarations/${declaration.id}`} style={{ textDecoration: 'none' }}>
                 <TableCell>{declaration.number }</TableCell>
                 <TableCell>{dayjs(declaration.date).format("YYYY-MM-DD")}</TableCell>
               </TableRow>

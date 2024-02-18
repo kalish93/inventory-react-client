@@ -10,6 +10,7 @@ import SupplierList from "./supplier/SupplierList";
 import ProductList from "./product/ProductList";
 import DeclarationList from "./declaration/DeclarationList";
 import PurchaseList from "./purchase/PurchaseList";
+import DeclarationDetail from "./declaration/DeclarationDetail";
 
 
 const Home = () => {
@@ -26,6 +27,7 @@ const Home = () => {
                 <Route path="/suppliers" element={<SupplierList />} />
                 <Route path="/products" element={<ProductList />} />
                 <Route path="/declarations" element={<DeclarationList />} />
+                <Route path="/declarations/:id" element={<DeclarationDetail />} />
                 <Route path="/purchases" element={<PurchaseList />} />
             </Routes>
             </main>
