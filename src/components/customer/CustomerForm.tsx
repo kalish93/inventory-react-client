@@ -7,8 +7,8 @@ import {
   TextField,
   Button,
 } from '@mui/material';
-import { AppDispatch } from '../../../app/store';
-import { createCustomer } from '../../../features/customer/customerActions';
+import { AppDispatch } from '../../app/store';
+import { createCustomer } from '../../features/customer/customerActions';
 
 interface CustomerFormProps {
   open: boolean;

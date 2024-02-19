@@ -3,7 +3,7 @@ import LoginComponent from "../components/auth/Login";
 import React from "react";
 import Home from "../components/Home";
 import UsersList from "../components/auth/UsersList";
-import CustomerList from "../components/sales/customer/CustomerList";
+import CustomerList from "../components/customer/CustomerList";
 import DriversList from "../components/drivers/DriversList";
 import StoresList from "../components/store/StoresList";
 import SupplierList from "../components/supplier/SupplierList";
@@ -12,6 +12,7 @@ import DeclarationList from "../components/declaration/DeclarationList";
 import PurchaseList from "../components/purchase/PurchaseList";
 import DeclarationDetail from "../components/declaration/DeclarationDetail";
 import PurchaseDetail from "../components/purchase/purchaseDetail";
+import SalesList from "../components/sales/SalesList";
 
 const routes = createBrowserRouter([
   {
@@ -57,6 +58,10 @@ const routes = createBrowserRouter([
       { 
         path: "purchases/:id",
         element: <PurchaseDetail /> 
+      },
+      { 
+        path: "sales",
+        element: <SalesList /> 
       },
     ],
   },

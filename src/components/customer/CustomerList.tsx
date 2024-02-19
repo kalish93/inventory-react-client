@@ -11,9 +11,9 @@ import {
   TablePagination,
   Button,
 } from '@mui/material';
-import { AppDispatch } from '../../../app/store';
-import { selectCustomer } from '../../../features/customer/customerSlice';
-import { getCustomers } from '../../../features/customer/customerActions';
+import { AppDispatch } from '../../app/store';
+import { selectCustomer } from '../../features/customer/customerSlice';
+import { getCustomers } from '../../features/customer/customerActions';
 import CustomerForm from './CustomerForm';
 
 const CustomerList = () => {
