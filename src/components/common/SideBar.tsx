@@ -15,6 +15,7 @@ import HandshakeIcon from '@mui/icons-material/Handshake';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ArticleIcon from '@mui/icons-material/Article';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
+import ReceiptIcon from '@mui/icons-material/Receipt';
 import { Link, useLocation } from "react-router-dom";
 
 const drawerWidth = 240;
@@ -158,6 +159,19 @@ const Sidebar = () => {
             <ShoppingBasketIcon />
           </ListItemIcon>
           <ListItemText primary="Purchases" />
+        </ListItem>
+
+        <ListItem
+          button
+          component={Link}
+          to="/sales"
+          key="Sales"
+          selected={isLinkActive("/sales")}
+        >
+          <ListItemIcon>
+            <ReceiptIcon />
+          </ListItemIcon>
+          <ListItemText primary="Sales" />
         </ListItem>
       </List>
     </Drawer>

@@ -3,7 +3,7 @@ import Sidebar from "./common/SideBar"
 import Navbar from "./common/ToolBar";
 import { Route, Routes } from "react-router-dom";
 import UsersList from "./auth/UsersList";
-import CustomerList from "./sales/customer/CustomerList";
+import CustomerList from "./customer/CustomerList";
 import DriversList from "./drivers/DriversList";
 import StoresList from "./store/StoresList";
 import SupplierList from "./supplier/SupplierList";
@@ -12,6 +12,7 @@ import DeclarationList from "./declaration/DeclarationList";
 import PurchaseList from "./purchase/PurchaseList";
 import DeclarationDetail from "./declaration/DeclarationDetail";
 import PurchaseDetail from "./purchase/purchaseDetail";
+import SalesList from "./sales/SalesList";
 
 
 const Home = () => {
@@ -31,6 +32,7 @@ const Home = () => {
                 <Route path="/declarations/:id" element={<DeclarationDetail />} />
                 <Route path="/purchases" element={<PurchaseList />} />
                 <Route path="/purchases/:id" element={<PurchaseDetail />} />
+                <Route path="/sales" element={<SalesList />} />
             </Routes>
             </main>
         </div>
