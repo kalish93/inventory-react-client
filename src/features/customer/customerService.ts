@@ -8,9 +8,14 @@ const headers = {
   };
 
 export const CustomerService = {
-    getCustomers: async (page = 1, pageSize = 10) => {
-        try {
-          const response = await fetch(`${CUSTOMERS_URL}?page=${page}&pageSize=${pageSize}`, {
+    getCustomers: async (page?: any, pageSize?: any) => {
+      try {
+        let url = CUSTOMERS_URL;
+  
+        if (page && pageSize) {
+          url += `?page=${page}&pageSize=${pageSize}`;
+        }
+          const response = await fetch(url, {
             method: 'GET',
             headers: headers,
           });

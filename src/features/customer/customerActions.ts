@@ -3,7 +3,7 @@ import { CreateCustomer } from "../../models/customer";
 import { CustomerService } from "./customerService";
 import { getCustomersFailure, getCustomersStart, getCustomersSuccess, registerCustomerFailure, registerCustomerStart, registerCustomerSuccess } from "./customerSlice";
 
-export const getCustomers = (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
+export const getCustomers = (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
       dispatch(getCustomersStart());
       const response = await CustomerService.getCustomers(page, pageSize);

@@ -454,7 +454,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
               fullWidth
               margin="normal"
               type="number"
-              value={product.purchaseQuantity}
+              value={product.purchaseQuantity === null ? '' : product.purchaseQuantity}
               onChange={handleProductFormChange(index, "purchaseQuantity")}
               required
               error={
@@ -470,7 +470,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
               fullWidth
               margin="normal"
               type="number"
-              value={product.purchaseUnitPrice}
+              value={product.purchaseUnitPrice === null ? '' : product.purchaseUnitPrice}
               onChange={handleProductFormChange(index, "purchaseUnitPrice")}
               required
               error={

@@ -90,23 +90,12 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
     };
 
     setAddedProducts((prevProducts) => [...prevProducts, newProduct]);
-    // setFormData((prevData: any) => ({
-    //   ...prevData,
-    //   declarationProducts: [
-    //     { productId: "", declarationQuantity: null, totalIncomeTax: null },
-    //   ],
-    // }));
-    setFormData({
-      number: "",
-      date: null,
+    setFormData((prevData: any) => ({
+      ...prevData,
       declarationProducts: [
-        {
-          productId: "",
-          declarationQuantity: null,
-          totalIncomeTax: null,
-        },
+        { productId: "", declarationQuantity: null, totalIncomeTax: null },
       ],
-    });
+    }));
   };
 
   const handleRemoveProduct = (index: number) => () => {
@@ -297,7 +286,7 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
               fullWidth
               margin="normal"
               type="number"
-              value={product.declarationQuantity}
+              value={product.declarationQuantity === null ? '' : product.declarationQuantity}
               onChange={handleProductFormChange(index, "declarationQuantity")}
               required
               error={
@@ -313,7 +302,7 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
               fullWidth
               margin="normal"
               type="number"
-              value={product.totalIncomeTax}
+              value={product.totalIncomeTax === null ? '' : product.totalIncomeTax}
               onChange={handleProductFormChange(index, "totalIncomeTax")}
               required
               error={

@@ -13,6 +13,7 @@ import PurchaseList from "./purchase/PurchaseList";
 import DeclarationDetail from "./declaration/DeclarationDetail";
 import PurchaseDetail from "./purchase/purchaseDetail";
 import SalesList from "./sales/SalesList";
+import SaleDetail from "./sales/SaleDetail";
 
 
 const Home = () => {
@@ -33,6 +34,7 @@ const Home = () => {
                 <Route path="/purchases" element={<PurchaseList />} />
                 <Route path="/purchases/:id" element={<PurchaseDetail />} />
                 <Route path="/sales" element={<SalesList />} />
+                <Route path="/sales/:id" element={<SaleDetail />} />
             </Routes>
             </main>
         </div>
