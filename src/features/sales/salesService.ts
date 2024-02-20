@@ -43,5 +43,24 @@ export const SalesService = {
         const data = await response.json();
         return data;
       },
-  
+      getSaleById: async (saleId: string) => {
+        try {
+          const url = `${SALES_URL}/${saleId}`;
+          
+          const response = await fetch(url, {
+            method: "GET",
+            headers: headers,
+          });
+    
+          if (!response.ok) {
+            throw new Error("Error retrieving sale by ID");
+          }
+    
+          const data = await response.json();
+          return data;
+        } catch (error) {
+          console.error("Error :", error);
+          throw error;
+        }
+      },
 };

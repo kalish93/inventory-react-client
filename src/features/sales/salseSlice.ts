@@ -5,6 +5,7 @@ interface SalesState {
   sales: PaginatedList<any>;
   loading: boolean;
   error: any | null;
+  sale: any;
 }
 
 const initialState: SalesState = {
@@ -17,6 +18,7 @@ const initialState: SalesState = {
   },
   loading: false,
   error: null,
+  sale: null
 };
 
 const salesSlice = createSlice({
@@ -57,6 +59,19 @@ const salesSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       },
+
+      getSaleByIdStart: (state) => {
+        state.loading = true;
+        state.error = null;
+      },
+      getSaleByIdSuccess: (state, action) => {
+        state.sale = action.payload;
+        state.loading = false;
+      },
+      getSaleByIdFailure: (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      },
   },
 });
 
@@ -66,9 +81,12 @@ export const {
   getSalesFailure,
   registerSaleStart,
   registerSaleSuccess,
-  registerSaleFailure
+  registerSaleFailure,
+  getSaleByIdStart,
+  getSaleByIdSuccess,
+  getSaleByIdFailure
 } = salesSlice.actions;
 
-export const selectsale = (state: { sale: SalesState }) => state.sale;
+export const selectSale = (state: { sale: SalesState }) => state.sale;
 
 export default salesSlice.reducer;
