@@ -11,15 +11,15 @@ import {
   TablePagination,
   Button,
 } from '@mui/material';
-import { selectUsers } from '../../features/user/userSlice';
 import { getUsers } from '../../features/user/userActions';
 import UserForm from './UserForm';
 import { AppDispatch } from '../../app/store';
+import { selectUser } from '../../features/user/userSlice';
 
 const UsersList = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const userState = useSelector(selectUsers);
-  const { items: users = [], currentPage, totalCount } = userState || {};
+  const userState = useSelector(selectUser);
+  const { items: users = [], currentPage, totalCount } = userState.users ;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openModal, setOpenModal] = useState(false);

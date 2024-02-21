@@ -1,104 +1,123 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { login } from '../../features/user/userActions';
-import { AppDispatch } from '../../app/store';
-import { LinearProgress, Card, CardContent, Typography, TextField, Button, Snackbar, Alert, FormControl, FormHelperText } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { login } from "../../features/user/userActions";
+import {
+  LinearProgress,
+  Card,
+  CardContent,
+  Typography,
+  TextField,
+  Button,
+  Snackbar,
+  Alert,
+  FormControl,
+  FormHelperText,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { AppDispatch } from "../../app/store";
 
 const LoginComponent: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<{ username?: string; password?: string }>({});
-  const [touched, setTouched] = useState<{ username?: boolean; password?: boolean }>({});
+  const dispatch: AppDispatch = useDispatch();
   const loading = useSelector((state: any) => state.user.loading);
-  const isAuthenticated = useSelector((state: any) => state.user.isAuthenticated);
+  const isAuthenticated = useSelector(
+    (state: any) => state.user.isAuthenticated
+  );
   const navigate = useNavigate();
-
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/');
+      navigate("/");
     }
   }, [isAuthenticated, navigate]);
 
-  const showSnackbar = (message: string, severity: 'success' | 'error') => {
+  const showSnackbar = (message: string, severity: "success" | "error") => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
     setSnackbarOpen(true);
   };
-  
-  const handleLogin = async () => {
-    setError({});
-    if (!username || !password) {
-      setError({
-        username: !username ? 'Username is required' : undefined,
-        password: !password ? 'Password is required' : undefined,
-      });
-      return;
-    }
-  
-    try {
-      await dispatch(login(username, password));
-      showSnackbar('Login successful!', 'success');
-    } catch (error) {
-      showSnackbar('Invalid username or password','error');
-      setError({ username: 'Invalid username or password' });
-    }
-  };
-  
-  const handleBlur = (field: 'username' | 'password') => {
-    setTouched({ ...touched, [field]: true });
-  };
 
+  const formik = useFormik({
+    initialValues: {
+      username: "",
+      password: "",
+    },
+    validationSchema: Yup.object({
+      username: Yup.string().required("Username is required"),
+      password: Yup.string().required("Password is required"),
+    }),
+    onSubmit: async (values) => {
+      try {
+        await dispatch(login(values.username, values.password));
+        showSnackbar("Login successful!", "success");
+      } catch (error) {
+        showSnackbar("Invalid username or password", "error");
+      }
+    },
+  });
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
-  
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+      }}
+    >
       {loading && <LinearProgress />}
       <Card>
         <CardContent>
           <Typography variant="h5" gutterBottom>
             Login
           </Typography>
-          <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
+          <form onSubmit={formik.handleSubmit}>
             <FormControl fullWidth margin="normal">
               <TextField
                 label="Username"
                 variant="outlined"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                error={!!error.username || (touched.username && !username)}
-                onBlur={() => handleBlur('username')}
+                name="username"
+                value={formik.values.username}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.username && Boolean(formik.errors.username)
+                }
               />
-              {touched.username && !username && <FormHelperText error>Username is required</FormHelperText>}
+              <FormHelperText error>
+                {formik.touched.username && formik.errors.username}
+              </FormHelperText>
             </FormControl>
             <FormControl fullWidth margin="normal">
               <TextField
                 label="Password"
                 type="password"
                 variant="outlined"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                error={!!error.password || (touched.password && !password)}
-                onBlur={() => handleBlur('password')}
+                name="password"
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.password && Boolean(formik.errors.password)
+                }
               />
-              {touched.password && !password && <FormHelperText error>Password is required</FormHelperText>}
+              <FormHelperText error>
+                {formik.touched.password && formik.errors.password}
+              </FormHelperText>
             </FormControl>
             <Button
               type="submit"
               variant="contained"
               color="primary"
               fullWidth
-              disabled={loading || !username || !password}
+              disabled={loading || !formik.isValid}
             >
               Login
             </Button>
@@ -109,12 +128,12 @@ const LoginComponent: React.FC = () => {
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Alert
           onClose={handleCloseSnackbar}
-          severity={snackbarSeverity as 'success' | 'error'}
-          sx={{ width: '100%' }}
+          severity={snackbarSeverity as "success" | "error"}
+          sx={{ width: "100%" }}
         >
           {snackbarMessage}
         </Alert>

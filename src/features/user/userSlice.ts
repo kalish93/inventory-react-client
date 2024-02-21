@@ -5,9 +5,10 @@ import { PaginatedList } from "../../models/commons/paginatedList";
 interface UserState {
   user: null | any;
   accessToken: null | string;
-  users: PaginatedList<User> | undefined;
+  users: PaginatedList<User>;
   loading: boolean;
   error: any | null;
+  isError: boolean
   isAuthenticated: boolean;
 }
 
@@ -23,6 +24,7 @@ const initialState: UserState = {
   },
   loading: false,
   error: null,
+  isError: false,
   isAuthenticated: false,
 };
 
@@ -33,6 +35,7 @@ const userSlice = createSlice({
     loginStart: (state) => {
       state.loading = true;
       state.error = null;
+      state.isError = false
     },
     loginSuccess: (
       state,
@@ -46,11 +49,13 @@ const userSlice = createSlice({
     loginFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
+      state.isError = true
     },
 
     registerUserStart: (state) => {
       state.loading = true;
       state.error = null;
+      state.isError = false
     },
     registerUserSuccess: (state, action) => {
         const newUser = action.payload;
@@ -68,6 +73,7 @@ const userSlice = createSlice({
     registerUserFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
+      state.isError = true
     },
 
     logoutUser: (state) => {
@@ -104,7 +110,6 @@ export const {
   getUsersFailure
 } = userSlice.actions;
 
-export const selectUser = (state: { user: UserState }) => state.user.user;
-export const selectUsers = (state: {user: UserState}) => state.user.users
+export const selectUser = (state: { user: UserState }) => state.user;
 
 export default userSlice.reducer;

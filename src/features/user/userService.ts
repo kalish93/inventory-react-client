@@ -37,18 +37,28 @@ export const UserService = {
   },
 
   registerUser: async (userData: CreateUser) => {
-    const response = await fetch(USERS_URL, {
-      method: "POST",
-      headers: headers,
-      body: JSON.stringify(userData),
-    });
+    try {
+      const response = await fetch(USERS_URL, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(userData),
+      });
 
-    if (!response.ok) {
-      throw new Error(response.statusText);
+      if (!response.ok) {
+        let errorMessage = `Bad Request: ${response.statusText}`;
+
+          const data = await response.json();
+          errorMessage = data.error || errorMessage;
+
+        return { success: false, error: errorMessage };
+      }
+
+      const data = await response.json();
+      return { success: true, data };
+    } catch (error) {
+      console.error("Error in registerUser service:", error);
+      return { success: false, error: "Unexpected error occurred" };
     }
-
-    const data = await response.json();
-    return data;
   },
 
   getUsers: async (page = 1, pageSize = 10) => {
