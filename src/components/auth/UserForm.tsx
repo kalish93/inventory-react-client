@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import {
   Modal,
   Box,
@@ -11,11 +13,14 @@ import {
   MenuItem,
   Button,
   FormHelperText,
-} from '@mui/material';
-import { signUpUser } from '../../features/user/userActions' ;
-import { AppDispatch } from '../../app/store';
-import { getRoles } from '../../features/role/roleActions';
-import { Role } from '../../models/role';
+  Snackbar,
+  Alert,
+} from "@mui/material";
+import { signUpUser } from "../../features/user/userActions";
+import { AppDispatch } from "../../app/store";
+import { getRoles } from "../../features/role/roleActions";
+import { Role } from "../../models/role";
+import { selectUser } from "../../features/user/userSlice";
 
 interface UserFormProps {
   open: boolean;
@@ -25,128 +30,196 @@ interface UserFormProps {
 const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
   const dispatch = useDispatch<AppDispatch>();
   const roles = useSelector((state: any) => state.role.roles);
-  const [formData, setFormData] = useState({
-    userName: '',
-    password: '',
-    passwordConfirmation: '',
-    roleId: undefined,
-  });
-  const [touched, setTouched] = useState<{
-    userName?: boolean;
-    password?: boolean;
-    passwordConfirmation?: boolean;
-    roleId?: boolean;
-  }>({});
-
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   useEffect(() => {
     dispatch(getRoles());
   }, [dispatch]);
+  const { isError, error } = useSelector(selectUser);
 
-  const handleChange = (e: { target: { name: any; value: any } }) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const showSnackbar = (message: string, severity: "success" | "error") => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
   };
 
-  const handleBlur = (field: keyof typeof formData) => {
-    setTouched({ ...touched, [field]: true });
-  };
+  const formik = useFormik({
+    initialValues: {
+      userName: "",
+      password: "",
+      passwordConfirmation: "",
+      roleId: undefined,
+    },
+    validationSchema: Yup.object({
+      userName: Yup.string().required("Username is required"),
+      password: Yup.string().required("Password is required"),
+      passwordConfirmation: Yup.string()
+        .required("Confirmation is required")
+        .oneOf([Yup.ref("password")], "Passwords must match"),
+      roleId: Yup.string().required("Role is required"),
+    }),
 
-  const handleSubmit = () => {
-    dispatch(signUpUser(formData));
-    handleClose();
-    // setTouched({});
+    onSubmit: async (values) => {
+      await dispatch(signUpUser(values));
+      handleClose();
+      setIsFormSubmitted(true);
+      formik.resetForm();
+    },
+  });
+
+  useEffect(() => {
+    if (isFormSubmitted) {
+      if (isError) {
+        showSnackbar(error || "Unknown error", "error");
+        setIsFormSubmitted(false);
+      } else {
+        showSnackbar("User registered successfully.", "success");
+        setIsFormSubmitted(false);
+      }
+    }
+  }, [error, isError, isFormSubmitted]);
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
   const handleCancel = () => {
     handleClose();
-    // setTouched({});
+    formik.resetForm();
   };
 
   return (
-    <Modal open={open} onClose={handleClose}>
-      <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          User Form
-        </Typography>
-        <TextField
-          name="userName"
-          label="Username"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          onChange={handleChange}
-          required
-          error={touched.userName && !formData.userName}
-          onBlur={() => handleBlur('userName')}
-        />
-        {touched.userName && !formData.userName && <FormHelperText error>Username is required</FormHelperText>}
-        <TextField
-          name="password"
-          label="Password"
-          type="password"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          onChange={handleChange}
-          required
-          error={touched.password && !formData.password}
-          onBlur={() => handleBlur('password')}
-        />
-        {touched.password && !formData.password && <FormHelperText error>Password is required</FormHelperText>}
-        <TextField
-          name="passwordConfirmation"
-          label="Confirm Password"
-          type="password"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          onChange={handleChange}
-          required
-          error={touched.passwordConfirmation && !formData.passwordConfirmation}
-          onBlur={() => handleBlur('passwordConfirmation')}
-        />
-        {touched.passwordConfirmation && !formData.passwordConfirmation && <FormHelperText error>Confirmation is required</FormHelperText>}
-        <FormControl fullWidth margin="normal" variant='filled'>
-          <InputLabel>Role</InputLabel>
-          <Select
-            name="roleId"
-            value={formData.roleId}
-            onChange={handleChange}
-            required
-            error={touched.roleId && !formData.roleId}
-            onBlur={() => handleBlur('roleId')}
-          >
-            {roles &&
-              roles.map((role: Role) => (
-                <MenuItem key={role.id} value={role.id}>
-                  {role.name}
-                </MenuItem>
-              ))}
-          </Select>
-          {touched.roleId && !formData.roleId && <FormHelperText error>Role is required</FormHelperText>}
-        </FormControl>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSubmit}
-          disabled={
-            !formData.userName ||
-            !formData.password ||
-            !formData.passwordConfirmation ||
-            !formData.roleId
+    <div>
+      <Modal
+        open={open}
+        onClose={(e, reason) => {
+          if (reason === "backdropClick") {
+            return;
           }
+          handleClose();
+        }}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+          }}
         >
-          Submit
-        </Button>
-        <Button
-          variant="outlined"
-          color="warning"
-          onClick={handleCancel}
-          sx={{ marginLeft: 1 }}
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            User Form
+          </Typography>
+          <form onSubmit={formik.handleSubmit}>
+            <TextField
+              name="userName"
+              label="Username"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.userName}
+              error={formik.touched.userName && Boolean(formik.errors.userName)}
+            />
+            <FormHelperText error>
+              {formik.touched.userName && formik.errors.userName}
+            </FormHelperText>
+            <TextField
+              name="password"
+              label="Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.password}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+            />
+            <FormHelperText error>
+              {formik.touched.password && formik.errors.password}
+            </FormHelperText>
+            <TextField
+              name="passwordConfirmation"
+              label="Confirm Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.passwordConfirmation}
+              error={
+                formik.touched.passwordConfirmation &&
+                Boolean(formik.errors.passwordConfirmation)
+              }
+            />
+            <FormHelperText error>
+              {formik.touched.passwordConfirmation &&
+                formik.errors.passwordConfirmation}
+            </FormHelperText>
+            <FormControl fullWidth margin="normal" variant="filled">
+              <InputLabel>Role</InputLabel>
+              <Select
+                name="roleId"
+                value={formik.values.roleId}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.roleId && Boolean(formik.errors.roleId)}
+              >
+                {roles &&
+                  roles.map((role: Role) => (
+                    <MenuItem key={role.id} value={role.id}>
+                      {role.name}
+                    </MenuItem>
+                  ))}
+              </Select>
+              <FormHelperText error>
+                {formik.touched.roleId && formik.errors.roleId}
+              </FormHelperText>
+            </FormControl>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={!formik.isValid}
+            >
+              Submit
+            </Button>
+            <Button
+              type="button"
+              variant="outlined"
+              color="warning"
+              onClick={handleCancel}
+              sx={{ marginLeft: 1 }}
+            >
+              Cancel
+            </Button>
+          </form>
+        </Box>
+      </Modal>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity as "success" | "error"}
+          sx={{ width: "100%" }}
         >
-          Cancel
-        </Button>
-      </Box>
-    </Modal>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </div>
   );
 };
 

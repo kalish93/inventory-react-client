@@ -15,15 +15,20 @@ export const login = (username: string, password: string) => async (dispatch: Ap
 };
 
 export const signUpUser = (userData: CreateUser) => async (dispatch: AppDispatch) => {
-    try {
-      dispatch(registerUserStart());
-      const response = await UserService.registerUser(userData);
-      dispatch(registerUserSuccess(response));
-    } catch (error) {
-      dispatch(registerUserFailure(error));
-      throw(error);
+  try {
+    dispatch(registerUserStart());
+
+    const response = await UserService.registerUser(userData);
+
+    if (response.success) {
+      dispatch(registerUserSuccess(response.data));
+    } else {
+      dispatch(registerUserFailure(response.error || 'Unknown error'));
     }
-  };
+  } catch (error) {
+    dispatch(registerUserFailure('Unknown error'));
+  }
+};
 
 export const getUsers = (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
     try {

@@ -8,6 +8,6 @@ export interface CreateUser {
 export interface User{
     id?: string;
     userName: string;
-    roleId: string;
+    roleId?: string;
     role: any;
 }
