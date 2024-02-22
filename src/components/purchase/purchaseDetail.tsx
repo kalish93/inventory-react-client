@@ -60,7 +60,7 @@ const PurchaseDetail = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {purchase.purchaseProducts.map((item: any) => (
+            {purchase.productPurchases.map((item: any) => (
               <TableRow key={item.id}>
                 <TableCell>{item.declaration.number}</TableCell>
                 <TableCell>{item.product.name}</TableCell>
