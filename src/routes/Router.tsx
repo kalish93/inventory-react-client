@@ -14,6 +14,7 @@ import DeclarationDetail from "../components/declaration/DeclarationDetail";
 import PurchaseDetail from "../components/purchase/purchaseDetail";
 import SalesList from "../components/sales/SalesList";
 import SaleDetail from "../components/sales/SaleDetail";
+import InventoryList from "../components/inventory/InventoryList";
 
 const routes = createBrowserRouter([
   {
@@ -67,6 +68,10 @@ const routes = createBrowserRouter([
       { 
         path: "sales/:id",
         element: <SaleDetail /> 
+      },
+      { 
+        path: "inventory",
+        element: <InventoryList /> 
       },
     ],
   },
