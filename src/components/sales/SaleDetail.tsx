@@ -18,7 +18,6 @@ import { useParams } from "react-router-dom";
 import { selectSale } from "../../features/sales/salseSlice";
 import { getSale } from "../../features/sales/salesActions";
 
-
 const SaleDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
@@ -55,7 +54,6 @@ const SaleDetail = () => {
               <TableCell>Total Sales</TableCell>
               <TableCell>Unit COGS</TableCell>
               <TableCell>Declaration Number</TableCell>
-              <TableCell>ESL Custom cost</TableCell>
               <TableCell>Purchase Number</TableCell>
             </TableRow>
           </TableHead>
