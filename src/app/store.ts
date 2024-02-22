@@ -9,6 +9,7 @@ import productReducer from "../features/product/productSlice";
 import declarationReducer from "../features/declaration/declarationSlice";
 import purchaseReducer from "../features/purchase/purchaseSlice";
 import saleReducer from "../features/sales/salseSlice";
+import inventoryReducer from "../features/inventory/inventorySlice";
 
 const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ const store = configureStore({
     product: productReducer,
     purchase: purchaseReducer,
     sale: saleReducer,
+    inventory: inventoryReducer,
   },
 });
 

@@ -10,3 +10,4 @@ export const DECLARATIONS_URL = `${BASE_URL}/declarations`
 export const PRODUCTS_URL = `${BASE_URL}/products`
 export const PURCHASES_URL = `${BASE_URL}/purchases`
 export const SALES_URL = `${BASE_URL}/sales`
+export const INVENTORY_URL = `${BASE_URL}/inventory`
