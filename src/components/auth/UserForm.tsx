@@ -34,9 +34,6 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  useEffect(() => {
-    dispatch(getRoles());
-  }, [dispatch]);
   const { isError, error } = useSelector(selectUser);
 
   const showSnackbar = (message: string, severity: "success" | "error") => {
@@ -44,6 +41,10 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
     setSnackbarSeverity(severity);
     setSnackbarOpen(true);
   };
+
+  useEffect(() => {
+    dispatch(getRoles());
+  }, [dispatch]);
 
   const formik = useFormik({
     initialValues: {
@@ -61,8 +62,8 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
       roleId: Yup.string().required("Role is required"),
     }),
 
-    onSubmit: async (values) => {
-      await dispatch(signUpUser(values));
+    onSubmit: (values) => {
+      dispatch(signUpUser(values));
       handleClose();
       setIsFormSubmitted(true);
       formik.resetForm();

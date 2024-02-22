@@ -72,7 +72,7 @@ export const UserService = {
       );
 
       if (!response.ok) {
-        throw new Error('registration failed');
+        throw new Error('get users failed');
       }
 
       const data = await response.json();
