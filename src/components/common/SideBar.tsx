@@ -15,6 +15,7 @@ import HandshakeIcon from '@mui/icons-material/Handshake';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ArticleIcon from '@mui/icons-material/Article';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import { Link, useLocation } from "react-router-dom";
 
@@ -172,6 +173,19 @@ const Sidebar = () => {
             <ReceiptIcon />
           </ListItemIcon>
           <ListItemText primary="Sales" />
+        </ListItem>
+
+        <ListItem
+          button
+          component={Link}
+          to="/cash-of-accounts"
+          key="CashOfAccounts"
+          selected={isLinkActive("/cash-of-accounts")}
+        >
+          <ListItemIcon>
+            <AccountBalanceWalletIcon />
+          </ListItemIcon>
+          <ListItemText primary="Cash Of Accounts" />
         </ListItem>
       </List>
     </Drawer>

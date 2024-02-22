@@ -10,6 +10,8 @@ import declarationReducer from "../features/declaration/declarationSlice";
 import purchaseReducer from "../features/purchase/purchaseSlice";
 import saleReducer from "../features/sales/salseSlice";
 import inventoryReducer from "../features/inventory/inventorySlice";
+import accountTypeReducer from "../features/account-type/accountTypeSlice";
+import cashOfAccountReducer from "../features/cash-of-account/cashOfAccountSlice";
 
 const store = configureStore({
   reducer: {
@@ -24,6 +26,8 @@ const store = configureStore({
     purchase: purchaseReducer,
     sale: saleReducer,
     inventory: inventoryReducer,
+    accountType: accountTypeReducer,
+    cashOfAccount: cashOfAccountReducer,
   },
 });
 
