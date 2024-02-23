@@ -4,7 +4,7 @@ import { CreateAccountSubType, CreateAccountType } from "../../models/account-ty
 const accessToken = localStorage.getItem("accessToken");
 const headers = {
   "Content-Type": "application/json",
-  Authorization: `Bearer ${accessToken}`,
+  'Authorization': `Bearer ${accessToken}`,
 };
 
 export const AccountTypeService = {
