@@ -42,7 +42,8 @@ const userSlice = createSlice({
       action: PayloadAction<{ username: string; accessToken: string }>
     ) => {
       state.user = action.payload;
-      state.isAuthenticated = true;
+      state.accessToken = action.payload.accessToken;
+      state.isAuthenticated = !!action.payload.accessToken;
       state.loading = false;
     },
 
