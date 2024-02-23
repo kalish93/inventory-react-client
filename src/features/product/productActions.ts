@@ -17,8 +17,12 @@ export const createProduct = (data: CreateProduct) => async (dispatch: AppDispat
     try {
       dispatch(registerProductStart());
       const response = await ProductService.registerProduct(data);
-      dispatch(registerProductSuccess(response));
+      if (response.success) {
+        dispatch(registerProductSuccess(response.data));
+      } else {
+        dispatch(registerProductFailure(response.error || 'Unknown error'));
+      }
     } catch (error) {
-      dispatch(registerProductFailure(error));
+      dispatch(registerProductFailure('Unknown error'));
     }
   };

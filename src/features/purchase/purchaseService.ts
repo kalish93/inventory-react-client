@@ -29,6 +29,7 @@ export const PurchaseService = {
       },
 
       registerPurchase: async (PurchaseData: CreatePurchase) => {
+        try{
         const response = await fetch(PURCHASES_URL, {
           method: 'POST',
           headers: headers,
@@ -36,12 +37,22 @@ export const PurchaseService = {
         });
     
         if (!response.ok) {
-          throw new Error('Purchase creation failed');
+          let errorMessage = `Bad Request: ${response.statusText}`;
+  
+            const data = await response.json();
+            errorMessage = data.error || errorMessage;
+  
+          return { success: false, error: errorMessage };
         }
-    
+  
         const data = await response.json();
-        return data;
-      },
+        return { success: true, data };
+      } catch (error) {
+        console.error("Error in registerdriver service:", error);
+        return { success: false, error: "Unexpected error occurred" };
+      }
+    },
+    
       getPurchaseById: async (purchaseId: string) => {
         try {
           const url = `${PURCHASES_URL}/${purchaseId}`;

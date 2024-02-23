@@ -29,6 +29,7 @@ export const SupplierService = {
       },
 
       registerSupplier: async (SupplierData: CreateSupplier) => {
+        try{
         const response = await fetch(SUPPLIERS_URL, {
           method: 'POST',
           headers: headers,
@@ -36,12 +37,21 @@ export const SupplierService = {
         });
     
         if (!response.ok) {
-          throw new Error('Supplier creation failed');
+          let errorMessage = `Bad Request: ${response.statusText}`;
+  
+            const data = await response.json();
+            errorMessage = data.error || errorMessage;
+  
+          return { success: false, error: errorMessage };
         }
-    
+  
         const data = await response.json();
-        return data;
-      },
+        return { success: true, data };
+      } catch (error) {
+        console.error("Error in registerStore service:", error);
+        return { success: false, error: "Unexpected error occurred" };
+      }
+    },
   
 };
   

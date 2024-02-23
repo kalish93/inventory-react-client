@@ -30,6 +30,7 @@ export const SalesService = {
       },
 
       registerSale: async (salesData: CreateSales) => {
+        try{ 
         const response = await fetch(SALES_URL, {
           method: 'POST',
           headers: headers,
@@ -37,12 +38,21 @@ export const SalesService = {
         });
     
         if (!response.ok) {
-          throw new Error('Sales creation failed');
+          let errorMessage = `Bad Request: ${response.statusText}`;
+  
+            const data = await response.json();
+            errorMessage = data.error || errorMessage;
+  
+          return { success: false, error: errorMessage };
         }
-    
+  
         const data = await response.json();
-        return data;
-      },
+        return { success: true, data };
+      } catch (error) {
+        console.error("Error in registerdriver service:", error);
+        return { success: false, error: "Unexpected error occurred" };
+      }
+    },
       getSaleById: async (saleId: string) => {
         try {
           const url = `${SALES_URL}/${saleId}`;

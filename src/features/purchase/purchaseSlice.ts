@@ -6,7 +6,8 @@ interface PurchaseState {
   purchases: PaginatedList<Purchase>;
   loading: boolean;
   error: any | null;
-  purchase: any,
+  purchase: any;
+  isError: boolean;
 }
 
 const initialState: PurchaseState = {
@@ -19,7 +20,8 @@ const initialState: PurchaseState = {
   },
   loading: false,
   error: null,
-  purchase: undefined
+  purchase: undefined,
+  isError: false,
 };
 
 const purchaseSlice = createSlice({
@@ -42,11 +44,12 @@ const purchaseSlice = createSlice({
     registerPurchaseStart: (state) => {
         state.loading = true;
         state.error = null;
+        state.isError = false;
       },
       registerPurchaseSuccess: (state, action) => {
-          const newUser = action.payload;
+          const newPurchase = action.payload;
           state.purchases = {
-              items: [newUser, ...(state.purchases?.items || [])],
+              items: [newPurchase, ...(state.purchases?.items || [])],
               totalCount: (state.purchases?.totalCount || 0) + 1,
               pageSize: state.purchases?.pageSize || 10, 
               currentPage: state.purchases?.currentPage || 1, 
@@ -58,6 +61,7 @@ const purchaseSlice = createSlice({
       },
       registerPurchaseFailure: (state, action) => {
         state.loading = false;
+        state.isError = true;
         state.error = action.payload;
       },
 

@@ -27,14 +27,17 @@ export const getDrivers =
     }
   };
 
-export const createDriver =
-  (driver: CreateDriver) => async (dispatch: AppDispatch) => {
+export const createDriver = (driver: CreateDriver) => async (dispatch: AppDispatch) => {
     try {
       dispatch(createDriverStart());
       const response = await DriverService.createDriver(driver);
-      dispatch(createDriverSuccess(response));
+      if (response.success) {
+        dispatch(createDriverSuccess(response.data));
+      } else {
+        dispatch(createDriverFailure(response.error || 'Unknown error'));
+      }
     } catch (error) {
-      dispatch(createDriverFailure(error));
+      dispatch(createDriverFailure('Unknown error'));
     }
   };
 

@@ -28,7 +28,7 @@ export const CustomerService = {
           return data;
         
         } catch (error) {
-          console.error('Error in getUsers service:', error);
+          console.error('Error in getCustomers service:', error);
           throw error;
         }
       },
@@ -41,11 +41,16 @@ export const CustomerService = {
         });
     
         if (!response.ok) {
-          throw new Error('customer creation failed');
+          let errorMessage = `Bad Request: ${response.statusText}`;
+  
+            const data = await response.json();
+            errorMessage = data.error || errorMessage;
+  
+          return { success: false, error: errorMessage };
         }
-    
+  
         const data = await response.json();
-        return data;
+        return { success: true, data };
       },
   
 };

@@ -17,8 +17,12 @@ export const createSupplier = (data: CreateSupplier) => async (dispatch: AppDisp
     try {
       dispatch(registerSupplierStart());
       const response = await SupplierService.registerSupplier(data);
-      dispatch(registerSupplierSuccess(response));
+      if (response.success) {
+        dispatch(registerSupplierSuccess(response.data));
+      } else {
+        dispatch(registerSupplierFailure(response.error || 'Unknown error'));
+      }
     } catch (error) {
-      dispatch(registerSupplierFailure(error));
+      dispatch(registerSupplierFailure('Unknown error'));
     }
   };

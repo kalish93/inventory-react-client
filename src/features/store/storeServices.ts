@@ -33,14 +33,20 @@ export const storeService = {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to create store');
+                let errorMessage = `Bad Request: ${response.statusText}`;
+        
+                  const data = await response.json();
+                  errorMessage = data.error || errorMessage;
+        
+                return { success: false, error: errorMessage };
+              }
+        
+              const data = await response.json();
+              return { success: true, data };
+            } catch (error) {
+              console.error("Error in registerStore service:", error);
+              return { success: false, error: "Unexpected error occurred" };
             }
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.log('Error', error);
-            throw error;
-        }
     },
 
     updateStore: async (storeData: Store) => {

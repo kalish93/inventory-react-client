@@ -3,9 +3,10 @@ import { Store } from "../../models/store";
 import { PaginatedList } from "../../models/commons/paginatedList";
 
 interface StoreState {
-  stores: PaginatedList<Store> | undefined;
+  stores: PaginatedList<Store>;
   loading: boolean;
   error: any | null;
+  isError: boolean;
 }
 
 const initialState: StoreState = {
@@ -18,6 +19,7 @@ const initialState: StoreState = {
   },
   loading: false,
   error: null,
+  isError: false,
 };
 
 const storeSlice = createSlice({
@@ -27,10 +29,12 @@ const storeSlice = createSlice({
     storeStart: (state) => {
       state.loading = true;
       state.error = null;
+      state.isError = false;
     },
     storeFailure: (state, action: PayloadAction<any>) => {
       state.loading = false;
       state.error = action.payload;
+      state.isError = true;
     },
     getStoreSuccess: (state, action: PayloadAction<PaginatedList<Store>>) => {
       state.stores = action.payload;
@@ -39,7 +43,7 @@ const storeSlice = createSlice({
     createStoreSuccess: (state, action: PayloadAction<Store>) => {
       const newStore = action.payload;
       state.stores = {
-        items: [...(state.stores?.items || []), newStore],
+        items: [ newStore, ...(state.stores?.items || [])],
         totalCount: (state.stores?.totalCount || 0) + 1,
         pageSize: state.stores?.pageSize || 10,
         currentPage: state.stores?.currentPage || 1,
@@ -85,7 +89,7 @@ export const {
   updateStoreSuccess,
 } = storeSlice.actions;
 
-export const selectStores = (state: { store: StoreState }) =>
-  state.store.stores;
+export const selectStore = (state: { store: StoreState }) =>
+  state.store;
 
 export default storeSlice.reducer;

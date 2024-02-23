@@ -8,12 +8,18 @@ import {
   Button,
   FormHelperText,
   Autocomplete,
+  Card,
+  IconButton,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { AppDispatch } from "../../app/store";
 import { getProducts } from "../../features/product/productActions";
 import { createSale } from "../../features/sales/salesActions";
 import dayjs from "dayjs";
 import { getCustomers } from "../../features/customer/customerActions";
+import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import { selectSale } from "../../features/sales/salseSlice";
 
 interface SaleFormProps {
   open: boolean;
@@ -24,6 +30,33 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
   const dispatch = useDispatch<AppDispatch>();
   const products = useSelector((state: any) => state.product.products.items);
   const customers = useSelector((state: any) => state.customer.customers.items);
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const { isError, error, loading } = useSelector(selectSale);
+
+  const showSnackbar = (message: string, severity: "success" | "error") => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  useEffect(() => {
+    if (isFormSubmitted && !loading) {
+      if (isError) {
+        showSnackbar(error || "Unknown error", "error");
+      } else {
+        showSnackbar("Purchase created successfully.", "success");
+      }
+      setIsFormSubmitted(false);
+    }
+  }, [error, isError, loading, isFormSubmitted]);
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
   const [formData, setFormData] = useState({
     invoiceNumber: 0,
     invoiceDate: null,
@@ -77,6 +110,18 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
     });
   };
 
+  const handleEditProduct = (index: number) => {
+
+    const productToEdit = addedProducts[index];
+    setFormData({
+      ...formData,
+      productId: productToEdit.productId,
+      saleQuantity: productToEdit.saleQuantity,
+      saleUnitPrice: productToEdit.saleUnitPrice,
+    });
+    handleRemoveProduct(index)
+  };
+
   const handleRemoveProduct = (index: number) => {
     const updatedProducts = [...addedProducts];
     updatedProducts.splice(index, 1);
@@ -89,32 +134,68 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
       products: [...addedProducts],
     };
     dispatch(createSale(combinedData));
+    setIsFormSubmitted(true);
+    setFormData({invoiceNumber: 0,
+      invoiceDate: null,
+      customerId: "",
+      productId: "",
+      saleQuantity: 0,
+      saleUnitPrice: 0,});
+    setAddedProducts([]);
     handleClose();
   };
 
   const handleCancel = () => {
+    setFormData({invoiceNumber: 0,
+      invoiceDate: null,
+      customerId: "",
+      productId: "",
+      saleQuantity: 0,
+      saleUnitPrice: 0,});
+    setAddedProducts([]);
+    setTouched({});
     handleClose();
   };
 
+  const isAddProductButtonDisabled = () =>{
+    if(formData.productId === "" 
+    || formData.saleQuantity <= 0
+    || formData.saleUnitPrice <= 0){
+      return true;
+    }
+    return false;
+  }
+
+  const isSubmitButtonDisabled = () =>{
+    return (formData.invoiceNumber <= 0 ||
+      formData.invoiceDate === null ||
+      formData.customerId === '' || 
+      addedProducts.length === 0)
+  }
+
   return (
-    <Modal open={open} onClose={(e, reason) => {
+    <div>
+    <Modal
+      open={open}
+      onClose={(e, reason) => {
         if (reason === "backdropClick") {
           return;
         }
         handleClose();
-      }}>
+      }}
+    >
       <Box
         sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 500,
-            maxHeight: "80vh",
-            overflowY: "auto",
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 500,
+          maxHeight: "80vh",
+          overflowY: "auto",
+          bgcolor: "background.paper",
+          boxShadow: 24,
+          p: 4,
         }}
       >
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -141,7 +222,7 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
           fullWidth
           margin="normal"
           type="date"
-          value={formData.invoiceDate || ""}
+          value={dayjs(formData.invoiceDate).format("YYYY-MM-DD")}
           onChange={handleChange}
           required
           error={touched.invoiceDate && !formData.invoiceDate}
@@ -176,7 +257,7 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
             />
           )}
         />
-
+      <Typography style={{marginTop: '10px', marginBottom: "10px"}}>Add Product</Typography>
         <Autocomplete
           options={products}
           getOptionLabel={(option) => option.name}
@@ -200,112 +281,88 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
               fullWidth
               required
               error={touched.productId && !formData.productId}
-              onBlur={() => setTouched({ ...touched, productId: true })}
             />
           )}
         />
 
-<TextField
-      name="saleQuantity"
-      label="Sale Quantity"
-      variant="outlined"
-      fullWidth
-      margin="normal"
-      type="number"
-      value={formData.saleQuantity === 0 ? '' : formData.saleQuantity}
-      onChange={handleChange}
-      required
-      error={touched.saleQuantity && !formData.saleQuantity}
-      onBlur={() => handleBlur("saleQuantity")}
-    />
-    {touched.saleQuantity && !formData.saleQuantity && (
-      <FormHelperText error>Sale Quantity is required</FormHelperText>
-    )}
-    <TextField
-      name="saleUnitPrice"
-      label="Sale Unit Price"
-      variant="outlined"
-      fullWidth
-      margin="normal"
-      type="number"
-      value={formData.saleUnitPrice === 0 ? '' : formData.saleUnitPrice}
-      onChange={handleChange}
-      required
-      error={touched.saleUnitPrice && !formData.saleUnitPrice}
-      onBlur={() => handleBlur("saleUnitPrice")}
-    />
-    {touched.saleUnitPrice && !formData.saleUnitPrice && (
-      <FormHelperText error>Sale Unit Price is required</FormHelperText>
-    )}
-  
-
-        {/* <TextField
+        <TextField
           name="saleQuantity"
           label="Sale Quantity"
           variant="outlined"
           fullWidth
           margin="normal"
           type="number"
+          value={formData.saleQuantity === 0 ? "" : formData.saleQuantity}
           onChange={handleChange}
           required
           error={touched.saleQuantity && !formData.saleQuantity}
-          onBlur={() => handleBlur("saleQuantity")}
         />
-        {touched.saleQuantity && !formData.saleQuantity && (
-          <FormHelperText error>Sale Quantity is required</FormHelperText>
-        )}
         <TextField
           name="saleUnitPrice"
           label="Sale Unit Price"
           variant="outlined"
           fullWidth
           margin="normal"
-          type="number" // Add type="number" here
+          type="number"
+          value={formData.saleUnitPrice === 0 ? "" : formData.saleUnitPrice}
           onChange={handleChange}
           required
           error={touched.saleUnitPrice && !formData.saleUnitPrice}
-          onBlur={() => handleBlur("saleUnitPrice")}
         />
-        {touched.saleUnitPrice && !formData.saleUnitPrice && (
-          <FormHelperText error>Sale Unit Price is required</FormHelperText>
-        )} */}
+
         <Button
-          variant="contained"
+          variant="outlined"
           color="primary"
           onClick={handleAddProduct}
-          sx={{ marginTop: 2 }}
+          sx={{ marginTop: 2 ,borderRadius: 20,
+            color: "#2196F3",
+            border: "2px solid #2196F3",}}
+          disabled={isAddProductButtonDisabled()}
         >
           Add Product
         </Button>
         {addedProducts.length > 0 && (
-          <div>
-            <Typography variant="h6" component="div" sx={{ marginTop: 2 }}>
+          <Card sx={{ mt: 2, p: 2, bgcolor: "#f0f0f0" }}>
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ flexGrow: 1, marginBottom: 1 }}
+            >
               Added Products
             </Typography>
-            <ul>
-              {addedProducts.map((product, index) => (
-                <li key={index}>
-                  Product ID: {product.productId}, Quantity:{" "}
+            {addedProducts.map((product, index) => {
+              const productName =
+                products.find((p: any) => p.id === product.productId)?.name ||
+                "";
+              return (
+                <div key={index}>
+                  <Typography variant="body1" component="div">
+                  Product Name: {productName}, Quantity:{" "}
                   {product.saleQuantity}, Unit Price: {product.saleUnitPrice}
-                  <Button
-                    variant="outlined"
+                  </Typography>
+                  <IconButton
+                   onClick={() => handleEditProduct(index)}
                     color="primary"
-                    size="small"
-                    onClick={() => handleRemoveProduct(index)}
-                    sx={{ marginLeft: 1 }}
                   >
-                    Remove
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          </div>
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    color="secondary"
+                    onClick={() => handleRemoveProduct(index)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </div>
+              );
+            })}
+          </Card>
         )}
         <Button
           variant="contained"
           color="primary"
           onClick={handleSubmit}
           sx={{ marginTop: 2 }}
+          disabled={isSubmitButtonDisabled()}
         >
           Submit
         </Button>
@@ -319,6 +376,21 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
         </Button>
       </Box>
     </Modal>
+    <Snackbar
+    open={snackbarOpen}
+    autoHideDuration={6000}
+    onClose={handleCloseSnackbar}
+    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+  >
+    <Alert
+      onClose={handleCloseSnackbar}
+      severity={snackbarSeverity as "success" | "error"}
+      sx={{ width: "100%" }}
+    >
+      {snackbarMessage}
+    </Alert>
+  </Snackbar>
+  </div>
   );
 };
 

@@ -7,6 +7,7 @@ interface DeclarationState {
   declaration: any;
   loading: boolean;
   error: any | null;
+  isError: boolean;
 }
 
 const initialState: DeclarationState = {
@@ -20,6 +21,7 @@ const initialState: DeclarationState = {
   declaration: undefined,
   loading: false,
   error: null,
+  isError: false,
 };
 
 const declarationSlice = createSlice({
@@ -42,11 +44,12 @@ const declarationSlice = createSlice({
     registerDeclarationStart: (state) => {
         state.loading = true;
         state.error = null;
+        state.isError = false;
       },
       registerDeclarationSuccess: (state, action) => {
-          const newUser = action.payload;
+          const newDeclaration = action.payload;
           state.declarations = {
-              items: [newUser, ...(state.declarations?.items || [])],
+              items: [newDeclaration, ...(state.declarations?.items || [])],
               totalCount: (state.declarations?.totalCount || 0) + 1,
               pageSize: state.declarations?.pageSize || 10, 
               currentPage: state.declarations?.currentPage || 1, 
@@ -58,6 +61,7 @@ const declarationSlice = createSlice({
       },
       registerDeclarationFailure: (state, action) => {
         state.loading = false;
+        state.isError = true;
         state.error = action.payload;
       },
 

@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Modal,
   Box,
   Typography,
   TextField,
   Button,
-  FormHelperText,
-} from '@mui/material';
-import { AppDispatch } from '../../app/store';
-import { createSupplier } from '../../features/supplier/supplierActions';
+  Alert,
+  Snackbar,
+} from "@mui/material";
+import { AppDispatch } from "../../app/store";
+import * as yup from "yup";
+import { useFormik } from "formik";
+import { selectSupplier } from "../../features/supplier/supplierSlice";
+import { createSupplier } from "../../features/supplier/supplierActions";
 
 interface SupplierFormProps {
   open: boolean;
@@ -18,85 +22,156 @@ interface SupplierFormProps {
 
 const SupplierForm: React.FC<SupplierFormProps> = ({ open, handleClose }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const [formData, setFormData] = useState({
-    name: '',
-    address: '',
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const { isError, error, loading } = useSelector(selectSupplier);
+
+  const showSnackbar = (message: string, severity: "success" | "error") => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  useEffect(() => {
+    if (isFormSubmitted && !loading) {
+      if (isError) {
+        showSnackbar(error || "Unknown error", "error");
+      } else {
+        showSnackbar("Supplier registered successfully.", "success");
+      }
+      setIsFormSubmitted(false);
+    }
+  }, [error, isError, loading, isFormSubmitted]);
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
+  const validationSchema = yup.object({
+    name: yup.string().required("Name is required"),
+    address: yup.string().required("Address is required"),
   });
-  const [touched, setTouched] = useState<{
-    name?: boolean;
-    address?: boolean;
-  }>({});
 
-  const handleChange = (e: { target: { name: any; value: any } }) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleBlur = (field: keyof typeof formData) => {
-    setTouched({ ...touched, [field]: true });
-  };
-
-  const handleSubmit = () => {
-    dispatch(createSupplier(formData));
-    handleClose();
-    // setTouched({});
-  };
-
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      address: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      dispatch(createSupplier(values));
+      setIsFormSubmitted(true);
+      handleClose();
+      formik.resetForm();
+    },
+  });
   const handleCancel = () => {
     handleClose();
-    // setTouched({});
+    formik.resetForm();
   };
 
   return (
-    <Modal open={open} onClose={handleClose}>
-      <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Supplier Form
-        </Typography>
-        <TextField
-          name="name"
-          label="Name"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          onChange={handleChange}
-          required
-          error={touched.name && !formData.name}
-          onBlur={() => handleBlur('name')}
-        />
-        {touched.name && !formData.name && <FormHelperText error>Supplier name is required</FormHelperText>}
-        <TextField
-          name="address"
-          label="Address"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          onChange={handleChange}
-          required
-          error={touched.address && !formData.address}
-          onBlur={() => handleBlur('address')}
-        />
-        {touched.address && !formData.address && <FormHelperText error>Supplier address is required</FormHelperText>}
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSubmit}
-          disabled={
-            !formData.name ||
-            !formData.address
+    <div>
+      <Modal
+        open={open}
+        onClose={(e, reason) => {
+          if (reason === "backdropClick") {
+            return;
           }
+          handleClose();
+        }}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 500,
+            maxHeight: "80vh",
+            overflowY: "auto",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+          }}
         >
-          Submit
-        </Button>
-        <Button
-          variant="outlined"
-          color="warning"
-          onClick={handleCancel}
-          sx={{ marginLeft: 1 }}
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Add Supplier
+          </Typography>
+          <form onSubmit={formik.handleSubmit}>
+            <TextField
+              required
+              name="name"
+              label="Name"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.name}
+              error={formik.touched.name && Boolean(formik.errors.name)}
+              helperText={formik.touched.name && formik.errors.name}
+            />
+            <TextField
+              required
+              name="address"
+              label="Address"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.address}
+              error={formik.touched.address && Boolean(formik.errors.address)}
+              helperText={formik.touched.address && formik.errors.address}
+            />
+            <div style={{ display: "flex", gap: "8px" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={!formik.isValid || formik.isSubmitting}
+              >
+                Submit
+              </Button>
+              <Button variant="outlined" color="warning" onClick={handleCancel}>
+                cancel
+              </Button>
+            </div>
+          </form>
+        </Box>
+      </Modal>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity as "success" | "error"}
+          sx={{ width: "100%" }}
         >
-          Cancel
-        </Button>
-      </Box>
-    </Modal>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity as "success" | "error"}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </div>
   );
 };
 

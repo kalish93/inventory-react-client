@@ -6,6 +6,7 @@ interface ProductState {
   products: PaginatedList<Product>;
   loading: boolean;
   error: any | null;
+  isError: boolean;
 }
 
 const initialState: ProductState = {
@@ -18,6 +19,7 @@ const initialState: ProductState = {
   },
   loading: false,
   error: null,
+  isError: false,
 };
 
 const productSlice = createSlice({
@@ -40,11 +42,12 @@ const productSlice = createSlice({
     registerProductStart: (state) => {
         state.loading = true;
         state.error = null;
+        state.isError = false;
       },
       registerProductSuccess: (state, action) => {
-          const newUser = action.payload;
+          const newProduct = action.payload;
           state.products = {
-              items: [...(state.products?.items || []), newUser],
+              items: [newProduct, ...(state.products?.items || [])],
               totalCount: (state.products?.totalCount || 0) + 1,
               pageSize: state.products?.pageSize || 10, 
               currentPage: state.products?.currentPage || 1, 
@@ -56,6 +59,7 @@ const productSlice = createSlice({
       },
       registerProductFailure: (state, action) => {
         state.loading = false;
+        state.isError = true;
         state.error = action.payload;
       },
   },

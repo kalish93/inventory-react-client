@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Modal,
   Box,
@@ -7,9 +7,12 @@ import {
   TextField,
   Button,
   FormHelperText,
-} from '@mui/material';
-import { AppDispatch } from '../../app/store';
-import { createProduct } from '../../features/product/productActions';
+  Alert,
+  Snackbar,
+} from "@mui/material";
+import { AppDispatch } from "../../app/store";
+import { createProduct } from "../../features/product/productActions";
+import { selectProduct } from "../../features/product/productSlice";
 
 interface ProductFormProps {
   open: boolean;
@@ -18,14 +21,42 @@ interface ProductFormProps {
 
 const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const {isError, error, loading} = useSelector(selectProduct)
+  
+  const showSnackbar = (message: string, severity: "success" | "error") => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  useEffect(() => {
+    if (isFormSubmitted && !loading) {
+      if (isError) {
+        showSnackbar(error || "Unknown error", "error");
+      } else {
+        showSnackbar("Product registered successfully.", "success");
+      }
+      setIsFormSubmitted(false);
+    }
+  }, [error, isError, loading, isFormSubmitted]);
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+  
+
   const [formData, setFormData] = useState({
-    name: '',
-    category: '',
-    unitOfMeasurement: '',
+    name: "",
+    category: "",
+    unitOfMeasurement: "",
   });
   const [touched, setTouched] = useState<{
     name?: boolean;
-    catetory?: boolean;
+    category?: boolean;
     unitOfMeasurement?: boolean;
   }>({});
 
@@ -40,17 +71,40 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose }) => {
   const handleSubmit = () => {
     dispatch(createProduct(formData));
     handleClose();
-    // setTouched({});
+    setIsFormSubmitted(true);
+    setTouched({});
   };
 
   const handleCancel = () => {
     handleClose();
-    // setTouched({});
+    setTouched({});
   };
 
   return (
-    <Modal open={open} onClose={handleClose}>
-      <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+    <div>
+    <Modal
+      open={open}
+      onClose={(e, reason) => {
+        if (reason === "backdropClick") {
+          return;
+        }
+        handleClose();
+      }}
+    >
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 500,
+          maxHeight: "80vh",
+          overflowY: "auto",
+          bgcolor: "background.paper",
+          boxShadow: 24,
+          p: 4,
+        }}
+      >
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Product Form
         </Typography>
@@ -63,9 +117,11 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose }) => {
           onChange={handleChange}
           required
           error={touched.name && !formData.name}
-          onBlur={() => handleBlur('name')}
+          onBlur={() => handleBlur("name")}
         />
-        {touched.name && !formData.name && <FormHelperText error>Product name is required</FormHelperText>}
+        {touched.name && !formData.name && (
+          <FormHelperText error>Product name is required</FormHelperText>
+        )}
         <TextField
           name="category"
           label="Category"
@@ -74,10 +130,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose }) => {
           margin="normal"
           onChange={handleChange}
           required
-          error={touched.catetory && !formData.category}
-          onBlur={() => handleBlur('category')}
+          error={touched.category && !formData.category}
+          onBlur={() => handleBlur("category")}
         />
-        {touched.catetory && !formData.category && <FormHelperText error>Product category is required</FormHelperText>}
+        {touched.category && !formData.category && (
+          <FormHelperText error>Product category is required</FormHelperText>
+        )}
         <TextField
           name="unitOfMeasurement"
           label="Unit of measurement"
@@ -87,17 +145,17 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose }) => {
           onChange={handleChange}
           required
           error={touched.unitOfMeasurement && !formData.unitOfMeasurement}
-          onBlur={() => handleBlur('unitOfMeasurement')}
+          onBlur={() => handleBlur("unitOfMeasurement")}
         />
-        {touched.unitOfMeasurement && !formData.unitOfMeasurement && <FormHelperText error>Unit of measurement is required</FormHelperText>}
+        {touched.unitOfMeasurement && !formData.unitOfMeasurement && (
+          <FormHelperText error>Unit of measurement is required</FormHelperText>
+        )}
         <Button
           variant="contained"
           color="primary"
           onClick={handleSubmit}
           disabled={
-            !formData.name ||
-            !formData.category||
-            !formData.unitOfMeasurement
+            !formData.name || !formData.category || !formData.unitOfMeasurement
           }
         >
           Submit
@@ -112,6 +170,21 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose }) => {
         </Button>
       </Box>
     </Modal>
+    <Snackbar
+    open={snackbarOpen}
+    autoHideDuration={6000}
+    onClose={handleCloseSnackbar}
+    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+  >
+    <Alert
+      onClose={handleCloseSnackbar}
+      severity={snackbarSeverity as "success" | "error"}
+      sx={{ width: "100%" }}
+    >
+      {snackbarMessage}
+    </Alert>
+  </Snackbar>
+  </div>
   );
 };
 

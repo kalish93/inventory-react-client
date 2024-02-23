@@ -6,6 +6,7 @@ interface CustomerState {
   customers: PaginatedList<Customer>;
   loading: boolean;
   error: any | null;
+  isError: boolean;
 }
 
 const initialState: CustomerState = {
@@ -18,6 +19,7 @@ const initialState: CustomerState = {
   },
   loading: false,
   error: null,
+  isError: false
 };
 
 const customerSlice = createSlice({
@@ -40,6 +42,7 @@ const customerSlice = createSlice({
     registerCustomerStart: (state) => {
         state.loading = true;
         state.error = null;
+        state.isError = false;
       },
       registerCustomerSuccess: (state, action) => {
           const newUser = action.payload;
@@ -57,6 +60,7 @@ const customerSlice = createSlice({
       registerCustomerFailure: (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.isError = true
       },
   },
 });

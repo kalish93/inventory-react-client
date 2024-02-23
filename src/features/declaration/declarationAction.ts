@@ -17,11 +17,15 @@ export const getDeclarations = (page?: number, pageSize?: number) => async (disp
 export const createDeclaration = (data: CreateDeclaration) => async (dispatch: AppDispatch) => {
     try {
       dispatch(registerDeclarationStart());
+  
       const response = await DeclarationService.registerDeclaration(data);
-      dispatch(registerDeclarationSuccess(response));
+      if (response.success) {
+        dispatch(registerDeclarationSuccess(response.data));
+      } else {
+        dispatch(registerDeclarationFailure(response.error || 'Unknown error'));
+      }
     } catch (error) {
-      dispatch(registerDeclarationFailure(error));
-      throw(error)
+      dispatch(registerDeclarationFailure('Unknown error'));
     }
   };
 
