@@ -17,10 +17,13 @@ export const createPurchase = (data: CreatePurchase) => async (dispatch: AppDisp
     try {
       dispatch(registerPurchaseStart());
       const response = await PurchaseService.registerPurchase(data);
-      dispatch(registerPurchaseSuccess(response));
+      if (response.success) {
+        dispatch(registerPurchaseSuccess(response.data));
+      } else {
+        dispatch(registerPurchaseFailure(response.error || 'Unknown error'));
+      }
     } catch (error) {
-      dispatch(registerPurchaseFailure(error));
-      throw(error)
+      dispatch(registerPurchaseFailure('Unknown error'));
     }
   };
 

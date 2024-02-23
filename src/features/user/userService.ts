@@ -16,7 +16,6 @@ export const UserService = {
       },
       body: JSON.stringify({ userName, password }),
     });
-    console.log(response,'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
 
     if (!response.ok) {
       throw new Error(response.statusText);

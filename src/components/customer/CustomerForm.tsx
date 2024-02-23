@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Modal,
   Box,
   Typography,
   TextField,
   Button,
+  Snackbar,
+  Alert,
+  InputAdornment,
+  CircularProgress
 } from '@mui/material';
 import { AppDispatch } from '../../app/store';
 import { createCustomer } from '../../features/customer/customerActions';
+import { selectCustomer } from '../../features/customer/customerSlice';
 
 interface CustomerFormProps {
   open: boolean;
@@ -35,6 +40,11 @@ interface Errors {
 
 const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const {isError, error, loading} = useSelector(selectCustomer)
 
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -54,15 +64,39 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose }) => {
     address: '',
   });
 
+  const showSnackbar = (message: string, severity: "success" | "error") => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    if (name === 'phone' && value.trim().length !== 9) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: 'Phone number must be exactly 9 digits',
+      }));
+    } else if (value.trim() === '') {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: 'This field is required',
+      }));
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: '',
+      }));
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    // Clear the error message when the field is being filled
     setErrors({ ...errors, [name]: '' });
   };
 
   const handleSubmit = () => {
-    // Validate form fields
     let hasErrors = false;
     const newErrors: Errors = { ...errors };
 
@@ -77,18 +111,70 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose }) => {
     if (hasErrors) {
       setErrors(newErrors);
     } else {
-      // If no errors, submit the form
       dispatch(createCustomer(formData));
+      setIsFormSubmitted(true);
       handleClose();
     }
   };
 
-  // Check if all fields are filled
+  useEffect(() => {
+    if (isFormSubmitted && !loading) {
+      if (isError) {
+        showSnackbar(error || "Unknown error", "error");
+      } else {
+        showSnackbar("Customer registered successfully.", "success");
+      }
+      setIsFormSubmitted(false);
+    }
+  }, [error, isError, loading, isFormSubmitted]);
+  
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
+  const resetErrors = () => {
+    setErrors({
+      firstName: '',
+      middleName: '',
+      lastName: '',
+      tinNumber: '',
+      phone: '',
+      address: '',
+    });
+  };
+
+  const handleCancel = () => {
+    resetErrors();
+    handleClose();
+  };
   const isSubmitDisabled = Object.values(formData).some(value => value.trim() === '');
 
+  if(loading){ 
+    return(
+      <CircularProgress/>
+    )
+  }
+
   return (
-    <Modal open={open} onClose={handleClose}>
-      <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+    <div>
+    <Modal open={open} onClose={(e, reason) => {
+      if (reason === "backdropClick") {
+        return;
+      }
+      handleClose();
+    }}>
+      <Box sx={{
+           position: "absolute",
+           top: "50%",
+           left: "50%",
+           transform: "translate(-50%, -50%)",
+           width: 500,
+           maxHeight: "80vh",
+           overflowY: "auto",
+           bgcolor: "background.paper",
+           boxShadow: 24,
+           p: 4,
+        }}>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Customer Form
         </Typography>
@@ -99,6 +185,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose }) => {
           fullWidth
           margin="normal"
           onChange={handleChange}
+          onBlur={handleBlur}
           required
           error={!!errors.firstName}
           helperText={errors.firstName}
@@ -110,6 +197,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose }) => {
           fullWidth
           margin="normal"
           onChange={handleChange}
+          onBlur={handleBlur}
           required
           error={!!errors.middleName}
           helperText={errors.middleName}
@@ -121,6 +209,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose }) => {
           fullWidth
           margin="normal"
           onChange={handleChange}
+          onBlur={handleBlur}
           required
           error={!!errors.lastName}
           helperText={errors.lastName}
@@ -132,6 +221,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose }) => {
           fullWidth
           margin="normal"
           onChange={handleChange}
+          onBlur={handleBlur}
           required
           error={!!errors.tinNumber}
           helperText={errors.tinNumber}
@@ -142,10 +232,16 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose }) => {
           variant="outlined"
           fullWidth
           margin="normal"
+          type="tel"
           onChange={handleChange}
+          onBlur={handleBlur}
           required
           error={!!errors.phone}
           helperText={errors.phone}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">+251</InputAdornment>,
+            inputProps: { maxLength: 9 },
+          }}
         />
         <TextField
           name="address"
@@ -154,10 +250,12 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose }) => {
           fullWidth
           margin="normal"
           onChange={handleChange}
+          onBlur={handleBlur}
           required
           error={!!errors.address}
           helperText={errors.address}
         />
+        <div style={{display:'flex', gap:"8px" }}>
         <Button
           variant="contained"
           color="primary"
@@ -166,8 +264,31 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose }) => {
         >
           Submit
         </Button>
+        <Button
+          variant="outlined"
+          color="warning"
+          onClick={handleCancel}
+        >
+          cancel
+        </Button>
+        </div>
       </Box>
     </Modal>
+    <Snackbar
+    open={snackbarOpen}
+    autoHideDuration={6000}
+    onClose={handleCloseSnackbar}
+    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+  >
+    <Alert
+      onClose={handleCloseSnackbar}
+      severity={snackbarSeverity as "success" | "error"}
+      sx={{ width: "100%" }}
+    >
+      {snackbarMessage}
+    </Alert>
+  </Snackbar>
+  </div>
   );
 };
 

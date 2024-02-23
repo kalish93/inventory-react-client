@@ -6,6 +6,7 @@ interface SalesState {
   loading: boolean;
   error: any | null;
   sale: any;
+  isError: boolean;
 }
 
 const initialState: SalesState = {
@@ -18,7 +19,8 @@ const initialState: SalesState = {
   },
   loading: false,
   error: null,
-  sale: null
+  sale: null,
+  isError: false,
 };
 
 const salesSlice = createSlice({
@@ -41,11 +43,12 @@ const salesSlice = createSlice({
     registerSaleStart: (state) => {
         state.loading = true;
         state.error = null;
+        state.isError = false;
       },
       registerSaleSuccess: (state, action) => {
-          const newUser = action.payload;
+          const newSale = action.payload;
           state.sales = {
-              items: [newUser, ...(state.sales?.items || [])],
+              items: [newSale, ...(state.sales?.items || [])],
               totalCount: (state.sales?.totalCount || 0) + 1,
               pageSize: state.sales?.pageSize || 10, 
               currentPage: state.sales?.currentPage || 1, 
@@ -57,6 +60,7 @@ const salesSlice = createSlice({
       },
       registerSaleFailure: (state, action) => {
         state.loading = false;
+        state.isError = true;
         state.error = action.payload;
       },
 

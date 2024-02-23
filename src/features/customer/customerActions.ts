@@ -16,9 +16,14 @@ export const getCustomers = (page?: number, pageSize?: number) => async (dispatc
 export const createCustomer = (data: CreateCustomer) => async (dispatch: AppDispatch) => {
     try {
       dispatch(registerCustomerStart());
+  
       const response = await CustomerService.registerCustomer(data);
-      dispatch(registerCustomerSuccess(response));
+      if (response.success) {
+        dispatch(registerCustomerSuccess(response.data));
+      } else {
+        dispatch(registerCustomerFailure(response.error || 'Unknown error'));
+      }
     } catch (error) {
-      dispatch(registerCustomerFailure(error));
+      dispatch(registerCustomerFailure('Unknown error'));
     }
   };

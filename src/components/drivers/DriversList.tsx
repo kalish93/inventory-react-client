@@ -20,7 +20,7 @@ import { getDrivers } from '../../features/driver/driverActions';
 const DriversList = () => {
   const dispatch = useDispatch<AppDispatch>();
   const driverState = useSelector(selectDrivers);
-  const { items: drivers = [], currentPage, totalCount } = driverState || {};
+  const { items: drivers = [], currentPage, totalCount } = driverState.drivers;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openModal, setOpenModal] = useState(false);

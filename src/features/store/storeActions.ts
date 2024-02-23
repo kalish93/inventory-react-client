@@ -24,10 +24,14 @@ export const createStore = (storeData: CreateStore) => async (dispatch: AppDispa
     try {
         dispatch(storeStart());
         const response = await storeService.createStore(storeData);
-        dispatch(createStoreSuccess(response));
-    } catch (error) {
-        dispatch(storeFailure(error));
-    }
+        if (response.success) {
+          dispatch(createStoreSuccess(response.data));
+        } else {
+          dispatch(storeFailure(response.error || 'Unknown error'));
+        }
+      } catch (error) {
+        dispatch(storeFailure('Unknown error'));
+      }
 };
 
 export const deleteStore = (storeId: string) => async (dispatch: AppDispatch) => {

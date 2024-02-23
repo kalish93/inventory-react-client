@@ -17,9 +17,13 @@ export const createSale = (data: any) => async (dispatch: AppDispatch) => {
     try {
       dispatch(registerSaleStart());
       const response = await SalesService.registerSale(data);
-      dispatch(registerSaleSuccess(response));
+      if (response.success) {
+        dispatch(registerSaleSuccess(response.data));
+      } else {
+        dispatch(registerSaleFailure(response.error || 'Unknown error'));
+      }
     } catch (error) {
-      dispatch(registerSaleFailure(error));
+      dispatch(registerSaleFailure('Unknown error'));
     }
   };
 

@@ -3,9 +3,10 @@ import { Driver } from "../../models/driver";
 import { PaginatedList } from "../../models/commons/paginatedList";
 
 interface DriverState {
-  drivers: PaginatedList<Driver> | undefined;
+  drivers: PaginatedList<Driver>;
   loading: boolean;
   error: any | null;
+  isError: boolean;
 }
 
 const initialState: DriverState = {
@@ -18,6 +19,7 @@ const initialState: DriverState = {
   },
   loading: false,
   error: null,
+  isError:false,
 };
 
 const driverSlice = createSlice({
@@ -42,11 +44,12 @@ const driverSlice = createSlice({
     createDriverStart: (state) => {
       state.loading = true;
       state.error = null;
+      state.isError = false;
     },
     createDriverSuccess: (state, action) => {
       const newDriver = action.payload;
       state.drivers = {
-        items: [...(state.drivers?.items || []), newDriver],
+        items: [newDriver, ...(state.drivers?.items || [])],
         totalCount: (state.drivers?.totalCount || 0) + 1,
         pageSize: state.drivers?.pageSize || 10,
         currentPage: state.drivers?.currentPage || 1,
@@ -57,6 +60,7 @@ const driverSlice = createSlice({
     createDriverFailure: (state, action: PayloadAction<any>) => {
       state.loading = false;
       state.error = action.payload;
+      state.isError = true;
     },
 
     deleteDriverStart: (state) => {
@@ -124,6 +128,6 @@ export const {
   updateDriverFailure,
 } = driverSlice.actions;
 
-export const selectDrivers = (state: {driver: DriverState}) => state.driver.drivers;
+export const selectDrivers = (state: {driver: DriverState}) => state.driver;
 
 export default driverSlice.reducer;

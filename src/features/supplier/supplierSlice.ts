@@ -6,6 +6,7 @@ interface SupplierState {
   suppliers: PaginatedList<Supplier>;
   loading: boolean;
   error: any | null;
+  isError: boolean;
 }
 
 const initialState: SupplierState = {
@@ -18,6 +19,7 @@ const initialState: SupplierState = {
   },
   loading: false,
   error: null,
+  isError: false,
 };
 
 const supplierSlice = createSlice({
@@ -40,11 +42,12 @@ const supplierSlice = createSlice({
     registerSupplierStart: (state) => {
         state.loading = true;
         state.error = null;
+        state.isError = false;
       },
       registerSupplierSuccess: (state, action) => {
-          const newUser = action.payload;
+          const newSupplier = action.payload;
           state.suppliers = {
-              items: [newUser, ...(state.suppliers?.items || [])],
+              items: [newSupplier, ...(state.suppliers?.items || [])],
               totalCount: (state.suppliers?.totalCount || 0) + 1,
               pageSize: state.suppliers?.pageSize || 10, 
               currentPage: state.suppliers?.currentPage || 1, 
@@ -56,6 +59,7 @@ const supplierSlice = createSlice({
       },
       registerSupplierFailure: (state, action) => {
         state.loading = false;
+        state.isError = true;
         state.error = action.payload;
       },
   },

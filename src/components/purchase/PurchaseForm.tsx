@@ -11,6 +11,8 @@ import {
   SelectChangeEvent,
   Autocomplete,
   Card,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { AppDispatch } from "../../app/store";
@@ -21,6 +23,7 @@ import { getProducts } from "../../features/product/productActions";
 import { createPurchase } from "../../features/purchase/purchaseActions";
 import { getDeclarations } from "../../features/declaration/declarationAction";
 import { getDrivers } from "../../features/driver/driverActions";
+import { selectPurchase } from "../../features/purchase/purchaseSlice";
 interface PurchaseFormProps {
   open: boolean;
   handleClose: () => void;
@@ -33,6 +36,33 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
     (state: any) => state.declaration.declarations.items
   );
   const drivers = useSelector((state: any) => state.driver.drivers.items);
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const { isError, error, loading } = useSelector(selectPurchase);
+
+  const showSnackbar = (message: string, severity: "success" | "error") => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  useEffect(() => {
+    if (isFormSubmitted && !loading) {
+      if (isError) {
+        showSnackbar(error || "Unknown error", "error");
+      } else {
+        showSnackbar("Purchase created successfully.", "success");
+      }
+      setIsFormSubmitted(false);
+    }
+  }, [error, isError, loading, isFormSubmitted]);
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
   const [formData, setFormData] = useState<CreatePurchase>({
     number: null,
     date: null,
@@ -176,6 +206,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
       ],
     });
     setAddedProducts([]);
+    setIsFormSubmitted(true);
     setTouched({});
     handleClose();
   };
@@ -243,6 +274,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
   };
 
   return (
+    <div>
     <Modal
       open={open}
       onClose={(e, reason) => {
@@ -537,7 +569,6 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
         >
           Add Product
         </Button>
-
         <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
           <Button
             variant="contained"
@@ -559,6 +590,21 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
         </Box>
       </Box>
     </Modal>
+    <Snackbar
+    open={snackbarOpen}
+    autoHideDuration={6000}
+    onClose={handleCloseSnackbar}
+    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+  >
+    <Alert
+      onClose={handleCloseSnackbar}
+      severity={snackbarSeverity as "success" | "error"}
+      sx={{ width: "100%" }}
+    >
+      {snackbarMessage}
+    </Alert>
+  </Snackbar>
+  </div>
   );
 };
 export default PurchaseForm;

@@ -36,6 +36,7 @@ export const DeclarationService = {
   
 
       registerDeclaration: async (DeclarationData: CreateDeclaration) => {
+        try{
         const response = await fetch(DECLARATIONS_URL, {
           method: 'POST',
           headers: headers,
@@ -43,12 +44,21 @@ export const DeclarationService = {
         });
     
         if (!response.ok) {
-          throw new Error('Declaration creation failed');
+          let errorMessage = `Bad Request: ${response.statusText}`;
+  
+            const data = await response.json();
+            errorMessage = data.error || errorMessage;
+  
+          return { success: false, error: errorMessage };
         }
-    
+  
         const data = await response.json();
-        return data;
-      },
+        return { success: true, data };
+      } catch (error) {
+        console.error("Error in registerdriver service:", error);
+        return { success: false, error: "Unexpected error occurred" };
+      }
+    },
 
   getDeclarationById: async (declarationId: string) => {
     try {

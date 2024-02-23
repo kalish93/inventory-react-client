@@ -14,13 +14,13 @@ import {
 
 import StoreForm from './StoreForm';
 import { AppDispatch } from '../../app/store';
-import { selectStores } from '../../features/store/storeSlice';
+import { selectStore } from '../../features/store/storeSlice';
 import { getStores } from '../../features/store/storeActions';
 
 const StoresList = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const storeState = useSelector(selectStores);
-  const { items: stores = [], currentPage, totalCount } = storeState || {};
+  const storeState = useSelector(selectStore);
+  const { items: stores = [], currentPage, totalCount } = storeState.stores;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openModal, setOpenModal] = useState(false);
