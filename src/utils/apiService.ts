@@ -1,8 +1,8 @@
-import { refreshAccessToken, getAccessToken, updateAccessToken } from "./tokenService";
+import { refreshAccessToken, updateAccessToken } from "./tokenService";
 
 const headers = {
   "Content-Type": "application/json",
-  'Authorization': `Bearer ${getAccessToken()}`,
+  'Authorization': `Bearer ${localStorage.getItem("accessToken")}`,
 };
 
 export async function handleRequest(url: any, options: any) {
