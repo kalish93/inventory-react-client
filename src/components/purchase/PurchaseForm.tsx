@@ -8,7 +8,6 @@ import {
   Button,
   FormHelperText,
   IconButton,
-  SelectChangeEvent,
   Autocomplete,
   Card,
   Snackbar,
@@ -18,7 +17,7 @@ import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { AppDispatch } from "../../app/store";
 
 import dayjs from "dayjs";
-import { CreateProductPurchase, CreatePurchase } from "../../models/purchase";
+import { CreateProductPurchase } from "../../models/purchase";
 import { getProducts } from "../../features/product/productActions";
 import { createPurchase } from "../../features/purchase/purchaseActions";
 import { getDeclarations } from "../../features/declaration/declarationAction";
@@ -63,21 +62,17 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
     setSnackbarOpen(false);
   };
 
-  const [formData, setFormData] = useState<CreatePurchase>({
+  const [formData, setFormData] = useState<any>({
     number: null,
     date: null,
     truckNumber: "",
     transportCost: null,
     eslCustomCost: null,
     transitFees: null,
-    purchaseProducts: [
-      {
-        productId: "",
-        declarationId: "",
-        purchaseQuantity: null,
-        purchaseUnitPrice: null,
-      },
-    ],
+    productId: "",
+    declarationId: "",
+    purchaseQuantity: null,
+    purchaseUnitPrice: null,
   });
   const [touched, setTouched] = useState<{
     number?: boolean;
@@ -86,19 +81,16 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
     transportCost?: boolean;
     eslCustomCost?: boolean;
     transitFees?: boolean;
-    purchaseProducts?: {
-      [key: number]: {
-        productId?: boolean;
-        purchaseQuantity?: boolean;
-        declarationId?: boolean;
-        purchaseUnitPrice?: boolean;
-      };
-    };
+    productId?: boolean;
+    purchaseQuantity?: boolean;
+    declarationId?: boolean;
+    purchaseUnitPrice?: boolean;
   }>({});
 
   const [addedProducts, setAddedProducts] = useState<CreateProductPurchase[]>(
     []
   );
+  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
 
   useEffect(() => {
     dispatch(getProducts());
@@ -120,39 +112,22 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
     }));
   };
 
-  const handleProductChange =
-    (index: number, field: keyof CreateProductPurchase) =>
-    (e: SelectChangeEvent<string>) => {
-      const newProducts = [...formData.purchaseProducts];
-      newProducts[index] = {
-        ...newProducts[index],
-        [field]: e.target.value as string,
-      };
-      setFormData((prevData: any) => ({
-        ...prevData,
-        purchaseProducts: newProducts,
-      }));
-    };
-
   const handleAddProduct = () => {
     const newProduct = {
-      productId: formData.purchaseProducts[0].productId,
-      declarationId: formData.purchaseProducts[0].declarationId,
-      purchaseQuantity: formData.purchaseProducts[0].purchaseQuantity,
-      purchaseUnitPrice: formData.purchaseProducts[0].purchaseUnitPrice,
+      productId: formData.productId,
+      declarationId: formData.declarationId,
+      purchaseQuantity: formData.purchaseQuantity,
+      purchaseUnitPrice: formData.purchaseUnitPrice,
     };
 
     setAddedProducts((prevProducts) => [...prevProducts, newProduct]);
     setFormData((prevData: any) => ({
       ...prevData,
-      purchaseProducts: [
-        {
           productId: "",
           declarationId: "",
           purchaseQuantity: null,
           purchaseUnitPrice: null,
-        },
-      ],
+
     }));
   };
 
@@ -168,11 +143,12 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
       prevProducts.filter((_, i) => i !== index)
     );
     setFormData((prevData: any) => {
-      const newPurchaseProducts = [...prevData.purchaseProducts];
-      newPurchaseProducts[index] = { ...productToEdit };
       return {
         ...prevData,
-        purchaseProducts: newPurchaseProducts,
+        productId: productToEdit.productId,
+        declarationId: productToEdit.declarationId,
+        purchaseQuantity: productToEdit.purchaseQuantity,
+        purchaseUnitPrice: productToEdit.purchaseUnitPrice,
       };
     });
   };
@@ -196,14 +172,10 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
       transportCost: null,
       eslCustomCost: null,
       transitFees: null,
-      purchaseProducts: [
-        {
-          productId: "",
-          declarationId: "",
-          purchaseQuantity: null,
-          purchaseUnitPrice: null,
-        },
-      ],
+      productId: "",
+      declarationId: "",
+      purchaseQuantity: null,
+      purchaseUnitPrice: null,
     });
     setAddedProducts([]);
     setIsFormSubmitted(true);
@@ -219,33 +191,15 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
       transportCost: null,
       eslCustomCost: null,
       transitFees: null,
-      purchaseProducts: [
-        {
-          productId: "",
-          declarationId: "",
-          purchaseQuantity: null,
-          purchaseUnitPrice: null,
-        },
-      ],
+      productId: "",
+      declarationId: "",
+      purchaseQuantity: null,
+      purchaseUnitPrice: null,
     });
     setAddedProducts([]);
     setTouched({});
     handleClose();
   };
-
-  const handleProductFormChange =
-    (index: number, field: keyof CreateProductPurchase) =>
-    (e: React.ChangeEvent<{ value: unknown }>) => {
-      const newProducts = [...formData.purchaseProducts];
-      newProducts[index] = {
-        ...newProducts[index],
-        [field]: e.target.value as string | number,
-      };
-      setFormData((prevData) => ({
-        ...prevData,
-        purchaseProducts: newProducts,
-      }));
-    };
 
   const isPurchaseFormValid = () => {
     return (
@@ -261,17 +215,41 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
   };
 
   const isAddProductButtonDisabled = () => {
-    return formData.purchaseProducts.some(
-      (product) =>
-        !product.productId ||
-        product.productId === "" ||
-        product.declarationId === "" ||
-        product.purchaseQuantity === null ||
-        product.purchaseQuantity <= 0 ||
-        product.purchaseUnitPrice === null ||
-        product.purchaseUnitPrice <= 0
+    return (
+        !formData.productId ||
+        formData.productId === "" ||
+        formData.declarationId === "" ||
+        formData.purchaseQuantity === null ||
+        formData.purchaseQuantity <= 0 ||
+        formData.purchaseUnitPrice === null ||
+        formData.purchaseUnitPrice <= 0
     );
   };
+
+  useEffect(() => {
+    // Filter products based on the selected declaration's declarationProducts
+    if (formData.declarationId) {
+      const selectedDeclaration = declarations.find(
+        (d: { id: any }) => d.id === formData.declarationId
+      );
+
+      if (selectedDeclaration) {
+        const declarationProducts = selectedDeclaration.declarationProducts;
+        const productIds = declarationProducts.map(
+          (product: { product: { id: any } }) => product.product.id
+        );
+
+        const productsForDeclaration = products.filter((product: { id: any }) =>
+          productIds.includes(product.id)
+        );
+
+        setFilteredProducts(productsForDeclaration);
+      }
+    } else{
+      setFilteredProducts([])
+    }
+  }, [formData.declarationId, declarations, products]);
+
 
   return (
     <div>
@@ -414,23 +392,22 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
 
         <Typography>Add Products</Typography>
 
-        {formData.purchaseProducts.map((product: any, index: any) => (
-          <div key={index} style={{ marginBottom: 15 }}>
+          <div style={{ marginBottom: 15 }}>
             <Autocomplete
               options={declarations}
               getOptionLabel={(option) => option.number}
               value={
                 declarations.find(
-                  (d: { id: any }) => d.id === product.declarationId
+                  (d: { id: any }) => d.id === formData.declarationId
                 ) || null
               }
               onChange={(event, newValue) => {
-                handleProductChange(
-                  index,
-                  "declarationId"
-                )({
-                  target: { value: newValue ? newValue.id : "" },
-                } as SelectChangeEvent<string>);
+                handleChange({
+                  target: {
+                    name: "declarationId",
+                    value: newValue ? newValue.id : "",
+                  },
+                });
               }}
               renderInput={(params) => (
                 <TextField
@@ -439,29 +416,26 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
                   variant="outlined"
                   fullWidth
                   required
-                  error={
-                    touched.purchaseProducts?.[index]?.declarationId &&
-                    !product.declarationId
-                  }
+                  error={touched.productId && !formData.declarationId}
                   sx={{ marginBottom: 1 }}
                 />
               )}
             />
 
             <Autocomplete
-              options={products}
+              options={filteredProducts}
               getOptionLabel={(option) => option.name}
               value={
-                products.find((p: { id: any }) => p.id === product.productId) ||
+                products.find((p: { id: any }) => p.id === formData.productId) ||
                 null
               }
               onChange={(event, newValue) => {
-                handleProductChange(
-                  index,
-                  "productId"
-                )({
-                  target: { value: newValue ? newValue.id : "" },
-                } as SelectChangeEvent<string>);
+                handleChange({
+                  target: {
+                    name: "productId",
+                    value: newValue ? newValue.id : "",
+                  },
+                });
               }}
               renderInput={(params) => (
                 <TextField
@@ -470,48 +444,38 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
                   variant="outlined"
                   fullWidth
                   required
-                  error={
-                    touched.purchaseProducts?.[index]?.productId &&
-                    !product.productId
-                  }
+                  error={touched.productId && !formData.productId}
                   sx={{ marginBottom: 1 }}
                 />
               )}
             />
 
             <TextField
-              name={`PurchaseQuantity-${index}`}
+              name='purchaseQuantity'              
               label="Purchase Quantity"
               variant="outlined"
               fullWidth
               margin="normal"
               type="number"
-              value={product.purchaseQuantity === null ? '' : product.purchaseQuantity}
-              onChange={handleProductFormChange(index, "purchaseQuantity")}
+              value={formData.purchaseQuantity === null ? '' : formData.purchaseQuantity}
+              onChange={handleChange}
               required
-              error={
-                touched.purchaseProducts?.[index]?.purchaseQuantity &&
-                !product.purchaseQuantity
-              }
+              error={touched.purchaseQuantity && !formData.purchaseQuantity}
             />
 
             <TextField
-              name={`purchaseUnitPrice-${index}`}
+              name='purchaseUnitPrice'
               label="Purchase Unit Price"
               variant="outlined"
               fullWidth
               margin="normal"
               type="number"
-              value={product.purchaseUnitPrice === null ? '' : product.purchaseUnitPrice}
-              onChange={handleProductFormChange(index, "purchaseUnitPrice")}
+              value={formData.purchaseUnitPrice === null ? '' : formData.purchaseUnitPrice}
+              onChange={handleChange}
               required
-              error={
-                touched.purchaseProducts?.[index]?.purchaseUnitPrice &&
-                !product.purchaseUnitPrice
-              }
+              error={touched.purchaseUnitPrice && !formData.purchaseUnitPrice}
             />
           </div>
-        ))}
         {addedProducts.length > 0 && (
           <Card sx={{ mt: 2, p: 2, bgcolor: "#f0f0f0" }}>
             <Typography
