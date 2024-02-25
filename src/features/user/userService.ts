@@ -1,11 +1,6 @@
 import { LOGIN_URL, USERS_URL } from "../../core/api-routes";
 import { CreateUser } from "../../models/user";
-
-const accessToken = localStorage.getItem("accessToken");
-const headers = {
-  "Content-Type": "application/json",
-  'Authorization': `Bearer ${accessToken}`,
-};
+import { handleRequest } from "../../utils/apiService";
 
 export const UserService = {
   login: async (userName: string, password: string) => {
@@ -22,9 +17,8 @@ export const UserService = {
     }
 
     const data = await response.json();
-    localStorage.setItem("accessToken", data.accessToken);
     
-    return { username: data.user.userName, accessToken: data.accessToken };
+    return { username: data.user.userName, accessToken: data.accessToken, refreshToken: data.refreshToken };
   },
 
   logout: () => {
@@ -37,9 +31,8 @@ export const UserService = {
 
   registerUser: async (userData: CreateUser) => {
     try {
-      const response = await fetch(USERS_URL, {
+      const response = await handleRequest(USERS_URL, {
         method: "POST",
-        headers: headers,
         body: JSON.stringify(userData),
       });
 
@@ -62,13 +55,9 @@ export const UserService = {
 
   getUsers: async (page = 1, pageSize = 10) => {
     try {
-      const response = await fetch(
-        `${USERS_URL}?page=${page}&pageSize=${pageSize}`,
-        {
-          method: "GET",
-          headers: headers,
-        }
-      );
+      const response = await handleRequest(`${USERS_URL}?page=${page}&pageSize=${pageSize}`, {
+        method: "GET",
+      });
 
       if (!response.ok) {
         throw new Error('get users failed');

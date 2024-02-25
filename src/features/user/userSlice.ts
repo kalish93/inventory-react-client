@@ -39,11 +39,13 @@ const userSlice = createSlice({
     },
     loginSuccess: (
       state,
-      action: PayloadAction<{ username: string; accessToken: string }>
+      action: PayloadAction<{ username: string; accessToken: string, refreshToken: string, }>
     ) => {
       state.user = action.payload;
       state.accessToken = action.payload.accessToken;
-      state.isAuthenticated = !!action.payload.accessToken;
+      localStorage.setItem("accessToken", action.payload.accessToken);
+      localStorage.setItem("refreshToken", action.payload.refreshToken);
+      state.isAuthenticated = !!localStorage.getItem("accessToken");
       state.loading = false;
     },
 

@@ -1,6 +1,7 @@
 import { Driver } from "../../models/driver";
 import { DRIVER_URL } from "../../core/api-routes";
 import { CreateDriver } from "../../models/driver";
+import { handleRequest } from "../../utils/apiService";
 
 export const DriverService = {
   getDrivers: async (page?: number, pageSize?: number) => {
@@ -10,12 +11,9 @@ export const DriverService = {
       if (page && pageSize) {
         url += `?page=${page}&pageSize=${pageSize}`;
       }
-  
-      const response = await fetch(url, {
+      
+      const response = await handleRequest(url, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
       });
   
       if (!response.ok) {
@@ -33,15 +31,10 @@ export const DriverService = {
 
   createDriver: async (driverData: CreateDriver) => {
     try {
-      console.log(driverData)
-      const response = await fetch(DRIVER_URL, {
+      const response = await handleRequest(DRIVER_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(driverData),
       });
-      
 
       if (!response.ok) {
         let errorMessage = `Bad Request: ${response.statusText}`;
@@ -62,12 +55,9 @@ export const DriverService = {
 
     updateDriver: async (driverData: Driver) => {
         try {
-        const response = await fetch(`${DRIVER_URL}/${driverData.id}`, {
-            method: "PUT",
-            headers: {
-            "Content-Type": "application/json",
-            },
-            body: JSON.stringify(driverData),
+        const response = await handleRequest(`${DRIVER_URL}/${driverData.id}`, {
+          method: "PUT",
+          body: JSON.stringify(driverData),
         });
     
         if (!response.ok) {
@@ -83,12 +73,9 @@ export const DriverService = {
 
     deleteDriver: async (id: string) => {
         try {
-        const response = await fetch(`${DRIVER_URL}/${id}`, {
+          const response = await handleRequest(`${DRIVER_URL}/${id}`, {
             method: "DELETE",
-            headers: {
-            "Content-Type": "application/json",
-            },
-        });
+          });
     
         if (!response.ok) {
             throw new Error("Failed to delete driver");

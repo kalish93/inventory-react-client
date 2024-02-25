@@ -1,11 +1,6 @@
 import { CUSTOMERS_URL } from "../../core/api-routes";
 import { CreateCustomer } from "../../models/customer";
-
-const accessToken = localStorage.getItem('accessToken');
-const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${accessToken}`,
-  };
+import { handleRequest } from "../../utils/apiService";
 
 export const CustomerService = {
     getCustomers: async (page?: any, pageSize?: any) => {
@@ -15,10 +10,9 @@ export const CustomerService = {
         if (page && pageSize) {
           url += `?page=${page}&pageSize=${pageSize}`;
         }
-          const response = await fetch(url, {
-            method: 'GET',
-            headers: headers,
-          });
+        const response = await handleRequest(url, {
+          method: "GET",
+        });
     
           if (!response.ok) {
             throw new Error('Error retrieving users');
@@ -34,9 +28,8 @@ export const CustomerService = {
       },
 
       registerCustomer: async (customerData: CreateCustomer) => {
-        const response = await fetch(CUSTOMERS_URL, {
-          method: 'POST',
-          headers: headers,
+        const response = await handleRequest(CUSTOMERS_URL, {
+          method: "POST",
           body: JSON.stringify(customerData),
         });
     

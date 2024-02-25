@@ -1,18 +1,12 @@
 import { ACCOUNT_SUB_TYPES_URL, ACCOUNT_TYPES_URL } from "../../core/api-routes";
 import { CreateAccountSubType, CreateAccountType } from "../../models/account-type";
-
-const accessToken = localStorage.getItem("accessToken");
-const headers = {
-  "Content-Type": "application/json",
-  'Authorization': `Bearer ${accessToken}`,
-};
+import { handleRequest } from "../../utils/apiService";
 
 export const AccountTypeService = {
   createAccountType: async (accountType: CreateAccountType) => {
     try {
-      const response = await fetch(ACCOUNT_TYPES_URL, {
+      const response = await handleRequest(ACCOUNT_TYPES_URL, {
         method: "POST",
-        headers: headers,
         body: JSON.stringify(accountType),
       });
 
@@ -34,9 +28,8 @@ export const AccountTypeService = {
   },
 
   getAccountTypes: async () => {
-    const response = await fetch(ACCOUNT_TYPES_URL, {
+    const response = await handleRequest(ACCOUNT_TYPES_URL, {
       method: "GET",
-      headers: headers,
     });
 
     if (!response.ok) {
@@ -50,9 +43,8 @@ export const AccountTypeService = {
 
   createAccountSubType: async (accountSubType: CreateAccountSubType) => {
     try {
-      const response = await fetch(ACCOUNT_SUB_TYPES_URL, {
+      const response = await handleRequest(ACCOUNT_SUB_TYPES_URL, {
         method: "POST",
-        headers: headers,
         body: JSON.stringify(accountSubType),
       });
 

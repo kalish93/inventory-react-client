@@ -14,3 +14,4 @@ export const INVENTORY_URL = `${BASE_URL}/inventory`
 export const ACCOUNT_TYPES_URL = `${BASE_URL}/account-types`
 export const ACCOUNT_SUB_TYPES_URL = `${BASE_URL}/account-sub-types`
 export const CA_URL = `${BASE_URL}/cash-of-accounts`
+export const REFRESH_URL = `${BASE_URL}/refresh`

@@ -1,19 +1,12 @@
 import { SALES_URL } from "../../core/api-routes";
 import { CreateSales } from "../../models/sales";
-
-
-const accessToken = localStorage.getItem('accessToken');
-const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${accessToken}`,
-  };
+import { handleRequest } from "../../utils/apiService";
 
 export const SalesService = {
     getSales: async (page = 1, pageSize = 10) => {
         try {
-          const response = await fetch(`${SALES_URL}?page=${page}&pageSize=${pageSize}`, {
-            method: 'GET',
-            headers: headers,
+          const response = await handleRequest(`${SALES_URL}?page=${page}&pageSize=${pageSize}`, {
+            method: "GET",
           });
     
           if (!response.ok) {
@@ -31,11 +24,11 @@ export const SalesService = {
 
       registerSale: async (salesData: CreateSales) => {
         try{ 
-        const response = await fetch(SALES_URL, {
-          method: 'POST',
-          headers: headers,
-          body: JSON.stringify(salesData),
-        });
+
+          const response = await handleRequest(SALES_URL, {
+            method: "POST",
+            body: JSON.stringify(salesData),
+          });
     
         if (!response.ok) {
           let errorMessage = `Bad Request: ${response.statusText}`;
@@ -56,10 +49,9 @@ export const SalesService = {
       getSaleById: async (saleId: string) => {
         try {
           const url = `${SALES_URL}/${saleId}`;
-          
-          const response = await fetch(url, {
+
+          const response = await handleRequest(url, {
             method: "GET",
-            headers: headers,
           });
     
           if (!response.ok) {

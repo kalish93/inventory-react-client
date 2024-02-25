@@ -1,16 +1,10 @@
 import { ROLES_URL } from "../../core/api-routes";
-
-const accessToken = localStorage.getItem('accessToken');
-const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${accessToken}`,
-  };
+import { handleRequest } from "../../utils/apiService";
 
 export const RoleService = {
     getRoles: async () => {
-      const response = await fetch(ROLES_URL, {
-        method: 'GET',
-        headers: headers,
+      const response = await handleRequest(ROLES_URL, {
+        method: "GET",
       });
   
       if (!response.ok) {

@@ -1,11 +1,6 @@
 import { DECLARATIONS_URL } from "../../core/api-routes";
 import { CreateDeclaration } from "../../models/declaration";
-
-const accessToken = localStorage.getItem('accessToken');
-const headers = {
-  'Content-Type': 'application/json',
-  'Authorization': `Bearer ${accessToken}`,
-};
+import { handleRequest } from "../../utils/apiService";
 
 export const DeclarationService = {
   getDeclarations: async (page?: any, pageSize?: any) => {
@@ -16,9 +11,8 @@ export const DeclarationService = {
         url += `?page=${page}&pageSize=${pageSize}`;
       }
 
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: headers,
+      const response = await handleRequest(url, {
+        method: "GET",
       });
 
       if (!response.ok) {
@@ -37,11 +31,10 @@ export const DeclarationService = {
 
       registerDeclaration: async (DeclarationData: CreateDeclaration) => {
         try{
-        const response = await fetch(DECLARATIONS_URL, {
-          method: 'POST',
-          headers: headers,
-          body: JSON.stringify(DeclarationData),
-        });
+          const response = await handleRequest(DECLARATIONS_URL, {
+            method: "POST",
+            body: JSON.stringify(DeclarationData),
+          });
     
         if (!response.ok) {
           let errorMessage = `Bad Request: ${response.statusText}`;
@@ -63,10 +56,8 @@ export const DeclarationService = {
   getDeclarationById: async (declarationId: string) => {
     try {
       const url = `${DECLARATIONS_URL}/${declarationId}`;
-      
-      const response = await fetch(url, {
+      const response = await handleRequest(url, {
         method: "GET",
-        headers: headers,
       });
 
       if (!response.ok) {

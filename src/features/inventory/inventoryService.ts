@@ -1,22 +1,14 @@
 import { INVENTORY_URL } from "../../core/api-routes";
-
-const accessToken = localStorage.getItem("accessToken");
-const headers = {
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${accessToken}`,
-};
+import { handleRequest } from "../../utils/apiService";
 
 export const InventoryService = {
 
   getInventories: async (page = 1, pageSize = 10) => {
     try {
-      const response = await fetch(
-        `${INVENTORY_URL}?page=${page}&pageSize=${pageSize}`,
-        {
-          method: "GET",
-          headers: headers,
-        }
-      );
+  
+      const response = await handleRequest(`${INVENTORY_URL}?page=${page}&pageSize=${pageSize}`, {
+        method: "GET",
+      });
 
       if (!response.ok) {
         let errorMessage = `Bad Request: ${response.statusText}`;

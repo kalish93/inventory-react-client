@@ -1,10 +1,5 @@
 import { CA_URL } from "../../core/api-routes";
-
-const accessToken = localStorage.getItem('accessToken');
-const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${accessToken}`,
-  };
+import { handleRequest } from "../../utils/apiService";
 
 export const CashOfAccountService = {
     getCAs: async (page?: any, pageSize?: any) => {
@@ -14,10 +9,9 @@ export const CashOfAccountService = {
         if (page && pageSize) {
           url += `?page=${page}&pageSize=${pageSize}`;
         }
-          const response = await fetch(url, {
-            method: 'GET',
-            headers: headers,
-          });
+        const response = await handleRequest(url, {
+          method: "GET",
+        });
     
           if (!response.ok) {
             throw new Error('Error retrieving users');
@@ -32,12 +26,11 @@ export const CashOfAccountService = {
         }
       },
 
-      creataCA: async (day: any) => {
+      creataCA: async (createCA: any) => {
         try {
-          const response = await fetch(CA_URL, {
+          const response = await handleRequest(CA_URL, {
             method: "POST",
-            headers: headers,
-            body: JSON.stringify(day),
+            body: JSON.stringify(createCA),
           });
     
           if (!response.ok) {

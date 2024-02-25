@@ -1,18 +1,12 @@
 import { PURCHASES_URL } from "../../core/api-routes";
 import { CreatePurchase } from "../../models/purchase";
-
-const accessToken = localStorage.getItem('accessToken');
-const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${accessToken}`,
-  };
+import { handleRequest } from "../../utils/apiService";
 
 export const PurchaseService = {
     getPurchases: async (page = 1, pageSize = 10) => {
         try {
-          const response = await fetch(`${PURCHASES_URL}?page=${page}&pageSize=${pageSize}`, {
-            method: 'GET',
-            headers: headers,
+          const response = await handleRequest(`${PURCHASES_URL}?page=${page}&pageSize=${pageSize}`, {
+            method: "GET",
           });
     
           if (!response.ok) {
@@ -30,9 +24,8 @@ export const PurchaseService = {
 
       registerPurchase: async (PurchaseData: CreatePurchase) => {
         try{
-        const response = await fetch(PURCHASES_URL, {
-          method: 'POST',
-          headers: headers,
+        const response = await handleRequest(PURCHASES_URL, {
+          method: "POST",
           body: JSON.stringify(PurchaseData),
         });
     
@@ -57,9 +50,8 @@ export const PurchaseService = {
         try {
           const url = `${PURCHASES_URL}/${purchaseId}`;
           
-          const response = await fetch(url, {
+          const response = await handleRequest(url, {
             method: "GET",
-            headers: headers,
           });
     
           if (!response.ok) {
