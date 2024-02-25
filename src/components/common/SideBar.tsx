@@ -174,6 +174,18 @@ const Sidebar = () => {
           </ListItemIcon>
           <ListItemText primary="Sales" />
         </ListItem>
+        <ListItem
+          button
+          component={Link}
+          to="/ca-transactions"
+          key="CATransactions"
+          selected={isLinkActive("/ca-transactions")}
+        >
+          <ListItemIcon>
+            <AccountBalanceWalletIcon />
+          </ListItemIcon>
+          <ListItemText primary="CA Transactions" />
+        </ListItem>
 
         <ListItem
           button
