@@ -37,7 +37,6 @@ export const getUsers = (page: number, pageSize: number) => async (dispatch: App
       dispatch(getUsersSuccess(response));
     } catch (error) {
       dispatch(getUsersFailure(error));
-      throw(error);
     }
   };
 
