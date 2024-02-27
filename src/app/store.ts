@@ -12,6 +12,7 @@ import saleReducer from "../features/sales/salseSlice";
 import inventoryReducer from "../features/inventory/inventorySlice";
 import accountTypeReducer from "../features/account-type/accountTypeSlice";
 import cashOfAccountReducer from "../features/cash-of-account/cashOfAccountSlice";
+import transactionSlice from '../features/ca-transaction/transactionSlice';
 
 const store = configureStore({
   reducer: {
@@ -28,6 +29,7 @@ const store = configureStore({
     inventory: inventoryReducer,
     accountType: accountTypeReducer,
     cashOfAccount: cashOfAccountReducer,
+    caTransaction: transactionSlice,
   },
 });
 

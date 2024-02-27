@@ -9,29 +9,47 @@ import {
   FormHelperText,
   Alert,
   Snackbar,
+  Autocomplete,
 } from "@mui/material";
 import { AppDispatch } from "../../app/store";
-
+import { selectTransactions } from "../../features/ca-transaction/transactionSlice";
+import { createCATransaction } from "../../features/ca-transaction/transactionActions";
+import {
+  getCashOfAccountBanks,
+  getCashOfAccountExpenses,
+} from "../../features/cash-of-account/cashOfAccountActions";
+import { getSuppliers } from "../../features/supplier/supplierActions";
+import dayjs from "dayjs";
+import { getCustomers } from "../../features/customer/customerActions";
 
 interface ProductFormProps {
   open: boolean;
   handleClose: () => void;
   title: string;
-  formName: string;
+  formLabel: string;
 }
 
 const CATransactionsForm: React.FC<ProductFormProps> = ({
   open,
   handleClose,
   title,
-  formName,
+  formLabel,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const cashOfAccountBanks = useSelector(
+    (state: any) => state.cashOfAccount.banks
+  );
+  const cashOfAccountExpenses = useSelector(
+    (state: any) => state.cashOfAccount.expenses
+  );
+  const customers = useSelector((state: any) => state.customer.customers.items);
+
+  const suppliers = useSelector((state: any) => state.supplier.suppliers.items);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const { isError, error, loading } = useSelector(selectProduct);
+  const { isError, error, loading } = useSelector(selectTransactions);
 
   const showSnackbar = (message: string, severity: "success" | "error") => {
     setSnackbarMessage(message);
@@ -39,6 +57,23 @@ const CATransactionsForm: React.FC<ProductFormProps> = ({
     setSnackbarOpen(true);
   };
 
+  useEffect(() => {
+    dispatch(getCashOfAccountBanks());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getCashOfAccountExpenses());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getSuppliers());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getCustomers());
+  }, [dispatch]);
+
+  console.log(customers);
   useEffect(() => {
     if (isFormSubmitted && !loading) {
       if (isError) {
@@ -55,15 +90,15 @@ const CATransactionsForm: React.FC<ProductFormProps> = ({
   };
 
   const [formData, setFormData] = useState({
-    bankName: "",
-    formName: "",
-    date: "",
-    amount: "",
+    chartofAccountId1: "",
+    chartofAccountId2: "",
+    date: null,
+    amount: 0,
     transactionRemark: "",
   });
   const [touched, setTouched] = useState<{
-    bankName?: boolean;
-    formName?: boolean;
+    chartofAccountId1?: boolean;
+    chartofAccountId2?: boolean;
     date?: boolean;
     amount?: boolean;
     transactionRemark?: boolean;
@@ -78,7 +113,35 @@ const CATransactionsForm: React.FC<ProductFormProps> = ({
   };
 
   const handleSubmit = () => {
-    // dispatch(createProduct(formData));
+    let newFormData = {
+      chartofAccountId1: formData.chartofAccountId1,
+      chartofAccountId2: formData.chartofAccountId2,
+      date: formData.date,
+      remark: formData.transactionRemark,
+      credit: "",
+      debit: "",
+      purchaseId: ""
+    };
+    if (title === "Add Expense") {
+      newFormData.credit = formData.amount.toString();
+    } else if (title === "Add Supplier Payment") {
+      newFormData.chartofAccountId2 = "9145a724-1650-4416-bbcf-f1e1ac3619e5";
+      newFormData.debit = formData.amount.toString();
+    } else if (title === "Add Customer Payment") {
+      const customer = customers.find(
+        (customer: { id: string }) => customer.id === formData.chartofAccountId2
+      );
+      newFormData.chartofAccountId2 = "6e57436a-8c19-426a-a260-f8fc5e6de0e1";
+      newFormData.remark = `Payment made by ${customer.firstName} for ${formData.transactionRemark}`;
+      newFormData.debit = formData.amount.toString();
+    } else if (title === "Add Transport Payment") {
+      newFormData.purchaseId = formData.chartofAccountId2;
+      newFormData.chartofAccountId2 = "3f2d5f0e-7ac4-4fd4-b4b6-bf7ae1f05f4c";
+      newFormData.debit = formData.amount.toString();
+
+    }
+    console.log(newFormData);
+    dispatch(createCATransaction(newFormData));
     handleClose();
     setIsFormSubmitted(true);
     setTouched({});
@@ -117,40 +180,176 @@ const CATransactionsForm: React.FC<ProductFormProps> = ({
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             {title} Form
           </Typography>
-          <TextField
-            name="bankName"
-            label="Bank Name"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            onChange={handleChange}
-            required
-            error={touched.bankName && !formData.bankName}
-            onBlur={() => handleBlur("bankName")}
+          <Autocomplete
+            options={cashOfAccountBanks}
+            getOptionLabel={(option) => option.name}
+            value={
+              cashOfAccountBanks.find(
+                (d: { id: string }) => d.id === formData.chartofAccountId1
+              ) || null
+            }
+            onChange={(event, newValue) => {
+              handleChange({
+                target: {
+                  name: "chartofAccountId1",
+                  value: newValue ? newValue.id : "",
+                },
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Bank Name"
+                variant="outlined"
+                fullWidth
+                required
+                error={touched.chartofAccountId1 && !formData.chartofAccountId1}
+                onBlur={() =>
+                  setTouched({ ...touched, chartofAccountId1: true })
+                }
+              />
+            )}
           />
-          {touched.bankName && !formData.bankName && (
-            <FormHelperText error>Bank Name is required</FormHelperText>
+          {formLabel === "CA Full Name" ? (
+            <>
+              <Typography
+                style={{ marginTop: "10px", marginBottom: "10px" }}
+              ></Typography>
+
+              <Autocomplete
+                options={cashOfAccountExpenses}
+                getOptionLabel={(option) => option.name}
+                value={
+                  cashOfAccountExpenses.find(
+                    (d: { id: string }) => d.id === formData.chartofAccountId2
+                  ) || null
+                }
+                onChange={(event, newValue) => {
+                  handleChange({
+                    target: {
+                      name: "chartofAccountId2",
+                      value: newValue ? newValue.id : "",
+                    },
+                  });
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Expense Name"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    error={
+                      touched.chartofAccountId2 && !formData.chartofAccountId2
+                    }
+                    onBlur={() =>
+                      setTouched({ ...touched, chartofAccountId2: true })
+                    }
+                  />
+                )}
+              />
+            </>
+          ) : formLabel === "Supplier Name" ? (
+            <>
+              <Typography
+                style={{ marginTop: "10px", marginBottom: "10px" }}
+              ></Typography>
+
+              <Autocomplete
+                options={suppliers}
+                getOptionLabel={(option) => option.name}
+                value={
+                  suppliers.find(
+                    (d: { id: string }) => d.id === formData.chartofAccountId2
+                  ) || null
+                }
+                onChange={(event, newValue) => {
+                  handleChange({
+                    target: {
+                      name: "chartofAccountId2",
+                      value: newValue ? newValue.id : "",
+                    },
+                  });
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Supplier Name"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    error={
+                      touched.chartofAccountId2 && !formData.chartofAccountId2
+                    }
+                    onBlur={() =>
+                      setTouched({ ...touched, chartofAccountId2: true })
+                    }
+                  />
+                )}
+              />
+            </>
+          ) : formLabel === "Customer Name" ? (
+            <>
+              <Typography
+                style={{ marginTop: "10px", marginBottom: "10px" }}
+              ></Typography>
+              <Autocomplete
+                options={customers}
+                getOptionLabel={(option) => option.firstName}
+                value={
+                  customers.find(
+                    (d: { id: string }) => d.id === formData.chartofAccountId2
+                  ) || null
+                }
+                onChange={(event, newValue) => {
+                  handleChange({
+                    target: {
+                      name: "chartofAccountId2",
+                      value: newValue ? newValue.id : "",
+                    },
+                  });
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Customer"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    error={
+                      touched.chartofAccountId2 && !formData.chartofAccountId2
+                    }
+                    onBlur={() =>
+                      setTouched({ ...touched, chartofAccountId2: true })
+                    }
+                  />
+                )}
+              />
+            </>
+          ) : (
+            <TextField
+              name="chartofAccountId2"
+              label={formLabel}
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              onChange={handleChange}
+              required
+              error={touched.chartofAccountId2 && !formData.chartofAccountId2}
+              onBlur={() => handleBlur("chartofAccountId2")}
+            />
           )}
-          <TextField
-            name={formName}
-            label={formName}
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            onChange={handleChange}
-            required
-            error={touched.name && !formData.name}
-            onBlur={() => handleBlur({ formName })}
-          />
-          {touched.fromName && !formData.formName && (
-            <FormHelperText error>{formName} is required</FormHelperText>
+          {touched.chartofAccountId2 && !formData.chartofAccountId2 && (
+            <FormHelperText error>{formLabel} is required</FormHelperText>
           )}
           <TextField
             name="date"
-            label="transaction Date"
+            label="Transaction Date"
             variant="outlined"
             fullWidth
             margin="normal"
+            type="date"
+            value={dayjs(formData.date).format("YYYY-MM-DD")}
             onChange={handleChange}
             required
             error={touched.date && !formData.date}
@@ -167,7 +366,7 @@ const CATransactionsForm: React.FC<ProductFormProps> = ({
             margin="normal"
             onChange={handleChange}
             required
-            error={touched.category && !formData.category}
+            error={touched.amount && !formData.amount}
             onBlur={() => handleBlur("amount")}
           />
           {touched.amount && !formData.amount && (
@@ -190,9 +389,10 @@ const CATransactionsForm: React.FC<ProductFormProps> = ({
             color="primary"
             onClick={handleSubmit}
             disabled={
-              !formData.name ||
-              !formData.category ||
-              !formData.unitOfMeasurement
+              !formData.chartofAccountId1 ||
+              !formData.amount ||
+              !formData.chartofAccountId2 ||
+              !formData.date
             }
           >
             Submit

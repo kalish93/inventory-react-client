@@ -3,7 +3,7 @@ import { CreateSupplier } from "../../models/supplier";
 import { SupplierService } from "./supplierService";
 import { deleteSupplierFailure, deleteSupplierStart, deleteSupplierSuccess, getSuppliersFailure, getSuppliersStart, getSuppliersSuccess, registerSupplierFailure, registerSupplierStart, registerSupplierSuccess } from "./supplierSlice";
 
-export const getSuppliers = (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
+export const getSuppliers = (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
       dispatch(getSuppliersStart());
       const response = await SupplierService.getSuppliers(page, pageSize);
