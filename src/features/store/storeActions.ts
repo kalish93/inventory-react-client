@@ -38,10 +38,14 @@ export const deleteStore = (storeId: string) => async (dispatch: AppDispatch) =>
     try {
         dispatch(storeStart());
         const response = await storeService.deleteStore(storeId);
-        dispatch(deleteStoreSuccess(response));
-    } catch (error) {
-        dispatch(storeFailure(error));
-    }
+        if (response.success) {
+          dispatch(deleteStoreSuccess(response.data));
+        } else {
+          dispatch(storeFailure(response.error || 'Unknown error'));
+        }
+      } catch (error) {
+        dispatch(storeFailure('Unknown error'));
+      }
 };
 
 export const updateStore = (storeData: Store) => async (dispatch: AppDispatch) => {

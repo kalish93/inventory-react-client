@@ -12,11 +12,7 @@ export async function handleRequest(url: any, options: any) {
       headers,
     });
 
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-
-    return await response;
+    return response;
   } catch (error: any) {
     if (error.message === "Unauthorized" || error.message === "Token expired") {
       try {

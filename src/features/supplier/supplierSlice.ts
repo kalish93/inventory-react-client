@@ -62,6 +62,30 @@ const supplierSlice = createSlice({
         state.isError = true;
         state.error = action.payload;
       },
+
+      deleteSupplierStart: (state) => {
+        state.loading = true;
+        state.error = null;
+        state.isError = false
+      },
+      deleteSupplierSuccess: (state, action) => {
+        const deletedsupplier = action.payload;
+        state.suppliers = {
+            items: state.suppliers?.items.filter(supplier => supplier.id !== deletedsupplier.id) || [],
+            totalCount: (state.suppliers?.totalCount || 0) - 1,
+            pageSize: state.suppliers?.pageSize || 10, 
+            currentPage: state.suppliers?.currentPage || 1, 
+            totalPages: state.suppliers?.totalPages || 1, 
+        };
+        state.loading = false;
+          
+      },
+      deleteSupplierFailure: (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.isError = true
+      },
+  
   },
 });
 
@@ -71,7 +95,10 @@ export const {
   getSuppliersFailure,
   registerSupplierStart,
   registerSupplierSuccess,
-  registerSupplierFailure
+  registerSupplierFailure,
+  deleteSupplierFailure,
+  deleteSupplierStart,
+  deleteSupplierSuccess
 } = supplierSlice.actions;
 
 export const selectSupplier = (state: { supplier: SupplierState }) => state.supplier;

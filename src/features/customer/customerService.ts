@@ -46,5 +46,23 @@ export const CustomerService = {
         return { success: true, data };
       },
   
+      deleteCustomer: async (id: any) => {
+        const response = await handleRequest(`${CUSTOMERS_URL}/${id}`, {
+          method: "DELETE",
+        });
+    
+        if (!response.ok) {
+          let errorMessage = `Bad Request: ${response.statusText}`;
+  
+            const data = await response.json();
+            errorMessage = data.error || errorMessage;
+  
+          return { success: false, error: errorMessage };
+        }
+  
+        const data = await response.json();
+        return { success: true, data };
+      },
+  
 };
   

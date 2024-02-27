@@ -26,7 +26,6 @@ const InventoryList = () => {
   } = inventoryState.inventories;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  console.log(inventories);
 
   useEffect(() => {
     dispatch(getInventories(page + 1, rowsPerPage));
@@ -71,7 +70,6 @@ const InventoryList = () => {
           <TableBody>
             {inventories.map(
               (inventory: any) => (
-                console.log(inventory),
                 (
                   <TableRow key={inventory.id}>
                     <TableCell>

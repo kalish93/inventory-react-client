@@ -51,11 +51,10 @@ const storeSlice = createSlice({
       };
       state.loading = false;
     },
-    deleteStoreSuccess: (state, action: PayloadAction<number>) => {
-      const storeId = action.payload;
+    deleteStoreSuccess: (state, action) => {
+      const deletedStore = action.payload;
       state.stores = {
-        items:
-          state.stores?.items?.filter((store) => store.id !== storeId) || [],
+        items: state.stores?.items.filter(store => store.id !== deletedStore.id) || [],
         totalCount: (state.stores?.totalCount || 0) - 1,
         pageSize: state.stores?.pageSize || 10,
         currentPage: state.stores?.currentPage || 1,
