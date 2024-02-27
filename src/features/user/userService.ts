@@ -70,4 +70,51 @@ export const UserService = {
       throw error;
     }
   },
+
+  updateUser: async (userData: any) => {
+    try {
+      const response = await handleRequest(`${USERS_URL}/${userData.id}`, {
+        method: "PUT",
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        let errorMessage = `Bad Request: ${response.statusText}`;
+
+          const data = await response.json();
+          errorMessage = data.error || errorMessage;
+
+        return { success: false, error: errorMessage };
+      }
+
+      const data = await response.json();
+      return { success: true, data };
+    } catch (error) {
+      console.error("Error in update User service:", error);
+      return { success: false, error: "Unexpected error occurred" };
+    }
+  },
+
+  deleteUser: async (id: any) => {
+    try {
+      const response = await handleRequest(`${USERS_URL}/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        let errorMessage = `Bad Request: ${response.statusText}`;
+
+          const data = await response.json();
+          errorMessage = data.error || errorMessage;
+
+        return { success: false, error: errorMessage };
+      }
+
+      const data = await response.json();
+      return { success: true, data };
+    } catch (error) {
+      console.error("Error in delete User service:", error);
+      return { success: false, error: "Unexpected error occurred" };
+    }
+  },
 };

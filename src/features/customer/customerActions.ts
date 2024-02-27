@@ -1,7 +1,7 @@
 import { AppDispatch } from "../../app/store";
 import { CreateCustomer } from "../../models/customer";
 import { CustomerService } from "./customerService";
-import { getCustomersFailure, getCustomersStart, getCustomersSuccess, registerCustomerFailure, registerCustomerStart, registerCustomerSuccess } from "./customerSlice";
+import { deleteCustomerFailure, deleteCustomerStart, deleteCustomerSuccess, getCustomersFailure, getCustomersStart, getCustomersSuccess, registerCustomerFailure, registerCustomerStart, registerCustomerSuccess } from "./customerSlice";
 
 export const getCustomers = (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
@@ -25,5 +25,20 @@ export const createCustomer = (data: CreateCustomer) => async (dispatch: AppDisp
       }
     } catch (error) {
       dispatch(registerCustomerFailure('Unknown error'));
+    }
+  };
+
+export const deleteCustomer = (id: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(deleteCustomerStart());
+  
+      const response = await CustomerService.deleteCustomer(id);
+      if (response.success) {
+        dispatch(deleteCustomerSuccess(response.data));
+      } else {
+        dispatch(deleteCustomerFailure(response.error || 'Unknown error'));
+      }
+    } catch (error) {
+      dispatch(deleteCustomerFailure('Unknown error'));
     }
   };

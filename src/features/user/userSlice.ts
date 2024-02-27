@@ -97,6 +97,51 @@ const userSlice = createSlice({
     state.loading = false;
     state.error = action.payload;
     },
+
+    updateUserStart: (state) => {
+      state.loading = true;
+      state.error = null;
+      state.isError = false
+    },
+    updateUserSuccess: (state, action) => {
+        const updatedUser = action.payload;
+        const userIndex = state.users.items.findIndex(user => user.id === updatedUser.id);
+        if (userIndex !== -1) {
+            state.users.items = state.users.items.map(user => (user.id === updatedUser.id ? updatedUser : user));
+        } else {
+            state.users.items = [updatedUser, ...state.users.items];
+        }
+        
+    },
+    updateUserFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.isError = true
+    },
+
+    deleteUserStart: (state) => {
+      state.loading = true;
+      state.error = null;
+      state.isError = false
+    },
+    deleteUserSuccess: (state, action) => {
+      const deletedUser = action.payload;
+      state.users = {
+          items: state.users?.items.filter(user => user.id !== deletedUser.id) || [],
+          totalCount: (state.users?.totalCount || 0) - 1,
+          pageSize: state.users?.pageSize || 10, 
+          currentPage: state.users?.currentPage || 1, 
+          totalPages: state.users?.totalPages || 1, 
+      };
+      state.loading = false;
+        
+    },
+    deleteUserFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.isError = true
+    },
+
   },
 });
 
@@ -110,7 +155,13 @@ export const {
   registerUserFailure,
   getUsersStart,
   getUsersSuccess,
-  getUsersFailure
+  getUsersFailure,
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+  deleteUserFailure,
+  deleteUserStart,
+  deleteUserSuccess
 } = userSlice.actions;
 
 export const selectUser = (state: { user: UserState }) => state.user;

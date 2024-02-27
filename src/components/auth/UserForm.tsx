@@ -34,7 +34,7 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const { isError, error } = useSelector(selectUser);
+  const { isError, error, loading } = useSelector(selectUser);
 
   const showSnackbar = (message: string, severity: "success" | "error") => {
     setSnackbarMessage(message);
@@ -71,7 +71,7 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
   });
 
   useEffect(() => {
-    if (isFormSubmitted) {
+    if (isFormSubmitted && !loading) {
       if (isError) {
         showSnackbar(error || "Unknown error", "error");
         setIsFormSubmitted(false);
@@ -80,7 +80,7 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
         setIsFormSubmitted(false);
       }
     }
-  }, [error, isError, isFormSubmitted]);
+  }, [error, isError, isFormSubmitted, loading]);
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);

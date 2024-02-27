@@ -57,8 +57,12 @@ export const deleteDriver =
     try {
       dispatch(deleteDriverStart());
       const response = await DriverService.deleteDriver(driverID);
-      dispatch(deleteDriverSuccess(response));
+      if (response.success) {
+        dispatch(deleteDriverSuccess(response.data));
+      } else {
+        dispatch(deleteDriverFailure(response.error || 'Unknown error'));
+      }
     } catch (error) {
-      dispatch(deleteDriverFailure(error));
+      dispatch(deleteDriverFailure('Unknown error'));
     }
   };

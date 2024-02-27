@@ -23,7 +23,6 @@ export const DriverService = {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.log("Error", error);
       throw error;
     }
   },
@@ -66,7 +65,6 @@ export const DriverService = {
         const data = await response.json();
         return { driver: data.driver };
         } catch (error) {
-        console.log("Error", error);
         throw error;
         }
     },
@@ -77,14 +75,20 @@ export const DriverService = {
             method: "DELETE",
           });
     
-        if (!response.ok) {
-            throw new Error("Failed to delete driver");
-        }
-        const data = await response.json();
-        return { driver: data.driver };
+          if (!response.ok) {
+            let errorMessage = `Bad Request: ${response.statusText}`;
+    
+              const data = await response.json();
+              errorMessage = data.error || errorMessage;
+    
+            return { success: false, error: errorMessage };
+          }
+    
+          const data = await response.json();
+          return { success: true, data };
         } catch (error) {
-        console.log("Error", error);
-        throw error;
+          console.error("Error in deleteStore service:", error);
+          return { success: false, error: "Unexpected error occurred" };
         }
     },
 };

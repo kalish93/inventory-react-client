@@ -1,4 +1,4 @@
-import { getUsersFailure, getUsersStart, getUsersSuccess, loginFailure, loginStart, loginSuccess, logoutUser, registerUserFailure, registerUserStart, registerUserSuccess } from './userSlice';
+import { deleteUserFailure, deleteUserStart, deleteUserSuccess, getUsersFailure, getUsersStart, getUsersSuccess, loginFailure, loginStart, loginSuccess, logoutUser, registerUserFailure, registerUserStart, registerUserSuccess, updateUserFailure, updateUserStart, updateUserSuccess } from './userSlice';
 import { UserService } from './userService';
 import { AppDispatch } from '../../app/store';
 import { CreateUser } from '../../models/user';
@@ -45,4 +45,35 @@ export const logout = () => (dispatch: AppDispatch) => {
   dispatch(logoutUser());
 };
 
+export const updateUser = (userData: any) => async (dispatch: AppDispatch) => {
+  try {
+    dispatch(updateUserStart());
+
+    const response = await UserService.updateUser(userData);
+
+    if (response.success) {
+      dispatch(updateUserSuccess(response.data));
+    } else {
+      dispatch(updateUserFailure(response.error || 'Unknown error'));
+    }
+  } catch (error) {
+    dispatch(updateUserFailure('Unknown error'));
+  }
+};
+
+export const deleteUser = (id: any) => async (dispatch: AppDispatch) => {
+  try {
+    dispatch(deleteUserStart());
+
+    const response = await UserService.deleteUser(id);
+
+    if (response.success) {
+      dispatch(deleteUserSuccess(response.data));
+    } else {
+      dispatch(deleteUserFailure(response.error || 'Unknown error'));
+    }
+  } catch (error) {
+    dispatch(deleteUserFailure('Unknown error'));
+  }
+};
 

@@ -45,9 +45,9 @@ const customerSlice = createSlice({
         state.isError = false;
       },
       registerCustomerSuccess: (state, action) => {
-          const newUser = action.payload;
+          const newCustomer = action.payload;
           state.customers = {
-              items: [...(state.customers?.items || []), newUser],
+              items: [newCustomer, ...(state.customers?.items || [])],
               totalCount: (state.customers?.totalCount || 0) + 1,
               pageSize: state.customers?.pageSize || 10, 
               currentPage: state.customers?.currentPage || 1, 
@@ -62,6 +62,31 @@ const customerSlice = createSlice({
         state.error = action.payload;
         state.isError = true
       },
+
+
+      deleteCustomerStart: (state) => {
+        state.loading = true;
+        state.error = null;
+        state.isError = false
+      },
+      deleteCustomerSuccess: (state, action) => {
+        const deletedCustomer = action.payload;
+        state.customers = {
+            items: state.customers?.items.filter(user => user.id !== deletedCustomer.id) || [],
+            totalCount: (state.customers?.totalCount || 0) - 1,
+            pageSize: state.customers?.pageSize || 10, 
+            currentPage: state.customers?.currentPage || 1, 
+            totalPages: state.customers?.totalPages || 1, 
+        };
+        state.loading = false;
+          
+      },
+      deleteCustomerFailure: (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.isError = true
+      },
+  
   },
 });
 
@@ -71,7 +96,10 @@ export const {
   getCustomersFailure,
   registerCustomerStart,
   registerCustomerSuccess,
-  registerCustomerFailure
+  registerCustomerFailure,
+  deleteCustomerFailure,
+  deleteCustomerStart,
+  deleteCustomerSuccess
 } = customerSlice.actions;
 
 export const selectCustomer = (state: { customer: CustomerState }) => state.customer;

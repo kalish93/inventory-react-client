@@ -10,12 +10,19 @@ import {
   Paper,
   TablePagination,
   Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 
 import DriverForm from './DriverForm';
 import { AppDispatch } from '../../app/store';
 import { selectDrivers } from '../../features/driver/driverSlice';
-import { getDrivers } from '../../features/driver/driverActions';
+import { deleteDriver, getDrivers } from '../../features/driver/driverActions';
+import ConfirmationModal from '../common/confirmationModal';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 const DriversList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -24,6 +31,64 @@ const DriversList = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openModal, setOpenModal] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedDriverId, setSelectedDriverId] = useState(null);
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
+  const {isError, error, loading} = useSelector(selectDrivers);
+
+  const openConfirmationModal = () => {
+    setConfirmationModalOpen(true);
+  };
+
+  const closeConfirmationModal = () => {
+    setConfirmationModalOpen(false);
+  };
+
+  const handleConfirmAction = () => {
+    handleDeleteDriver();
+    closeConfirmationModal();
+  };
+
+  const handleUpdateDriver = () =>{
+    
+  }
+
+  const handleDeleteDriver = () =>{
+    handleMenuClose();
+    if (selectedDriverId !== null) {
+      dispatch(deleteDriver(selectedDriverId))
+        .then(() => {
+          if(!isError && !loading){
+            showSnackbar('Driver deleted successfully', 'success');
+          }else{
+            showSnackbar(error, 'error');
+          }
+        })
+      }
+  }
+
+  const handleMenuOpen = (event: any, driverId: any) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedDriverId(driverId);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedDriverId(null);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
+  const showSnackbar = (message: string, severity: "success" | "error") => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
 
   useEffect(() => {
     dispatch(getDrivers(page + 1, rowsPerPage));
@@ -72,6 +137,7 @@ const DriversList = () => {
                 <TableCell>Association Phone</TableCell>
                 <TableCell>Owner Name</TableCell>
                 <TableCell>Owner Phone</TableCell>
+                <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -84,13 +150,61 @@ const DriversList = () => {
                 <TableCell>{driver.associationName}</TableCell>
                 <TableCell>{driver.associationPhone}</TableCell>
                 <TableCell>{driver.ownerName}</TableCell>
-                <TableCell>{driver.ownerPhone}</TableCell>                
+                <TableCell>{driver.ownerPhone}</TableCell>  
+                <TableCell>
+                <IconButton
+                    aria-label="Actions"
+                    onClick={(event) => handleMenuOpen(event, driver.id)}
+                    style={{ margin: 0, padding: 0 }}
+                  >
+                   <MoreVertIcon/>
+                  </IconButton>
+                  <Menu
+                    id="actions-menu"
+                    MenuListProps={{
+                      'aria-labelledby': 'long-button',
+                    }}
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    PaperProps={{
+                      style: {
+                        width: '20ch',
+                        boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.1)'
+                      },
+                    }}
+                  >
+                    <MenuItem onClick={handleUpdateDriver}>Update</MenuItem>
+                    <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>
+                  </Menu>
+                  </TableCell>              
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
       <DriverForm open={openModal} handleClose={handleCloseModal} />
+      <ConfirmationModal
+        open={confirmationModalOpen}
+        onClose={closeConfirmationModal}
+        onConfirm={handleConfirmAction}
+        title="Delete Driver"
+        content="Are you sure you want to delete this driver?"
+      />
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity as "success" | "error"}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

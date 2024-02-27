@@ -62,6 +62,30 @@ const productSlice = createSlice({
         state.isError = true;
         state.error = action.payload;
       },
+
+      deleteProductStart: (state) => {
+        state.loading = true;
+        state.error = null;
+      },
+      deleteProductSuccess: (state, action) => {
+        const productToDelete = action.payload;
+        state.products = {
+          items:
+            state.products?.items?.filter(
+              (product) => product.id !== productToDelete.id
+            ) ?? [],
+          totalCount: (state.products?.totalCount || 0) - 1,
+          pageSize: state.products?.pageSize || 10,
+          currentPage: state.products?.currentPage || 1,
+          totalPages: state.products?.totalPages || 1,
+        };
+        state.loading = false;
+      },
+      deleteproductFailure: (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      },
+
   },
 });
 
@@ -71,7 +95,10 @@ export const {
   getProductsFailure,
   registerProductStart,
   registerProductSuccess,
-  registerProductFailure
+  registerProductFailure,
+  deleteProductStart,
+  deleteProductSuccess,
+  deleteproductFailure
 } = productSlice.actions;
 
 export const selectProduct = (state: { product: ProductState }) => state.product;
