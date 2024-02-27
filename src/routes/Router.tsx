@@ -16,6 +16,7 @@ import SalesList from "../components/sales/SalesList";
 import SaleDetail from "../components/sales/SaleDetail";
 import InventoryList from "../components/inventory/InventoryList";
 import CashOfAccountList from "../components/cash-of-account/CashOfAccountList";
+import CATransactionsList from "../components/ca-transaction/CATransactionsList";
 
 const routes = createBrowserRouter([
   {
@@ -78,6 +79,10 @@ const routes = createBrowserRouter([
         path: "cash-of-accounts",
         element: <CashOfAccountList /> 
       },
+      {
+        path: "ca-transactions",
+        element: <CATransactionsList />,
+      }
     ],
   },
   {
