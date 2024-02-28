@@ -50,10 +50,14 @@ export const deleteStore = (storeId: string) => async (dispatch: AppDispatch) =>
 
 export const updateStore = (storeData: Store) => async (dispatch: AppDispatch) => {
     try {
-        dispatch(storeStart());
-        const response = await storeService.updateStore(storeData);
-        dispatch(updateStoreSuccess(response));
+      dispatch(storeStart());
+      const response = await storeService.updateStore(storeData);
+      if (response.success) {
+        dispatch(updateStoreSuccess(response.data));
+      } else {
+        dispatch(storeFailure(response.error || 'Unknown error'));
+      }
     } catch (error) {
-        dispatch(storeFailure(error));
+      dispatch(storeFailure('Unknown error'));
     }
 };

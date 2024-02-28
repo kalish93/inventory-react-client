@@ -42,13 +42,17 @@ export const createDriver = (driver: CreateDriver) => async (dispatch: AppDispat
   };
 
 export const updateDriver =
-  (driver: CreateDriver) => async (dispatch: AppDispatch) => {
+  (driver: any) => async (dispatch: AppDispatch) => {
     try {
       dispatch(updateDriverStart());
       const response = await DriverService.updateDriver(driver);
-      dispatch(updateDriverSuccess(response));
+      if (response.success) {
+        dispatch(updateDriverSuccess(response.data));
+      } else {
+        dispatch(updateDriverFailure(response.error || 'Unknown error'));
+      }
     } catch (error) {
-      dispatch(updateDriverFailure(error));
+      dispatch(updateDriverFailure('Unknown error'));
     }
   };
 

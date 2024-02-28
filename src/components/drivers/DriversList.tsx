@@ -38,6 +38,7 @@ const DriversList = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
   const {isError, error, loading} = useSelector(selectDrivers);
+  const [selectedDriver, setSelectedDriver] = useState(null);
 
   const openConfirmationModal = () => {
     setConfirmationModalOpen(true);
@@ -53,11 +54,13 @@ const DriversList = () => {
   };
 
   const handleUpdateDriver = () =>{
-    
+      handleOpenModal();
+      handleMenuClose();
   }
 
   const handleDeleteDriver = () =>{
     handleMenuClose();
+
     if (selectedDriverId !== null) {
       dispatch(deleteDriver(selectedDriverId))
         .then(() => {
@@ -70,9 +73,10 @@ const DriversList = () => {
       }
   }
 
-  const handleMenuOpen = (event: any, driverId: any) => {
+  const handleMenuOpen = (event: any, driverId: any, driver: any) => {
     setAnchorEl(event.currentTarget);
     setSelectedDriverId(driverId);
+    setSelectedDriver(driver)
   };
 
   const handleMenuClose = () => {
@@ -109,6 +113,8 @@ const DriversList = () => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+    setSelectedDriverId(null);
+    setSelectedDriver(null)
   };
 
   return (
@@ -154,7 +160,7 @@ const DriversList = () => {
                 <TableCell>
                 <IconButton
                     aria-label="Actions"
-                    onClick={(event) => handleMenuOpen(event, driver.id)}
+                    onClick={(event) => handleMenuOpen(event, driver.id, driver)}
                     style={{ margin: 0, padding: 0 }}
                   >
                    <MoreVertIcon/>
@@ -183,7 +189,7 @@ const DriversList = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <DriverForm open={openModal} handleClose={handleCloseModal} />
+      <DriverForm open={openModal} handleClose={handleCloseModal} selectedDriver={selectedDriver}/>
       <ConfirmationModal
         open={confirmationModalOpen}
         onClose={closeConfirmationModal}

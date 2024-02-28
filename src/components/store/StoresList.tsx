@@ -38,6 +38,7 @@ const StoresList = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
   const {isError, error, loading} = useSelector(selectStore);
+  const [selectedStore, setSelectedStore] = useState(null)
 
   const openConfirmationModal = () => {
     setConfirmationModalOpen(true);
@@ -53,7 +54,8 @@ const StoresList = () => {
   };
 
   const handleUpdateStore = () =>{
-    
+    handleOpenModal();
+    handleMenuClose();
   }
 
   const handleDeleteStore = () =>{
@@ -70,9 +72,10 @@ const StoresList = () => {
       }
   }
 
-  const handleMenuOpen = (event: any, storeId: any) => {
+  const handleMenuOpen = (event: any, storeId: any, store: any) => {
     setAnchorEl(event.currentTarget);
     setSelectedStoreId(storeId);
+    setSelectedStore(store)
   };
 
   const handleMenuClose = () => {
@@ -109,6 +112,8 @@ const StoresList = () => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+    setSelectedStoreId(null);
+    setSelectedStore(null)
   };
 
   return (
@@ -142,7 +147,7 @@ const StoresList = () => {
                 <TableCell>
                 <IconButton
                     aria-label="Actions"
-                    onClick={(event) => handleMenuOpen(event, store.id)}
+                    onClick={(event) => handleMenuOpen(event, store.id, store)}
                     style={{ margin: 0, padding: 0 }}
                   >
                    <MoreVertIcon/>
@@ -171,7 +176,7 @@ const StoresList = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <StoreForm open={openModal} handleClose={handleCloseModal} />
+      <StoreForm open={openModal} handleClose={handleCloseModal} selectedStore={selectedStore}/>
       <ConfirmationModal
         open={confirmationModalOpen}
         onClose={closeConfirmationModal}

@@ -12,15 +12,17 @@ import {
   CircularProgress
 } from '@mui/material';
 import { AppDispatch } from '../../app/store';
-import { createCustomer } from '../../features/customer/customerActions';
+import { createCustomer, updateCustomer } from '../../features/customer/customerActions';
 import { selectCustomer } from '../../features/customer/customerSlice';
 
 interface CustomerFormProps {
   open: boolean;
   handleClose: () => void;
+  selectedCustomer?: FormData | null;
 }
 
 interface FormData {
+  id?: string;
   firstName: string;
   middleName: string;
   lastName: string;
@@ -38,15 +40,16 @@ interface Errors {
   address: string;
 }
 
-const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose }) => {
+const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose, selectedCustomer }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const {isError, error, loading} = useSelector(selectCustomer)
+  const { isError, error, loading, successMessage } = useSelector(selectCustomer);
 
   const [formData, setFormData] = useState<FormData>({
+    id: undefined,
     firstName: '',
     middleName: '',
     lastName: '',
@@ -102,7 +105,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose }) => {
 
     Object.keys(formData).forEach((key) => {
       const fieldName = key as keyof FormData;
-      if (formData[fieldName] === '') {
+      if (fieldName !== 'id' && formData[fieldName] === '') {
         newErrors[fieldName] = 'This field is required';
         hasErrors = true;
       }
@@ -111,26 +114,56 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose }) => {
     if (hasErrors) {
       setErrors(newErrors);
     } else {
-      dispatch(createCustomer(formData));
+      if (formData.id) {
+        dispatch(updateCustomer(formData));
+      } else {
+        dispatch(createCustomer(formData));
+      }
+
       setIsFormSubmitted(true);
       handleClose();
     }
   };
 
   useEffect(() => {
-    if (isFormSubmitted && !loading) {
+    if (isFormSubmitted && successMessage) {
       if (isError) {
         showSnackbar(error || "Unknown error", "error");
       } else {
-        showSnackbar("Customer registered successfully.", "success");
+        showSnackbar(successMessage, "success");
       }
       setIsFormSubmitted(false);
     }
-  }, [error, isError, loading, isFormSubmitted]);
+  }, [error, isError, loading, isFormSubmitted, successMessage]);
   
+
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
+
+  useEffect(() => {
+    if (selectedCustomer) {
+      setFormData({
+        id: selectedCustomer.id,
+        firstName: selectedCustomer.firstName,
+        middleName: selectedCustomer.middleName,
+        lastName: selectedCustomer.lastName,
+        tinNumber: selectedCustomer.tinNumber,
+        phone: selectedCustomer.phone,
+        address: selectedCustomer.address,
+      });
+    } else {
+      setFormData({
+        id: undefined,
+        firstName: '',
+        middleName: '',
+        lastName: '',
+        tinNumber: '',
+        phone: '',
+        address: '',
+      });
+    }
+  }, [selectedCustomer]);
 
   const resetErrors = () => {
     setErrors({
@@ -147,148 +180,160 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose }) => {
     resetErrors();
     handleClose();
   };
-  const isSubmitDisabled = Object.values(formData).some(value => value.trim() === '');
 
-  if(loading){ 
-    return(
-      <CircularProgress/>
-    )
+  const isSubmitDisabled = Object.entries(formData).some(([key, value]) => {
+    if (key === 'id') {
+      return false;
+    }
+    return value === undefined || value.trim() === '';
+  });
+  
+  if (loading) {
+    return (
+      <CircularProgress />
+    );
   }
 
   return (
     <div>
-    <Modal open={open} onClose={(e, reason) => {
-      if (reason === "backdropClick") {
-        return;
-      }
-      handleClose();
-    }}>
-      <Box sx={{
-           position: "absolute",
-           top: "50%",
-           left: "50%",
-           transform: "translate(-50%, -50%)",
-           width: 500,
-           maxHeight: "80vh",
-           overflowY: "auto",
-           bgcolor: "background.paper",
-           boxShadow: 24,
-           p: 4,
+      <Modal open={open} onClose={(e, reason) => {
+        if (reason === "backdropClick") {
+          return;
+        }
+        handleClose();
+      }}>
+        <Box sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 500,
+          maxHeight: "80vh",
+          overflowY: "auto",
+          bgcolor: "background.paper",
+          boxShadow: 24,
+          p: 4,
         }}>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Customer Form
-        </Typography>
-        <TextField
-          name="firstName"
-          label="First name"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          onChange={handleChange}
-          onBlur={handleBlur}
-          required
-          error={!!errors.firstName}
-          helperText={errors.firstName}
-        />
-        <TextField
-          name="middleName"
-          label="Middle name"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          onChange={handleChange}
-          onBlur={handleBlur}
-          required
-          error={!!errors.middleName}
-          helperText={errors.middleName}
-        />
-        <TextField
-          name="lastName"
-          label="Last name"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          onChange={handleChange}
-          onBlur={handleBlur}
-          required
-          error={!!errors.lastName}
-          helperText={errors.lastName}
-        />
-        <TextField
-          name="tinNumber"
-          label="Tin number"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          onChange={handleChange}
-          onBlur={handleBlur}
-          required
-          error={!!errors.tinNumber}
-          helperText={errors.tinNumber}
-        />
-        <TextField
-          name="phone"
-          label="Phone number"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          type="tel"
-          onChange={handleChange}
-          onBlur={handleBlur}
-          required
-          error={!!errors.phone}
-          helperText={errors.phone}
-          InputProps={{
-            startAdornment: <InputAdornment position="start">+251</InputAdornment>,
-            inputProps: { maxLength: 9 },
-          }}
-        />
-        <TextField
-          name="address"
-          label="Address"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          onChange={handleChange}
-          onBlur={handleBlur}
-          required
-          error={!!errors.address}
-          helperText={errors.address}
-        />
-        <div style={{display:'flex', gap:"8px" }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSubmit}
-          disabled={isSubmitDisabled}
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Customer Form
+          </Typography>
+          <TextField
+            name="firstName"
+            label="First name"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            required
+            error={!!errors.firstName}
+            helperText={errors.firstName}
+            value={formData.firstName}
+          />
+          <TextField
+            name="middleName"
+            label="Middle name"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            required
+            error={!!errors.middleName}
+            helperText={errors.middleName}
+            value={formData.middleName}
+          />
+          <TextField
+            name="lastName"
+            label="Last name"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            required
+            error={!!errors.lastName}
+            helperText={errors.lastName}
+            value={formData.lastName}
+          />
+          <TextField
+            name="tinNumber"
+            label="Tin number"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            required
+            error={!!errors.tinNumber}
+            helperText={errors.tinNumber}
+            value={formData.tinNumber}
+          />
+          <TextField
+            name="phone"
+            label="Phone number"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            type="tel"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            required
+            error={!!errors.phone}
+            helperText={errors.phone}
+            value={formData.phone}
+            InputProps={{
+              startAdornment: <InputAdornment position="start">+251</InputAdornment>,
+              inputProps: { maxLength: 9 },
+            }}
+          />
+          <TextField
+            name="address"
+            label="Address"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            required
+            error={!!errors.address}
+            helperText={errors.address}
+            value={formData.address}
+          />
+          <div style={{ display: 'flex', gap: "8px" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+              disabled={isSubmitDisabled}
+            >
+              {formData.id ? "Update" : "Submit"}
+            </Button>
+            <Button
+              variant="outlined"
+              color="warning"
+              onClick={handleCancel}
+            >
+              cancel
+            </Button>
+          </div>
+        </Box>
+      </Modal>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity as "success" | "error"}
+          sx={{ width: "100%" }}
         >
-          Submit
-        </Button>
-        <Button
-          variant="outlined"
-          color="warning"
-          onClick={handleCancel}
-        >
-          cancel
-        </Button>
-        </div>
-      </Box>
-    </Modal>
-    <Snackbar
-    open={snackbarOpen}
-    autoHideDuration={6000}
-    onClose={handleCloseSnackbar}
-    anchorOrigin={{ vertical: "top", horizontal: "center" }}
-  >
-    <Alert
-      onClose={handleCloseSnackbar}
-      severity={snackbarSeverity as "success" | "error"}
-      sx={{ width: "100%" }}
-    >
-      {snackbarMessage}
-    </Alert>
-  </Snackbar>
-  </div>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </div>
   );
 };
 

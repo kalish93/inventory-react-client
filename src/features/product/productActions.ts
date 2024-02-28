@@ -1,7 +1,7 @@
 import { AppDispatch } from "../../app/store";
 import { CreateProduct } from "../../models/product";
 import { ProductService } from "./productService";
-import { deleteProductStart, deleteProductSuccess, deleteproductFailure, getProductsFailure, getProductsStart, getProductsSuccess, registerProductFailure, registerProductStart, registerProductSuccess } from "./productSlice";
+import { deleteProductStart, deleteProductSuccess, deleteproductFailure, getProductsFailure, getProductsStart, getProductsSuccess, registerProductFailure, registerProductStart, registerProductSuccess, updateProductStart, updateProductSuccess, updateproductFailure } from "./productSlice";
 
 export const getProducts = (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
@@ -39,5 +39,19 @@ export const createProduct = (data: CreateProduct) => async (dispatch: AppDispat
       }
     } catch (error) {
       dispatch(deleteproductFailure('Unknown error'));
+    }
+  };
+
+  export const updateProduct = (data: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(updateProductStart());
+      const response = await ProductService.updateProduct(data);
+      if (response.success) {
+        dispatch(updateProductSuccess(response.data));
+      } else {
+        dispatch(updateproductFailure(response.error || 'Unknown error'));
+      }
+    } catch (error) {
+      dispatch(updateproductFailure('Unknown error'));
     }
   };

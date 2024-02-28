@@ -7,6 +7,7 @@ interface ProductState {
   loading: boolean;
   error: any | null;
   isError: boolean;
+  successMessage: string | null;
 }
 
 const initialState: ProductState = {
@@ -20,6 +21,7 @@ const initialState: ProductState = {
   loading: false,
   error: null,
   isError: false,
+  successMessage: null,
 };
 
 const productSlice = createSlice({
@@ -55,7 +57,7 @@ const productSlice = createSlice({
           };
   
           state.loading = false;
-          
+          state.successMessage = "product Created Successfully.";
       },
       registerProductFailure: (state, action) => {
         state.loading = false;
@@ -86,6 +88,34 @@ const productSlice = createSlice({
         state.error = action.payload;
       },
 
+      updateProductStart: (state) => {
+        state.loading = true;
+        state.error = null;
+        state.isError = false;
+        state.successMessage = null;
+      },
+  
+      updateProductSuccess: (state, action) => {
+        const updatedProduct = action.payload;
+        state.products = {
+          items:
+            state.products?.items?.map((product) =>
+              product.id === updatedProduct.id ? updatedProduct : product
+            ) ?? [],
+          totalCount: state.products?.totalCount || 0,
+          pageSize: state.products?.pageSize || 10,
+          currentPage: state.products?.currentPage || 1,
+          totalPages: state.products?.totalPages || 1,
+        };
+        state.loading = false;
+        state.successMessage = "product Updated Successfully.";
+      },
+  
+      updateproductFailure: (state, action) => {
+        state.loading = false;
+        state.isError = true;
+        state.error = action.payload;
+      },
   },
 });
 
@@ -98,7 +128,10 @@ export const {
   registerProductFailure,
   deleteProductStart,
   deleteProductSuccess,
-  deleteproductFailure
+  deleteproductFailure,
+  updateProductStart,
+  updateProductSuccess,
+  updateproductFailure
 } = productSlice.actions;
 
 export const selectProduct = (state: { product: ProductState }) => state.product;

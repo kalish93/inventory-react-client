@@ -37,6 +37,8 @@ const CustomerList = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
   const {isError, error, loading} = useSelector(selectCustomer);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+
 
   const openConfirmationModal = () => {
     setConfirmationModalOpen(true);
@@ -77,11 +79,14 @@ const CustomerList = () => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+    setSelectedCustomer(null);
+    setSelectedCustomerId(null);
   };
 
-  const handleUpdateCustomer = () =>{
-    
-  }
+  const handleUpdateCustomer = () => {
+    handleOpenModal();
+    handleMenuClose();
+  };
 
   const handleDeleteCustomer = () =>{
     handleMenuClose();
@@ -97,9 +102,10 @@ const CustomerList = () => {
       }
   }
 
-  const handleMenuOpen = (event: any, customerId: any) => {
+  const handleMenuOpen = (event: any, customerId: any, customer: any) => {
     setAnchorEl(event.currentTarget);
     setSelectedCustomerId(customerId);
+    setSelectedCustomer(customer);
   };
 
   const handleMenuClose = () => {
@@ -146,7 +152,7 @@ const CustomerList = () => {
                 <TableCell>
                 <IconButton
                     aria-label="Actions"
-                    onClick={(event) => handleMenuOpen(event, customer.id)}
+                    onClick={(event) => handleMenuOpen(event, customer.id, customer)}
                     style={{ margin: 0, padding: 0 }}
                   >
                    <MoreVertIcon/>
@@ -166,7 +172,7 @@ const CustomerList = () => {
                       },
                     }}
                   >
-                    <MenuItem onClick={handleUpdateCustomer}>Update</MenuItem>
+                    <MenuItem onClick={ () =>handleUpdateCustomer()}>Update</MenuItem>
                     <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>
                   </Menu>
                   </TableCell>
@@ -175,7 +181,7 @@ const CustomerList = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <CustomerForm open={openModal} handleClose={handleCloseModal} />
+      <CustomerForm open={openModal} handleClose={handleCloseModal} selectedCustomer={selectedCustomer} />
       <ConfirmationModal
         open={confirmationModalOpen}
         onClose={closeConfirmationModal}

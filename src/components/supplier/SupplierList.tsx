@@ -37,6 +37,7 @@ const SupplierList = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
   const {isError, error, loading} = useSelector(selectSupplier);
+  const [selectedSupplier, setSelectedSupplier] = useState(null);
 
   const openConfirmationModal = () => {
     setConfirmationModalOpen(true);
@@ -47,10 +48,43 @@ const SupplierList = () => {
   };
 
   const handleConfirmAction = () => {
-    handleDeleteSupplier();
+    handleDeleteStore();
     closeConfirmationModal();
   };
 
+  const handleUpdateSupplier = () =>{
+    handleOpenModal();
+    handleMenuClose();
+  }
+
+  const handleDeleteStore = () =>{
+    handleMenuClose();
+    if (selectedSupplierId !== null) {
+      dispatch(deleteSupplier(selectedSupplierId))
+        .then(() => {
+          if(!isError && !loading){
+            showSnackbar('Supplier deleted successfully', 'success');
+          }else{
+            showSnackbar(error, 'error');
+          }
+        })
+      }
+  }
+
+  const handleMenuOpen = (event: any, supplierId: any, supplier: any) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedSupplierId(supplierId);
+    setSelectedSupplier(supplier)
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedSupplierId(null);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
 
   const showSnackbar = (message: string, severity: "success" | "error") => {
     setSnackbarMessage(message);
@@ -77,40 +111,9 @@ const SupplierList = () => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
-  };
-
-  const handleUpdateSupplier = () =>{
-    
-  }
-
-  const handleDeleteSupplier = () =>{
-    handleMenuClose();
-    if (selectedSupplierId !== null) {
-      dispatch(deleteSupplier(selectedSupplierId))
-        .then(() => {
-          if(!isError && !loading){
-            showSnackbar('Supplier deleted successfully', 'success');
-          }else{
-            showSnackbar(error, 'error');
-          }
-        })
-      }
-  }
-
-  const handleMenuOpen = (event: any, supplierId: any) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedSupplierId(supplierId);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
     setSelectedSupplierId(null);
+    setSelectedSupplier(null)
   };
-
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
-
   return (
     <div>
       <Button variant="contained" color="primary" onClick={handleOpenModal}>
@@ -142,7 +145,7 @@ const SupplierList = () => {
                 <TableCell>
                 <IconButton
                     aria-label="Actions"
-                    onClick={(event) => handleMenuOpen(event, supplier.id)}
+                    onClick={(event) => handleMenuOpen(event, supplier.id, supplier)}
                     style={{ margin: 0, padding: 0 }}
                   >
                    <MoreVertIcon/>
@@ -171,7 +174,7 @@ const SupplierList = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <SupplierForm open={openModal} handleClose={handleCloseModal} />
+      <SupplierForm open={openModal} handleClose={handleCloseModal} selectedSupplier={selectedSupplier}/>
       <ConfirmationModal
         open={confirmationModalOpen}
         onClose={closeConfirmationModal}

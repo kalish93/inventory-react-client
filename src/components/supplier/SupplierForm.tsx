@@ -13,20 +13,21 @@ import { AppDispatch } from "../../app/store";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { selectSupplier } from "../../features/supplier/supplierSlice";
-import { createSupplier } from "../../features/supplier/supplierActions";
+import { createSupplier, updateSupplier } from "../../features/supplier/supplierActions";
 
 interface SupplierFormProps {
   open: boolean;
   handleClose: () => void;
+  selectedSupplier?: any;
 }
 
-const SupplierForm: React.FC<SupplierFormProps> = ({ open, handleClose }) => {
+const SupplierForm: React.FC<SupplierFormProps> = ({ open, handleClose, selectedSupplier }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const { isError, error, loading } = useSelector(selectSupplier);
+  const { isError, error, loading, successMessage } = useSelector(selectSupplier);
 
   const showSnackbar = (message: string, severity: "success" | "error") => {
     setSnackbarMessage(message);
@@ -39,11 +40,11 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ open, handleClose }) => {
       if (isError) {
         showSnackbar(error || "Unknown error", "error");
       } else {
-        showSnackbar("Supplier registered successfully.", "success");
+        showSnackbar(successMessage as string, "success");
       }
       setIsFormSubmitted(false);
     }
-  }, [error, isError, loading, isFormSubmitted]);
+  }, [error, isError, loading, isFormSubmitted, successMessage]);
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
@@ -58,20 +59,30 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ open, handleClose }) => {
     initialValues: {
       name: "",
       address: "",
+      ...(selectedSupplier || {}),
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      dispatch(createSupplier(values));
+      if (selectedSupplier) {
+        dispatch(updateSupplier({ id: selectedSupplier.id, ...values }));
+      } else {
+        dispatch(createSupplier(values));
+      }
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
     },
   });
+
+  useEffect(() => {
+    if (selectedSupplier) {
+      formik.setValues(selectedSupplier);
+    }
+  }, [selectedSupplier]);
   const handleCancel = () => {
     handleClose();
     formik.resetForm();
   };
-
   return (
     <div>
       <Modal
@@ -112,7 +123,7 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ open, handleClose }) => {
               onBlur={formik.handleBlur}
               value={formik.values.name}
               error={formik.touched.name && Boolean(formik.errors.name)}
-              helperText={formik.touched.name && formik.errors.name}
+              helperText={formik.touched.name && formik.errors.name as React.ReactNode}
             />
             <TextField
               required
@@ -125,7 +136,7 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ open, handleClose }) => {
               onBlur={formik.handleBlur}
               value={formik.values.address}
               error={formik.touched.address && Boolean(formik.errors.address)}
-              helperText={formik.touched.address && formik.errors.address}
+              helperText={formik.touched.address && formik.errors.address as React.ReactNode}
             />
             <div style={{ display: "flex", gap: "8px" }}>
               <Button
@@ -134,7 +145,7 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ open, handleClose }) => {
                 type="submit"
                 disabled={!formik.isValid || formik.isSubmitting}
               >
-                Submit
+                {selectedSupplier ? 'Update' : 'Submit'}
               </Button>
               <Button variant="outlined" color="warning" onClick={handleCancel}>
                 cancel
