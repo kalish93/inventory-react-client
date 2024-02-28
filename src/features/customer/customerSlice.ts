@@ -7,6 +7,7 @@ interface CustomerState {
   loading: boolean;
   error: any | null;
   isError: boolean;
+  successMessage: string | null;
 }
 
 const initialState: CustomerState = {
@@ -19,7 +20,8 @@ const initialState: CustomerState = {
   },
   loading: false,
   error: null,
-  isError: false
+  isError: false,
+  successMessage: null,
 };
 
 const customerSlice = createSlice({
@@ -42,6 +44,7 @@ const customerSlice = createSlice({
     registerCustomerStart: (state) => {
         state.loading = true;
         state.error = null;
+        state.successMessage = null;
         state.isError = false;
       },
       registerCustomerSuccess: (state, action) => {
@@ -55,7 +58,7 @@ const customerSlice = createSlice({
           };
   
           state.loading = false;
-          
+          state.successMessage = "Customer registered sucessfully";
       },
       registerCustomerFailure: (state, action) => {
         state.loading = false;
@@ -78,14 +81,37 @@ const customerSlice = createSlice({
             currentPage: state.customers?.currentPage || 1, 
             totalPages: state.customers?.totalPages || 1, 
         };
-        state.loading = false;
-          
+        state.loading = false;      
       },
       deleteCustomerFailure: (state, action) => {
         state.loading = false;
         state.error = action.payload;
         state.isError = true
       },
+
+      updateCustomerStart: (state) => {
+        state.loading = true;
+        state.error = null;
+        state.isError = false
+        state.successMessage = null
+      },
+      updateCustomerSuccess: (state, action) => {
+          const updatedCustomer = action.payload;
+          const customerIndex = state.customers.items.findIndex(customer => customer.id === updatedCustomer.id);
+          if (customerIndex !== -1) {
+              state.customers.items = state.customers.items.map(customer => (customer.id === updatedCustomer.id ? updatedCustomer : customer));
+          } else {
+              state.customers.items = [updatedCustomer, ...state.customers.items];
+          }
+          state.loading = false;
+          state.successMessage = "Customer updated successfully";
+      },
+      updateCustomerFailure: (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.isError = true
+      },
+  
   
   },
 });
@@ -99,7 +125,10 @@ export const {
   registerCustomerFailure,
   deleteCustomerFailure,
   deleteCustomerStart,
-  deleteCustomerSuccess
+  deleteCustomerSuccess,
+  updateCustomerFailure,
+  updateCustomerStart,
+  updateCustomerSuccess
 } = customerSlice.actions;
 
 export const selectCustomer = (state: { customer: CustomerState }) => state.customer;

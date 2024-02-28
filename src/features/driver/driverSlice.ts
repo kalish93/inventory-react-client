@@ -7,6 +7,7 @@ interface DriverState {
   loading: boolean;
   error: any | null;
   isError: boolean;
+  successMessage: any;
 }
 
 const initialState: DriverState = {
@@ -20,6 +21,7 @@ const initialState: DriverState = {
   loading: false,
   error: null,
   isError:false,
+  successMessage: null,
 };
 
 const driverSlice = createSlice({
@@ -45,6 +47,7 @@ const driverSlice = createSlice({
       state.loading = true;
       state.error = null;
       state.isError = false;
+      state.successMessage = null;
     },
     createDriverSuccess: (state, action) => {
       const newDriver = action.payload;
@@ -56,6 +59,7 @@ const driverSlice = createSlice({
         totalPages: state.drivers?.totalPages || 1,
       };
       state.loading = false;
+      state.successMessage = "Driver Created Successfully.";
     },
     createDriverFailure: (state, action: PayloadAction<any>) => {
       state.loading = false;
@@ -89,6 +93,8 @@ const driverSlice = createSlice({
     updateDriverStart: (state) => {
       state.loading = true;
       state.error = null;
+      state.isError = false;
+      state.successMessage = null;
     },
 
     updateDriverSuccess: (state, action) => {
@@ -104,10 +110,12 @@ const driverSlice = createSlice({
         totalPages: state.drivers?.totalPages || 1,
       };
       state.loading = false;
+      state.successMessage = "Driver Updated Successfully.";
     },
 
     updateDriverFailure: (state, action: PayloadAction<any>) => {
       state.loading = false;
+      state.isError = true;
       state.error = action.payload;
     },
   },

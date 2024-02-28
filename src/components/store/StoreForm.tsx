@@ -9,7 +9,7 @@ import {
   Alert,
   Snackbar,
 } from "@mui/material";
-import { createStore } from "../../features/store/storeActions";
+import { createStore, updateStore } from "../../features/store/storeActions";
 import { AppDispatch } from "../../app/store";
 import { selectStore } from "../../features/store/storeSlice";
 import * as yup from "yup";
@@ -18,15 +18,16 @@ import { useFormik } from "formik";
 interface StoreFormProps {
   open: boolean;
   handleClose: () => void;
+  selectedStore?: any;
 }
 
-const StoreForm: React.FC<StoreFormProps> = ({ open, handleClose }) => {
+const StoreForm: React.FC<StoreFormProps> = ({ open, handleClose, selectedStore }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const { isError, error, loading } = useSelector(selectStore);
+  const { isError, error, loading, successMessage } = useSelector(selectStore);
 
   const showSnackbar = (message: string, severity: "success" | "error") => {
     setSnackbarMessage(message);
@@ -39,11 +40,11 @@ const StoreForm: React.FC<StoreFormProps> = ({ open, handleClose }) => {
       if (isError) {
         showSnackbar(error || "Unknown error", "error");
       } else {
-        showSnackbar("Store registered successfully.", "success");
+        showSnackbar(successMessage as string, "success");
       }
       setIsFormSubmitted(false);
     }
-  }, [error, isError, loading, isFormSubmitted]);
+  }, [error, isError, loading, isFormSubmitted, successMessage]);
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
@@ -58,15 +59,26 @@ const StoreForm: React.FC<StoreFormProps> = ({ open, handleClose }) => {
     initialValues: {
       name: "",
       address: "",
+      ...(selectedStore || {}),
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      dispatch(createStore(values));
+      if (selectedStore) {
+        dispatch(updateStore({ id: selectedStore.id, ...values }));
+      } else {
+        dispatch(createStore(values));
+      }
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
     },
   });
+
+  useEffect(() => {
+    if (selectedStore) {
+      formik.setValues(selectedStore);
+    }
+  }, [selectedStore]);
   const handleCancel = () => {
     handleClose();
     formik.resetForm();
@@ -112,7 +124,7 @@ const StoreForm: React.FC<StoreFormProps> = ({ open, handleClose }) => {
               onBlur={formik.handleBlur}
               value={formik.values.name}
               error={formik.touched.name && Boolean(formik.errors.name)}
-              helperText={formik.touched.name && formik.errors.name}
+              helperText={formik.touched.name && formik.errors.name as React.ReactNode}
             />
             <TextField
               required
@@ -125,7 +137,7 @@ const StoreForm: React.FC<StoreFormProps> = ({ open, handleClose }) => {
               onBlur={formik.handleBlur}
               value={formik.values.address}
               error={formik.touched.address && Boolean(formik.errors.address)}
-              helperText={formik.touched.address && formik.errors.address}
+              helperText={formik.touched.address && formik.errors.address as React.ReactNode}
             />
             <div style={{ display: "flex", gap: "8px" }}>
               <Button
@@ -134,7 +146,7 @@ const StoreForm: React.FC<StoreFormProps> = ({ open, handleClose }) => {
                 type="submit"
                 disabled={!formik.isValid || formik.isSubmitting}
               >
-                Submit
+                { selectedStore ? "Update" : "Submit"}
               </Button>
               <Button variant="outlined" color="warning" onClick={handleCancel}>
                 cancel

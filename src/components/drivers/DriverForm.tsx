@@ -12,18 +12,24 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { createDriver } from "../../features/driver/driverActions";
+import { createDriver, updateDriver } from "../../features/driver/driverActions";
 import { AppDispatch } from "../../app/store";
 import { selectDrivers } from "../../features/driver/driverSlice";
 
-const DriverForm: React.FC<any> = ({ open, handleClose }) => {
+interface DriverFormProps {
+  open: boolean;
+  handleClose: () => void;
+  selectedDriver?: any;
+}
+
+const DriverForm: React.FC<DriverFormProps> = ({ open, handleClose, selectedDriver }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const {isError, error, loading} = useSelector(selectDrivers)
-  
+  const { isError, error, loading, successMessage } = useSelector(selectDrivers);
+
   const showSnackbar = (message: string, severity: "success" | "error") => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
@@ -35,16 +41,16 @@ const DriverForm: React.FC<any> = ({ open, handleClose }) => {
       if (isError) {
         showSnackbar(error || "Unknown error", "error");
       } else {
-        showSnackbar("Driver registered successfully.", "success");
+        showSnackbar(successMessage, "success");
       }
       setIsFormSubmitted(false);
     }
-  }, [error, isError, loading, isFormSubmitted]);
+  }, [error, isError, loading, isFormSubmitted, successMessage]);
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
-  
+
   const validationSchema = yup.object({
     name: yup.string().required("Name is required"),
     truckNumber: yup.string().required("Truck Number is required"),
@@ -72,15 +78,26 @@ const DriverForm: React.FC<any> = ({ open, handleClose }) => {
       associationPhone: "",
       ownerName: "",
       ownerPhone: "",
+      ...(selectedDriver || {}),
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      dispatch(createDriver(values));
+      if (selectedDriver) {
+        dispatch(updateDriver({ id: selectedDriver.id, ...values }));
+      } else {
+        dispatch(createDriver(values));
+      }
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
     },
   });
+
+  useEffect(() => {
+    if (selectedDriver) {
+      formik.setValues(selectedDriver);
+    }
+  }, [selectedDriver]);
   const handleCancel = () => {
     handleClose();
     formik.resetForm();
@@ -126,7 +143,7 @@ const DriverForm: React.FC<any> = ({ open, handleClose }) => {
             onBlur={formik.handleBlur}
             value={formik.values.name}
             error={formik.touched.name && Boolean(formik.errors.name)}
-            helperText={formik.touched.name && formik.errors.name}
+            helperText={formik.touched.name && formik.errors.name as React.ReactNode}
           />
           <TextField
             required
@@ -141,7 +158,7 @@ const DriverForm: React.FC<any> = ({ open, handleClose }) => {
             error={
               formik.touched.truckNumber && Boolean(formik.errors.truckNumber)
             }
-            helperText={formik.touched.truckNumber && formik.errors.truckNumber}
+            helperText={formik.touched.truckNumber && formik.errors.truckNumber as React.ReactNode}
           />
           <TextField
             required
@@ -158,7 +175,7 @@ const DriverForm: React.FC<any> = ({ open, handleClose }) => {
               formik.touched.djboutiPhone && Boolean(formik.errors.djboutiPhone)
             }
             helperText={
-              formik.touched.djboutiPhone && formik.errors.djboutiPhone
+              formik.touched.djboutiPhone && formik.errors.djboutiPhone as React.ReactNode
             }
             InputProps={{
               startAdornment: (
@@ -183,7 +200,7 @@ const DriverForm: React.FC<any> = ({ open, handleClose }) => {
               Boolean(formik.errors.ethiopiaPhone)
             }
             helperText={
-              formik.touched.ethiopiaPhone && formik.errors.ethiopiaPhone
+              formik.touched.ethiopiaPhone && formik.errors.ethiopiaPhone as React.ReactNode
             }
             InputProps={{
               startAdornment: (
@@ -207,7 +224,7 @@ const DriverForm: React.FC<any> = ({ open, handleClose }) => {
               Boolean(formik.errors.associationName)
             }
             helperText={
-              formik.touched.associationName && formik.errors.associationName
+              formik.touched.associationName && formik.errors.associationName as React.ReactNode
             }
           />
           <TextField
@@ -225,7 +242,7 @@ const DriverForm: React.FC<any> = ({ open, handleClose }) => {
               Boolean(formik.errors.associationPhone)
             }
             helperText={
-              formik.touched.associationPhone && formik.errors.associationPhone
+              formik.touched.associationPhone && formik.errors.associationPhone as React.ReactNode
             }
             InputProps={{
               startAdornment: (
@@ -245,7 +262,7 @@ const DriverForm: React.FC<any> = ({ open, handleClose }) => {
             onBlur={formik.handleBlur}
             value={formik.values.ownerName}
             error={formik.touched.ownerName && Boolean(formik.errors.ownerName)}
-            helperText={formik.touched.ownerName && formik.errors.ownerName}
+            helperText={formik.touched.ownerName && formik.errors.ownerName as React.ReactNode} 
           />
           <TextField
             required
@@ -261,7 +278,7 @@ const DriverForm: React.FC<any> = ({ open, handleClose }) => {
             error={
               formik.touched.ownerPhone && Boolean(formik.errors.ownerPhone)
             }
-            helperText={formik.touched.ownerPhone && formik.errors.ownerPhone}
+            helperText={formik.touched.ownerPhone && formik.errors.ownerPhone as React.ReactNode}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">+251</InputAdornment>
@@ -276,7 +293,7 @@ const DriverForm: React.FC<any> = ({ open, handleClose }) => {
               type="submit"
               disabled={!formik.isValid || formik.isSubmitting}
             >
-              Submit
+              {selectedDriver ? "Update" : "Submit"}
             </Button>
             <Button variant="outlined" color="warning" onClick={handleCancel}>
               cancel

@@ -37,6 +37,7 @@ const ProductList = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
   const {isError, error, loading} = useSelector(selectProduct);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const openConfirmationModal = () => {
     setConfirmationModalOpen(true);
@@ -52,11 +53,13 @@ const ProductList = () => {
   };
 
   const handleUpdateProduct = () =>{
-    
+    handleOpenModal();
+    handleMenuClose();
   }
 
   const handleDeleteProduct = () =>{
     handleMenuClose();
+
     if (selectedProductId !== null) {
       dispatch(deleteProduct(selectedProductId))
         .then(() => {
@@ -69,9 +72,10 @@ const ProductList = () => {
       }
   }
 
-  const handleMenuOpen = (event: any, productId: any) => {
+  const handleMenuOpen = (event: any, productId: any, product: any) => {
     setAnchorEl(event.currentTarget);
     setSelectedProductId(productId);
+    setSelectedProduct(product)
   };
 
   const handleMenuClose = () => {
@@ -108,6 +112,8 @@ const ProductList = () => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+    setSelectedProductId(null);
+    setSelectedProduct(null)
   };
 
   return (
@@ -143,7 +149,7 @@ const ProductList = () => {
                 <TableCell>
                 <IconButton
                     aria-label="Actions"
-                    onClick={(event) => handleMenuOpen(event, product.id)}
+                    onClick={(event) => handleMenuOpen(event, product.id, product)}
                     style={{ margin: 0, padding: 0 }}
                   >
                    <MoreVertIcon/>
@@ -163,7 +169,7 @@ const ProductList = () => {
                       },
                     }}
                   >
-                    <MenuItem onClick={handleUpdateProduct}>Update</MenuItem>
+                    <MenuItem onClick={ () => handleUpdateProduct()}>Update</MenuItem>
                     <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>
                   </Menu>
                   </TableCell>
@@ -172,7 +178,7 @@ const ProductList = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <ProductForm open={openModal} handleClose={handleCloseModal} />
+      <ProductForm open={openModal} handleClose={handleCloseModal} selectedProduct={selectedProduct}/>
       <ConfirmationModal
         open={confirmationModalOpen}
         onClose={closeConfirmationModal}

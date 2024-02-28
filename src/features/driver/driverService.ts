@@ -53,21 +53,24 @@ export const DriverService = {
   },
 
     updateDriver: async (driverData: Driver) => {
-        try {
         const response = await handleRequest(`${DRIVER_URL}/${driverData.id}`, {
           method: "PUT",
           body: JSON.stringify(driverData),
         });
     
         if (!response.ok) {
-            throw new Error("Failed to update driver");
+          let errorMessage = `Bad Request: ${response.statusText}`;
+  
+            const data = await response.json();
+            errorMessage = data.error || errorMessage;
+  
+          return { success: false, error: errorMessage };
         }
+  
         const data = await response.json();
-        return { driver: data.driver };
-        } catch (error) {
-        throw error;
-        }
-    },
+        return { success: true, data };
+      },
+
 
     deleteDriver: async (id: string) => {
         try {

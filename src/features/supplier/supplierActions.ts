@@ -1,7 +1,7 @@
 import { AppDispatch } from "../../app/store";
 import { CreateSupplier } from "../../models/supplier";
 import { SupplierService } from "./supplierService";
-import { deleteSupplierFailure, deleteSupplierStart, deleteSupplierSuccess, getSuppliersFailure, getSuppliersStart, getSuppliersSuccess, registerSupplierFailure, registerSupplierStart, registerSupplierSuccess } from "./supplierSlice";
+import { deleteSupplierFailure, deleteSupplierStart, deleteSupplierSuccess, getSuppliersFailure, getSuppliersStart, getSuppliersSuccess, registerSupplierFailure, registerSupplierStart, registerSupplierSuccess, updateSupplierFailure, updateSupplierStart, updateSupplierSuccess } from "./supplierSlice";
 
 export const getSuppliers = (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
@@ -39,4 +39,18 @@ export const deleteSupplier = (id: any) => async (dispatch: AppDispatch) => {
     } catch (error) {
       dispatch(deleteSupplierFailure('Unknown error'));
     }
+};
+
+export const updateSupplier = (data: any) => async (dispatch: AppDispatch) => {
+  try {
+    dispatch(updateSupplierStart());
+    const response = await SupplierService.updateSupplier(data);
+    if (response.success) {
+      dispatch(updateSupplierSuccess(response.data));
+    } else {
+      dispatch(updateSupplierFailure(response.error || 'Unknown error'));
+    }
+  } catch (error) {
+    dispatch(updateSupplierFailure('Unknown error'));
+  }
 };

@@ -72,5 +72,32 @@ export const ProductService = {
         return { success: false, error: "Unexpected error occurred" };
       }
   },
+
+
+  updateProduct: async (productData: any) => {
+    try{
+      const response = await handleRequest(`${PRODUCTS_URL}/${productData.id}`, {
+        method: "PUT",
+        body: JSON.stringify(productData),
+
+      });
+
+    if (!response.ok) {
+      let errorMessage = `Bad Request: ${response.statusText}`;
+
+        const data = await response.json();
+        errorMessage = data.error || errorMessage;
+
+      return { success: false, error: errorMessage };
+    }
+
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    console.error("Error in registerdriver service:", error);
+    return { success: false, error: "Unexpected error occurred" };
+  }
+},
+
 };
   

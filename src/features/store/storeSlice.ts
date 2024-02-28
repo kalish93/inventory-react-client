@@ -7,6 +7,7 @@ interface StoreState {
   loading: boolean;
   error: any | null;
   isError: boolean;
+  successMessage: string | null;
 }
 
 const initialState: StoreState = {
@@ -20,6 +21,7 @@ const initialState: StoreState = {
   loading: false,
   error: null,
   isError: false,
+  successMessage: null,
 };
 
 const storeSlice = createSlice({
@@ -30,6 +32,7 @@ const storeSlice = createSlice({
       state.loading = true;
       state.error = null;
       state.isError = false;
+      state.successMessage = null;
     },
     storeFailure: (state, action: PayloadAction<any>) => {
       state.loading = false;
@@ -50,6 +53,7 @@ const storeSlice = createSlice({
         totalPages: state.stores?.totalPages || 1,
       };
       state.loading = false;
+      state.successMessage = "Store Created Succesfully."
     },
     deleteStoreSuccess: (state, action) => {
       const deletedStore = action.payload;
@@ -75,6 +79,7 @@ const storeSlice = createSlice({
         totalPages: state.stores?.totalPages || 1,
       };
       state.loading = false;
+      state.successMessage = "Store updated successfully."
     },
   },
 });

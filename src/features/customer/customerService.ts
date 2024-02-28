@@ -63,6 +63,25 @@ export const CustomerService = {
         const data = await response.json();
         return { success: true, data };
       },
+
+      updateCustomer: async (customerData: any) => {
+        const response = await handleRequest(`${CUSTOMERS_URL}/${customerData.id}`, {
+          method: "PUT",
+          body: JSON.stringify(customerData),
+        });
+    
+        if (!response.ok) {
+          let errorMessage = `Bad Request: ${response.statusText}`;
+  
+            const data = await response.json();
+            errorMessage = data.error || errorMessage;
+  
+          return { success: false, error: errorMessage };
+        }
+  
+        const data = await response.json();
+        return { success: true, data };
+      },
   
 };
   
