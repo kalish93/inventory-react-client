@@ -30,7 +30,7 @@ export const signUpUser = (userData: CreateUser) => async (dispatch: AppDispatch
   }
 };
 
-export const getUsers = (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
+export const getUsers = (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
       dispatch(getUsersStart());
       const response = await UserService.getUsers(page, pageSize);
