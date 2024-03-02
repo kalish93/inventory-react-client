@@ -73,7 +73,7 @@ const CATransactionsList = () => {
 
   return (
     <div>
-      <ButtonGroup>
+      <ButtonGroup style={{display:"flex", alignItems:'center', justifyContent:'space-arround'}}>
         {[
           "Add Expense",
           "Add Customer Payment",

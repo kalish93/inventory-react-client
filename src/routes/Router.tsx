@@ -17,12 +17,17 @@ import SaleDetail from "../components/sales/SaleDetail";
 import InventoryList from "../components/inventory/InventoryList";
 import CashOfAccountList from "../components/cash-of-account/CashOfAccountList";
 import CATransactionsList from "../components/ca-transaction/CATransactionsList";
+import DashboardHome from "../components/dashboard/DashboardHome";
 
 const routes = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
     children: [
+      {
+        path: "",
+        element: <DashboardHome />,
+      },
       {
         path: "users",
         element: <UsersList />,

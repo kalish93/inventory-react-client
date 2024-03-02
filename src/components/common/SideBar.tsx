@@ -44,9 +44,9 @@ const Sidebar = () => {
         <ListItem
           button
           component={Link}
-          to="/dashboard"
+          to="/"
           key="Dashboard"
-          selected={isLinkActive("/dashboard")}
+          selected={isLinkActive("/")}
         >
           <ListItemIcon>
             <DashboardIcon />

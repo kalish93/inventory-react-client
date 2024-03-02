@@ -16,3 +16,6 @@ export const ACCOUNT_SUB_TYPES_URL = `${BASE_URL}/account-sub-types`
 export const CA_URL = `${BASE_URL}/cash-of-accounts`
 export const REFRESH_URL = `${BASE_URL}/refresh`
 export const CATRANSACTIONS_URL = `${BASE_URL}/ca-transactions`
+export const DASHBOARD_URL = `${BASE_URL}/dashboard`
+export const EXPENSES_URL = `${BASE_URL}/dashboard/expenses`
+export const BANK_POSITIONS_URL = `${BASE_URL}/dashboard/bank-positions`

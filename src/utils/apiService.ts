@@ -9,9 +9,11 @@ export async function handleRequest(url: any, options: any) {
   try {
     const response = await fetch(url, {
       ...options,
-      headers,
+      headers:{
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${localStorage.getItem("accessToken")}`,
+      },
     });
-
     return response;
   } catch (error: any) {
     if (error.message === "Unauthorized" || error.message === "Token expired") {
