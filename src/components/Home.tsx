@@ -17,6 +17,7 @@ import SaleDetail from "./sales/SaleDetail";
 import InventoryList from "./inventory/InventoryList";
 import CashOfAccountList from "./cash-of-account/CashOfAccountList";
 import CATransactionsList from "./ca-transaction/CATransactionsList";
+import DashboardHome from "./dashboard/DashboardHome";
 
 
 const Home = () => {
@@ -41,6 +42,7 @@ const Home = () => {
                 <Route path="/inventory" element={<InventoryList />} />
                 <Route path="/ca-transactions" element={<CATransactionsList />} />
                 <Route path="/cash-of-accounts" element={<CashOfAccountList />} />
+                <Route path="/" element={<DashboardHome />} />
             </Routes>
             </main>
         </div>

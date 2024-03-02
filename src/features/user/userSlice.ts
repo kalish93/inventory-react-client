@@ -45,6 +45,7 @@ const userSlice = createSlice({
       state.accessToken = action.payload.accessToken;
       localStorage.setItem("accessToken", action.payload.accessToken);
       localStorage.setItem("refreshToken", action.payload.refreshToken);
+      console.log(localStorage.getItem("accessToken"),'hhhhhhhhhhhhhhhhhhhh')
       state.isAuthenticated = !!localStorage.getItem("accessToken");
       state.loading = false;
     },
