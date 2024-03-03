@@ -17,8 +17,12 @@ export const UserService = {
     }
 
     const data = await response.json();
-    
-    return { username: data.user.userName, accessToken: data.accessToken, refreshToken: data.refreshToken };
+
+    return {
+      username: data.user.userName,
+      accessToken: data.accessToken,
+      refreshToken: data.refreshToken,
+    };
   },
 
   logout: () => {
@@ -39,8 +43,8 @@ export const UserService = {
       if (!response.ok) {
         let errorMessage = `Bad Request: ${response.statusText}`;
 
-          const data = await response.json();
-          errorMessage = data.error || errorMessage;
+        const data = await response.json();
+        errorMessage = data.error || errorMessage;
 
         return { success: false, error: errorMessage };
       }
@@ -55,12 +59,15 @@ export const UserService = {
 
   getUsers: async (page = 1, pageSize = 10) => {
     try {
-      const response = await handleRequest(`${USERS_URL}?page=${page}&pageSize=${pageSize}`, {
-        method: "GET",
-      });
+      const response = await handleRequest(
+        `${USERS_URL}?page=${page}&pageSize=${pageSize}`,
+        {
+          method: "GET",
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('get users failed');
+        throw new Error("get users failed");
       }
 
       const data = await response.json();
@@ -81,8 +88,8 @@ export const UserService = {
       if (!response.ok) {
         let errorMessage = `Bad Request: ${response.statusText}`;
 
-          const data = await response.json();
-          errorMessage = data.error || errorMessage;
+        const data = await response.json();
+        errorMessage = data.error || errorMessage;
 
         return { success: false, error: errorMessage };
       }
@@ -104,8 +111,8 @@ export const UserService = {
       if (!response.ok) {
         let errorMessage = `Bad Request: ${response.statusText}`;
 
-          const data = await response.json();
-          errorMessage = data.error || errorMessage;
+        const data = await response.json();
+        errorMessage = data.error || errorMessage;
 
         return { success: false, error: errorMessage };
       }

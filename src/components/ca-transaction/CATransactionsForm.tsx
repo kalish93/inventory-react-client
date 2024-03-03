@@ -73,7 +73,6 @@ const CATransactionsForm: React.FC<ProductFormProps> = ({
     dispatch(getCustomers());
   }, [dispatch]);
 
-  console.log(customers);
   useEffect(() => {
     if (isFormSubmitted && !loading) {
       if (isError) {
@@ -140,7 +139,6 @@ const CATransactionsForm: React.FC<ProductFormProps> = ({
       newFormData.debit = formData.amount.toString();
 
     }
-    console.log(newFormData);
     dispatch(createCATransaction(newFormData));
     handleClose();
     setIsFormSubmitted(true);

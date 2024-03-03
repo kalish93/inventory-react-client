@@ -20,7 +20,7 @@ const BankPositions = () => {
         <CardHeader title="Bank Accounts" />
         <CardContent>
           <Grid container spacing={2}>
-            {bankPositions.map((position: any, index: any) => (
+            {bankPositions?.map((position: any, index: any) => (
               <Grid item xs={6} key={index}>
                 <Typography>{position.name} - Amount: {position.amount}</Typography>
               </Grid>
