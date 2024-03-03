@@ -1,36 +1,60 @@
-import { deleteUserFailure, deleteUserStart, deleteUserSuccess, getUsersFailure, getUsersStart, getUsersSuccess, loginFailure, loginStart, loginSuccess, logoutUser, registerUserFailure, registerUserStart, registerUserSuccess, updateUserFailure, updateUserStart, updateUserSuccess } from './userSlice';
-import { UserService } from './userService';
-import { AppDispatch } from '../../app/store';
-import { CreateUser } from '../../models/user';
+import {
+  deleteUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  getUsersFailure,
+  getUsersStart,
+  getUsersSuccess,
+  loginFailure,
+  loginStart,
+  loginSuccess,
+  logoutUser,
+  registerUserFailure,
+  registerUserStart,
+  registerUserSuccess,
+  updateUserFailure,
+  updateUserStart,
+  updateUserSuccess,
+} from "./userSlice";
+import { UserService } from "./userService";
+import { AppDispatch } from "../../app/store";
+import { CreateUser } from "../../models/user";
 
-export const login = (username: string, password: string) => async (dispatch: AppDispatch) => {
-  try {
-    dispatch(loginStart());
-    const response = await UserService.login(username, password);
-    dispatch(loginSuccess(response));
-  } catch (error: any) {
-    dispatch(loginFailure(error.response ? error.response.data.error : 'Unknown error'));
-    throw error;
-  }
-};
-
-export const signUpUser = (userData: CreateUser) => async (dispatch: AppDispatch) => {
-  try {
-    dispatch(registerUserStart());
-
-    const response = await UserService.registerUser(userData);
-
-    if (response.success) {
-      dispatch(registerUserSuccess(response.data));
-    } else {
-      dispatch(registerUserFailure(response.error || 'Unknown error'));
+export const login =
+  (username: string, password: string) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(loginStart());
+      const response = await UserService.login(username, password);
+      dispatch(loginSuccess(response));
+    } catch (error: any) {
+      dispatch(
+        loginFailure(
+          error.response ? error.response.data.error : "Unknown error"
+        )
+      );
+      throw error;
     }
-  } catch (error) {
-    dispatch(registerUserFailure('Unknown error'));
-  }
-};
+  };
 
-export const getUsers = (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
+export const signUpUser =
+  (userData: CreateUser) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(registerUserStart());
+
+      const response = await UserService.registerUser(userData);
+
+      if (response.success) {
+        dispatch(registerUserSuccess(response.data));
+      } else {
+        dispatch(registerUserFailure(response.error || "Unknown error"));
+      }
+    } catch (error) {
+      dispatch(registerUserFailure("Unknown error"));
+    }
+  };
+
+export const getUsers =
+  (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
       dispatch(getUsersStart());
       const response = await UserService.getUsers(page, pageSize);
@@ -54,10 +78,10 @@ export const updateUser = (userData: any) => async (dispatch: AppDispatch) => {
     if (response.success) {
       dispatch(updateUserSuccess(response.data));
     } else {
-      dispatch(updateUserFailure(response.error || 'Unknown error'));
+      dispatch(updateUserFailure(response.error || "Unknown error"));
     }
   } catch (error) {
-    dispatch(updateUserFailure('Unknown error'));
+    dispatch(updateUserFailure("Unknown error"));
   }
 };
 
@@ -70,10 +94,9 @@ export const deleteUser = (id: any) => async (dispatch: AppDispatch) => {
     if (response.success) {
       dispatch(deleteUserSuccess(response.data));
     } else {
-      dispatch(deleteUserFailure(response.error || 'Unknown error'));
+      dispatch(deleteUserFailure(response.error || "Unknown error"));
     }
   } catch (error) {
-    dispatch(deleteUserFailure('Unknown error'));
+    dispatch(deleteUserFailure("Unknown error"));
   }
 };
-

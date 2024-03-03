@@ -1,45 +1,73 @@
-import React from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import {
+  Divider,
   Drawer,
+  IconButton,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
+  styled,
 } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import PeopleIcon from "@mui/icons-material/People";
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import WarehouseIcon from '@mui/icons-material/Warehouse';
-import HandshakeIcon from '@mui/icons-material/Handshake';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import ArticleIcon from '@mui/icons-material/Article';
-import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import ReceiptIcon from '@mui/icons-material/Receipt';
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import WarehouseIcon from "@mui/icons-material/Warehouse";
+import HandshakeIcon from "@mui/icons-material/Handshake";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import ArticleIcon from "@mui/icons-material/Article";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import ReceiptIcon from "@mui/icons-material/Receipt";
 import { Link, useLocation } from "react-router-dom";
 
 const drawerWidth = 240;
 
-const Sidebar = () => {
+const DrawerHeader = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "flex-end",
+  marginTop: "7px",
+  padding: theme.spacing(0, 1),
+  ...theme.mixins.toolbar,
+}));
+
+interface SideBarProps {
+  showDrawer: boolean;
+  setShowDrawer: Dispatch<SetStateAction<boolean>>;
+}
+
+const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
   const location = useLocation();
+
+  const handleDrawerClose = () => {
+    setShowDrawer(false);
+  };
 
   const isLinkActive = (pathname: string) => location.pathname === pathname;
 
   return (
     <Drawer
+      open={showDrawer}
       sx={{
         width: drawerWidth,
         flexShrink: 0,
         "& .MuiDrawer-paper": {
           width: drawerWidth,
           boxSizing: "border-box",
-          marginTop: "64px",
         },
       }}
-      variant="permanent"
+      variant="persistent"
       anchor="left"
     >
+      <DrawerHeader>
+        <IconButton onClick={handleDrawerClose}>
+          <ChevronLeftIcon />
+        </IconButton>
+      </DrawerHeader>
+      <Divider />
       <List>
         <ListItem
           button
@@ -80,12 +108,18 @@ const Sidebar = () => {
           <ListItemText primary="Users" />
         </ListItem>
 
-        <ListItem button component={Link} to="/customers" key="Customers" selected={isLinkActive('/customers')}>
+        <ListItem
+          button
+          component={Link}
+          to="/customers"
+          key="Customers"
+          selected={isLinkActive("/customers")}
+        >
           <ListItemIcon>
             <PeopleIcon />
           </ListItemIcon>
           <ListItemText primary="Customers" />
-          </ListItem>
+        </ListItem>
         <ListItem
           button
           component={Link}
