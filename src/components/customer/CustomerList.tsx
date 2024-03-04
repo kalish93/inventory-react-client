@@ -145,7 +145,7 @@ const CustomerList = () => {
           <TableBody>
             {customers.map((customer: any) => (
               <TableRow key={customer.id}>
-                <TableCell>{customer.firstName + " " + customer.middleName + " " + customer.lastName }</TableCell>
+                <TableCell>{customer.firstName + " " + customer.lastName }</TableCell>
                 <TableCell>{customer.tinNumber}</TableCell>
                 <TableCell>{customer.phone}</TableCell>
                 <TableCell>{customer.address}</TableCell>

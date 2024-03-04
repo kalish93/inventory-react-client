@@ -1,7 +1,6 @@
 export interface Customer {
   id: number;
   firstName: string;
-  middleName: string;
   lastName: string;
   tinNumber: string;
   phone: string;
@@ -10,7 +9,6 @@ export interface Customer {
 
 export interface CreateCustomer {
   firstName: string;
-  middleName: string;
   lastName: string;
   tinNumber: string;
   phone: string;

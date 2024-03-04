@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { PaginatedList } from "../../models/commons/paginatedList";
 import { Declaration } from "../../models/declaration";
 
@@ -77,6 +77,33 @@ const declarationSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       },
+
+
+      deleteDeclarationStart: (state) => {
+        state.loading = true;
+        state.error = null;
+        state.isError = false;
+      },
+      deleteDeclarationSuccess: (state, action) => {
+        const declarationToDelete = action.payload;
+        state.declarations = {
+          items:
+            state.declarations?.items?.filter(
+              (declaration) => declaration.id !== declarationToDelete.id
+            ) ?? [],
+          totalCount: (state.declarations?.totalCount || 0) - 1,
+          pageSize: state.declarations?.pageSize || 10,
+          currentPage: state.declarations?.currentPage || 1,
+          totalPages: state.declarations?.totalPages || 1,
+        };
+        state.loading = false;
+      },
+      deleteDeclarationFailure: (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.isError = true;
+      },
+  
     },
 });
 
@@ -90,6 +117,9 @@ export const {
   getDeclarationByIdStart,
   getDeclarationByIdSuccess,
   getDeclarationByIdFailure,
+  deleteDeclarationFailure,
+  deleteDeclarationStart,
+  deleteDeclarationSuccess
 } = declarationSlice.actions;
 
 export const selectDeclaration = (state: { declaration: DeclarationState }) => state.declaration;
