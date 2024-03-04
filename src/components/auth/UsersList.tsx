@@ -22,6 +22,7 @@ import { AppDispatch } from '../../app/store';
 import { selectUser } from '../../features/user/userSlice';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ConfirmationModal from '../common/confirmationModal';
+import UpdateUserForm from './UpdateUserForm';
 const UsersList = () => {
   const dispatch = useDispatch<AppDispatch>();
   const userState = useSelector(selectUser);
@@ -35,6 +36,19 @@ const UsersList = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  const [selectedUserForUpdate, setSelectedUserForUpdate] = useState(null);
+
+  const handleUpdateModalOpen = () => {
+    setOpenUpdateModal(true);
+    handleMenuClose();
+    
+  };
+
+  const handleUpdateModalClose = () => {
+    setSelectedUserForUpdate(null);
+    setOpenUpdateModal(false);
+  };
 
   const openConfirmationModal = () => {
     setConfirmationModalOpen(true);
@@ -77,10 +91,6 @@ const UsersList = () => {
     setOpenModal(false);
   };
 
-  const handleUpdateUser = () =>{
-    
-  }
-
   const handleDeleteUser = () =>{
     handleMenuClose();
     if (selectedUserId !== null) {
@@ -94,8 +104,9 @@ const UsersList = () => {
     }
   }
 
-  const handleMenuOpen = (event: any, userId: any) => {
+  const handleMenuOpen = (event: any, userId: any, user: any) => {
     setAnchorEl(event.currentTarget);
+    setSelectedUserForUpdate(user);
     setSelectedUserId(userId);
   };
 
@@ -126,6 +137,7 @@ const UsersList = () => {
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell>Name</TableCell>
               <TableCell>Username</TableCell>
               <TableCell>Role</TableCell>
               <TableCell>Actions</TableCell>
@@ -134,12 +146,13 @@ const UsersList = () => {
           <TableBody>
             {users.map((user: any) => (
               <TableRow key={user.id}>
+                <TableCell>{user.firstName + " " + user.lastName}</TableCell>
                 <TableCell>{user.userName}</TableCell>
                 <TableCell>{user.role.name}</TableCell>
                 <TableCell>
                   <IconButton
                     aria-label="Actions"
-                    onClick={(event) => handleMenuOpen(event, user.id)}
+                    onClick={(event) => handleMenuOpen(event, user.id, user)}
                     style={{ margin: 0, padding: 0 }}
                   >
                    <MoreVertIcon/>
@@ -159,7 +172,7 @@ const UsersList = () => {
                       },
                     }}
                   >
-                    <MenuItem onClick={handleUpdateUser}>Update</MenuItem>
+                    <MenuItem onClick={handleUpdateModalOpen}>Update</MenuItem>
                     <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>
                   </Menu>
                 </TableCell>
@@ -169,6 +182,11 @@ const UsersList = () => {
         </Table>
       </TableContainer>
       <UserForm open={openModal} handleClose={handleCloseModal} />
+      <UpdateUserForm
+        open={openUpdateModal}
+        handleClose={handleUpdateModalClose}
+        user={selectedUserForUpdate}
+      />
       <ConfirmationModal
         open={confirmationModalOpen}
         onClose={closeConfirmationModal}

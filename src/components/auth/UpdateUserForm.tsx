@@ -16,18 +16,19 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { signUpUser } from "../../features/user/userActions";
+import { updateUser } from "../../features/user/userActions";
 import { AppDispatch } from "../../app/store";
-import { getRoles } from "../../features/role/roleActions";
 import { Role } from "../../models/role";
 import { selectUser } from "../../features/user/userSlice";
+import { getRoles } from "../../features/role/roleActions";
 
-interface UserFormProps {
+interface UpdateUserFormProps {
   open: boolean;
   handleClose: () => void;
+  user: any;
 }
 
-const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
+const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ open, handleClose, user }) => {
   const dispatch = useDispatch<AppDispatch>();
   const roles = useSelector((state: any) => state.role.roles);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -42,37 +43,37 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
     setSnackbarOpen(true);
   };
 
+
   useEffect(() => {
     dispatch(getRoles());
   }, [dispatch]);
-
+  
   const formik = useFormik({
     initialValues: {
-      userName: "",
-      firstName: "",
-      lastName: "",
-      password: "",
-      passwordConfirmation: "",
-      roleId: undefined,
+      userName: user?.userName || "",
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
+      roleId: user?.role ? user?.role?.id : undefined,
     },
     validationSchema: Yup.object({
       userName: Yup.string().required("Username is required"),
       firstName: Yup.string().required("First name is required"),
       lastName: Yup.string().required("Last name is required"),
-      password: Yup.string().required("Password is required"),
-      passwordConfirmation: Yup.string()
-        .required("Confirmation is required")
-        .oneOf([Yup.ref("password")], "Passwords must match"),
       roleId: Yup.string().required("Role is required"),
     }),
 
     onSubmit: (values) => {
-      dispatch(signUpUser(values));
-      handleClose();
+      dispatch(updateUser(values));
       setIsFormSubmitted(true);
-      formik.resetForm();
+      handleClose();
     },
   });
+
+  useEffect(() => {
+    if (user) {
+      formik.setValues(user);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (isFormSubmitted && !loading) {
@@ -80,7 +81,7 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
         showSnackbar(error || "Unknown error", "error");
         setIsFormSubmitted(false);
       } else {
-        showSnackbar("User registered successfully.", "success");
+        showSnackbar("User Updated successfully.", "success");
         setIsFormSubmitted(false);
       }
     }
@@ -97,15 +98,12 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
 
   return (
     <div>
-      <Modal
-        open={open}
-        onClose={(e, reason) => {
+      <Modal open={open} onClose={(e, reason) => {
           if (reason === "backdropClick") {
             return;
           }
           handleClose();
-        }}
-      >
+        }}>
         <Box
           sx={{
             position: "absolute",
@@ -119,10 +117,10 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
           }}
         >
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            User Form
+            Update User
           </Typography>
           <form onSubmit={formik.handleSubmit}>
-            <TextField
+          <TextField
               name="firstName"
               label="First name"
               variant="outlined"
@@ -134,7 +132,7 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
               error={formik.touched.firstName && Boolean(formik.errors.firstName)}
             />
             <FormHelperText error>
-              {formik.touched.firstName && formik.errors.firstName}
+              {formik.touched.firstName && formik.errors.firstName as React.ReactNode}
             </FormHelperText>
             <TextField
               name="lastName"
@@ -148,7 +146,7 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
               error={formik.touched.lastName && Boolean(formik.errors.lastName)}
             />
             <FormHelperText error>
-              {formik.touched.lastName && formik.errors.lastName}
+              {formik.touched.lastName && formik.errors.lastName as React.ReactNode}
             </FormHelperText>
             <TextField
               name="userName"
@@ -162,42 +160,9 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
               error={formik.touched.userName && Boolean(formik.errors.userName)}
             />
             <FormHelperText error>
-              {formik.touched.userName && formik.errors.userName}
+              {formik.touched.userName && formik.errors.userName as React.ReactNode}
             </FormHelperText>
-            <TextField
-              name="password"
-              label="Password"
-              type="password"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.password}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-            />
-            <FormHelperText error>
-              {formik.touched.password && formik.errors.password}
-            </FormHelperText>
-            <TextField
-              name="passwordConfirmation"
-              label="Confirm Password"
-              type="password"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.passwordConfirmation}
-              error={
-                formik.touched.passwordConfirmation &&
-                Boolean(formik.errors.passwordConfirmation)
-              }
-            />
-            <FormHelperText error>
-              {formik.touched.passwordConfirmation &&
-                formik.errors.passwordConfirmation}
-            </FormHelperText>
+            
             <FormControl fullWidth margin="normal" variant="filled">
               <InputLabel>Role</InputLabel>
               <Select
@@ -215,7 +180,7 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
                   ))}
               </Select>
               <FormHelperText error>
-                {formik.touched.roleId && formik.errors.roleId}
+                {formik.touched.roleId && formik.errors.roleId as React.ReactNode}
               </FormHelperText>
             </FormControl>
             <Button
@@ -224,7 +189,7 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
               color="primary"
               disabled={!formik.isValid}
             >
-              Submit
+              Update
             </Button>
             <Button
               type="button"
@@ -256,4 +221,4 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
   );
 };
 
-export default UserForm;
+export default UpdateUserForm;

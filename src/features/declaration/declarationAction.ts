@@ -1,7 +1,7 @@
 import { AppDispatch } from "../../app/store";
 import { CreateDeclaration } from "../../models/declaration";
 import { DeclarationService } from "./declarationService";
-import { getDeclarationByIdFailure, getDeclarationByIdStart, getDeclarationByIdSuccess, getDeclarationsFailure, getDeclarationsStart, getDeclarationsSuccess, registerDeclarationFailure, registerDeclarationStart, registerDeclarationSuccess } from "./declarationSlice";
+import { deleteDeclarationFailure, deleteDeclarationStart, deleteDeclarationSuccess, getDeclarationByIdFailure, getDeclarationByIdStart, getDeclarationByIdSuccess, getDeclarationsFailure, getDeclarationsStart, getDeclarationsSuccess, registerDeclarationFailure, registerDeclarationStart, registerDeclarationSuccess } from "./declarationSlice";
 
 export const getDeclarations = (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
@@ -37,5 +37,20 @@ export const getDeclaration = (id:any) => async (dispatch: AppDispatch) => {
     } catch (error) {
       dispatch(getDeclarationByIdFailure(error));
       throw(error)
+    }
+  };
+
+  export const deleteDeclaration = (id: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(deleteDeclarationStart());
+  
+      const response = await DeclarationService.deleteDeclaration(id);
+      if (response.success) {
+        dispatch(deleteDeclarationSuccess(response.data));
+      } else {
+        dispatch(deleteDeclarationFailure(response.error || 'Unknown error'));
+      }
+    } catch (error) {
+      dispatch(deleteDeclarationFailure('Unknown error'));
     }
   };

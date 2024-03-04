@@ -150,7 +150,7 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
             ></Typography>
             <Autocomplete
               options={users}
-              getOptionLabel={(option) => option.userName}
+              getOptionLabel={(option) => option.firstName + " " + option.lastName}
               value={
                 users.find(
                   (d: { id: string }) => d.id === formData.journalKeeper

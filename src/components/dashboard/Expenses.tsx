@@ -39,7 +39,7 @@ const PieChartComponent: React.FC<{ data: ExpenseData }> = ({ data }) => {
       legend: {
         type: "scroll",
         orient: "vertical",
-        right: "10%",
+        right: "60%",
         top: "middle",
         formatter: function (name: string) {
       const expense = data?.detailExpenses.find((item) => item.name === name);
@@ -89,7 +89,7 @@ const PieChartComponent: React.FC<{ data: ExpenseData }> = ({ data }) => {
     };
   }, [data]);
 
-  return <div id="pieChart" style={{ height: 300, width: 1200 }} />;
+  return <div id="pieChart" style={{ height: 300}} />;
 };
 
 const Expenses = () => {
@@ -102,7 +102,7 @@ const Expenses = () => {
   }, [dispatch]);
 
   return (
-        <Card variant="outlined">
+        <Card variant="outlined" style={{boxSizing:'border-box', width:'70%', padding:'10px', paddingRight:'0rem'}}>
       <PieChartComponent data={expenses} />
       </Card>
     

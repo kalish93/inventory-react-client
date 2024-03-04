@@ -120,6 +120,7 @@ const userSlice = createSlice({
       } else {
         state.users.items = [updatedUser, ...state.users.items];
       }
+      state.loading = false;
     },
     updateUserFailure: (state, action) => {
       state.loading = false;

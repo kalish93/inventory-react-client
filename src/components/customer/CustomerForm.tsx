@@ -24,7 +24,6 @@ interface CustomerFormProps {
 interface FormData {
   id?: string;
   firstName: string;
-  middleName: string;
   lastName: string;
   tinNumber: string;
   phone: string;
@@ -33,7 +32,6 @@ interface FormData {
 
 interface Errors {
   firstName: string;
-  middleName: string;
   lastName: string;
   tinNumber: string;
   phone: string;
@@ -51,7 +49,6 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose, selected
   const [formData, setFormData] = useState<FormData>({
     id: undefined,
     firstName: '',
-    middleName: '',
     lastName: '',
     tinNumber: '',
     phone: '',
@@ -60,7 +57,6 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose, selected
 
   const [errors, setErrors] = useState<Errors>({
     firstName: '',
-    middleName: '',
     lastName: '',
     tinNumber: '',
     phone: '',
@@ -146,7 +142,6 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose, selected
       setFormData({
         id: selectedCustomer.id,
         firstName: selectedCustomer.firstName,
-        middleName: selectedCustomer.middleName,
         lastName: selectedCustomer.lastName,
         tinNumber: selectedCustomer.tinNumber,
         phone: selectedCustomer.phone,
@@ -156,7 +151,6 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose, selected
       setFormData({
         id: undefined,
         firstName: '',
-        middleName: '',
         lastName: '',
         tinNumber: '',
         phone: '',
@@ -168,7 +162,6 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose, selected
   const resetErrors = () => {
     setErrors({
       firstName: '',
-      middleName: '',
       lastName: '',
       tinNumber: '',
       phone: '',
@@ -229,19 +222,6 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose, selected
             error={!!errors.firstName}
             helperText={errors.firstName}
             value={formData.firstName}
-          />
-          <TextField
-            name="middleName"
-            label="Middle name"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            required
-            error={!!errors.middleName}
-            helperText={errors.middleName}
-            value={formData.middleName}
           />
           <TextField
             name="lastName"
