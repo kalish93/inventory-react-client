@@ -10,6 +10,7 @@ interface UserState {
   error: any | null;
   isError: boolean;
   isAuthenticated: boolean;
+  successMessage: any;
 }
 
 const initialState: UserState = {
@@ -26,6 +27,7 @@ const initialState: UserState = {
   error: null,
   isError: false,
   isAuthenticated: false,
+  successMessage: null,
 };
 
 const userSlice = createSlice({
@@ -150,6 +152,22 @@ const userSlice = createSlice({
       state.error = action.payload;
       state.isError = true;
     },
+
+    changePasswordStart: (state) => {
+      state.loading = true;
+      state.error = null;
+      state.isError = false;
+      state.successMessage = null
+    },
+    changePasswordSuccess: (state, action) => {
+      state.successMessage = 'success'
+      state.loading = false;
+    },
+    changePasswordFailure: (state, action) => {
+      state.error = action.payload;
+      state.isError = true;
+      state.loading = false;
+    },
   },
 });
 
@@ -170,6 +188,9 @@ export const {
   deleteUserFailure,
   deleteUserStart,
   deleteUserSuccess,
+  changePasswordFailure,
+  changePasswordStart,
+  changePasswordSuccess
 } = userSlice.actions;
 
 export const selectUser = (state: { user: UserState }) => state.user;

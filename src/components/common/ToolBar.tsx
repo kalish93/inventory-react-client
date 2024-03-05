@@ -1,5 +1,5 @@
-import React, { Dispatch, SetStateAction, useEffect } from "react";
-import { Toolbar, IconButton, Typography, styled } from "@mui/material";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Toolbar, IconButton, Typography, styled, Menu, MenuItem } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import AccountCircle from "@mui/icons-material/AccountCircle";
@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { logout } from "../../features/user/userActions";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../app/store";
+import { AnyListenerPredicate } from "@reduxjs/toolkit";
 
 interface NavBarProps {
   showDrawer: boolean;
@@ -41,6 +42,7 @@ const Navbar = ({ showDrawer, setShowDrawer }: NavBarProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const userJson = localStorage.getItem("user");
   const user = userJson ? JSON.parse(userJson) : null;
+  const [anchorEl, setAnchorEl] = useState(null);
   const handleDrawerOpen = () => {
     setShowDrawer(true);
   };
@@ -51,6 +53,18 @@ const Navbar = ({ showDrawer, setShowDrawer }: NavBarProps) => {
     dispatch(logout());
     navigate("/login");
   };
+
+  const handleMenuOpen = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const navigateToChangePassword = () => {
+    navigate("/change-password");
+  }
   return (
     <div style={{ display: "flex" }}>
       <AppBar
@@ -81,28 +95,48 @@ const Navbar = ({ showDrawer, setShowDrawer }: NavBarProps) => {
             F.O.R Automatisation
           </Typography>
 
-          {/* <IconButton
-            edge="end"
-            aria-label="account of current user"
-            aria-haspopup="true"
-            color="primary"
-          >
-            <AccountCircle />
-          </IconButton> */}
           {user && user.username && (
             <>
               <Typography color={"white"} noWrap>
                 {user.username}
               </Typography>
               <IconButton
+            edge="end"
+            aria-label="account of current user"
+            aria-haspopup="true"
+            color="inherit"
+            onClick={(event) => handleMenuOpen(event)}
+          >
+            <AccountCircle />
+                <Menu
+                    id="actions-menu"
+                    MenuListProps={{
+                      'aria-labelledby': 'long-button',
+                    }}
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    PaperProps={{
+                      style: {
+                        width: '20ch',
+                        boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.1)'
+                      },
+                    }}
+                  >
+                    <MenuItem onClick={ () => handleLogout()}>Logout</MenuItem>
+                    <MenuItem onClick={ () => navigateToChangePassword()}>Change Password</MenuItem>
+                  </Menu>
+
+                  </IconButton>
+            {/* <IconButton
                 edge="end"
                 aria-label="logout"
                 aria-haspopup="true"
                 color="inherit"
                 onClick={handleLogout}
-              >
+              > 
                 <LogoutIcon />
-              </IconButton>
+              </IconButton> */}
             </>
           )}
         </Toolbar>

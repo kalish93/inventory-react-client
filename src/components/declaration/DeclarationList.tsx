@@ -56,7 +56,8 @@ const DeclarationList = () => {
     closeConfirmationModal();
   };
 
-  const handleUpdateDeclaration = () =>{
+  const handleUpdateDeclaration = (event: any) =>{
+    event.preventDefault()
       handleOpenModal();
       handleMenuClose();
   }
@@ -176,7 +177,7 @@ const DeclarationList = () => {
                       },
                     }}
                   >
-                    <MenuItem onClick={handleUpdateDeclaration}>Update</MenuItem>
+                    <MenuItem onClick={(event)=>handleUpdateDeclaration(event)}>Update</MenuItem>
                     <MenuItem onClick={(event) => openConfirmationModal(event)}>Delete</MenuItem>
                   </Menu>
                   </TableCell>
@@ -185,7 +186,7 @@ const DeclarationList = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <DeclarationForm open={openModal} handleClose={handleCloseModal} />
+      <DeclarationForm open={openModal} handleClose={handleCloseModal}/>
       <ConfirmationModal
         open={confirmationModalOpen}
         onClose={closeConfirmationModal}

@@ -19,3 +19,5 @@ export const CATRANSACTIONS_URL = `${BASE_URL}/ca-transactions`
 export const DASHBOARD_URL = `${BASE_URL}/dashboard`
 export const EXPENSES_URL = `${BASE_URL}/dashboard/expenses`
 export const BANK_POSITIONS_URL = `${BASE_URL}/dashboard/bank-positions`
+export const CHANGE_PASSWORD_URL = `${BASE_URL}/change-password`
+export const PERMISSIONS_URL = `${BASE_URL}/permissions`

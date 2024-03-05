@@ -18,6 +18,8 @@ import InventoryList from "../components/inventory/InventoryList";
 import CashOfAccountList from "../components/cash-of-account/CashOfAccountList";
 import CATransactionsList from "../components/ca-transaction/CATransactionsList";
 import DashboardHome from "../components/dashboard/DashboardHome";
+import ChangePassword from "../components/auth/changePassword";
+import PermissionList from "../components/auth/PermissionList";
 
 const routes = createBrowserRouter([
   {
@@ -87,12 +89,20 @@ const routes = createBrowserRouter([
       {
         path: "ca-transactions",
         element: <CATransactionsList />,
-      }
+      },
+      {
+        path: "permissions/:id",
+        element: <PermissionList />,
+      },
     ],
   },
   {
     path: "/login",
     element: <LoginComponent />,
+  },
+  {
+    path: "/change-password",
+    element: <ChangePassword />,
   },
 ]);
 
