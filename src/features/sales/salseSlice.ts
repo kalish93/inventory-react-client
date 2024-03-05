@@ -76,6 +76,16 @@ const salesSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       },
+      deleteSaleSuccess: (state, action) => {
+        const deletedSale = action.payload;
+        state.sales = {
+          items: state.sales?.items.filter(sale => sale.id !== deletedSale.id) || [],
+          totalCount: (state.sales?.totalCount || 0) - 1,
+          pageSize: state.sales?.pageSize || 10,
+          currentPage: state.sales?.currentPage || 1,
+          totalPages: state.sales?.totalPages || 1,
+        };
+      }
   },
 });
 
@@ -88,7 +98,8 @@ export const {
   registerSaleFailure,
   getSaleByIdStart,
   getSaleByIdSuccess,
-  getSaleByIdFailure
+  getSaleByIdFailure,
+  deleteSaleSuccess
 } = salesSlice.actions;
 
 export const selectSale = (state: { sale: SalesState }) => state.sale;
