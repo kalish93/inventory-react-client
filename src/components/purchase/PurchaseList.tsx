@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Table,
   TableBody,
@@ -10,21 +10,95 @@ import {
   Paper,
   TablePagination,
   Button,
-} from '@mui/material';
-import { AppDispatch } from '../../app/store';
-import { selectPurchase } from '../../features/purchase/purchaseSlice';
-import { getPurchases } from '../../features/purchase/purchaseActions';
-import PurchaseForm from './PurchaseForm';
-import dayjs from 'dayjs';
-import { Link } from 'react-router-dom';
+  IconButton,
+  MenuItem,
+  Menu,
+  Alert,
+  Snackbar,
+} from "@mui/material";
+import { AppDispatch } from "../../app/store";
+import { selectPurchase } from "../../features/purchase/purchaseSlice";
+import {
+  deletePurchase,
+  getPurchases,
+} from "../../features/purchase/purchaseActions";
+import PurchaseForm from "./PurchaseForm";
+import dayjs from "dayjs";
+import { Link } from "react-router-dom";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import ConfirmationModal from "../common/confirmationModal";
 
 const PurchaseList = () => {
   const dispatch = useDispatch<AppDispatch>();
   const PurchaseState = useSelector(selectPurchase);
-  const { items: purchases = [], currentPage, totalCount } = PurchaseState.purchases;
+  const {
+    items: purchases = [],
+    currentPage,
+    totalCount,
+  } = PurchaseState.purchases;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openModal, setOpenModal] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedPurchaseId, setSelectedPurchaseId] = useState(null);
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
+  const { isError, error, loading } = useSelector(selectPurchase);
+  const [selectedPurchase, setSelectedPurchase] = useState(null);
+
+  const openConfirmationModal = () => {
+    setConfirmationModalOpen(true);
+  };
+
+  const closeConfirmationModal = () => {
+    setConfirmationModalOpen(false);
+  };
+
+  const handleConfirmAction = () => {
+    handleDeletePurchase();
+    closeConfirmationModal();
+  };
+
+  const handleUpdatePurchase = () => {
+    handleOpenModal();
+    handleMenuClose();
+  };
+
+  const handleDeletePurchase = () => {
+    handleMenuClose();
+    if (selectedPurchaseId !== null) {
+      dispatch(deletePurchase(selectedPurchaseId)).then(() => {
+        if (!isError && !loading) {
+          showSnackbar("Purchase deleted successfully", "success");
+        } else {
+          showSnackbar(error, "error");
+        }
+      });
+    }
+  };
+
+  const handleMenuOpen = (event: any, purchaseId: any, purchase: any) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedPurchaseId(purchaseId);
+    setSelectedPurchase(purchase);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedPurchaseId(null);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
+  const showSnackbar = (message: string, severity: "success" | "error") => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
 
   useEffect(() => {
     dispatch(getPurchases(page + 1, rowsPerPage));
@@ -34,7 +108,7 @@ const PurchaseList = () => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: { target: { value: string; }; }) => {
+  const handleChangeRowsPerPage = (event: { target: { value: string } }) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -50,16 +124,16 @@ const PurchaseList = () => {
   return (
     <div>
       <Button variant="contained" color="primary" onClick={handleOpenModal}>
-       Add Purchase
+        Add Purchase
       </Button>
       <TablePagination
-         rowsPerPageOptions={[5, 10, 25]}
-         component="div"
-         count={totalCount || 0}
-         rowsPerPage={rowsPerPage}
-         page={(currentPage && currentPage > 0) ? currentPage - 1 : 0}
-         onPageChange={handleChangePage}
-         onRowsPerPageChange={handleChangeRowsPerPage}
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={totalCount || 0}
+        rowsPerPage={rowsPerPage}
+        page={currentPage && currentPage > 0 ? currentPage - 1 : 0}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
       />
       <TableContainer component={Paper}>
         <Table>
@@ -68,20 +142,96 @@ const PurchaseList = () => {
               <TableCell>Purchase Number</TableCell>
               <TableCell>Purchase Date</TableCell>
               <TableCell>Track Number</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {purchases.map((purchase: any) => (
-              <TableRow key={purchase.id} component={Link} to={`/purchases/${purchase.id}`} style={{ textDecoration: 'none' }}>
-                <TableCell>{purchase.number }</TableCell>
-                <TableCell>{dayjs(purchase.date).format("YYYY-MM-DD")}</TableCell>
+              <TableRow
+                key={purchase.id}
+                component={Link}
+                to={`/purchases/${purchase.id}`}
+                style={{ textDecoration: "none" }}
+              >
+                <TableCell>{purchase.number}</TableCell>
+                <TableCell>
+                  {dayjs(purchase.date).format("YYYY-MM-DD")}
+                </TableCell>
                 <TableCell>{purchase.truckNumber}</TableCell>
+                <TableCell>
+                  <IconButton
+                    aria-label="Actions"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      event.preventDefault(); // Prevent default behavior
+                      handleMenuOpen(event, purchase.id, purchase);
+                    }}
+                    style={{ margin: 0, padding: 0 }}
+                  >
+                    <MoreVertIcon />
+                  </IconButton>
+                  <Menu
+                    id="actions-menu"
+                    MenuListProps={{
+                      "aria-labelledby": "long-button",
+                    }}
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    PaperProps={{
+                      style: {
+                        width: "20ch",
+                        boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
+                      },
+                    }}
+                  >
+                    <MenuItem
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        event.preventDefault();
+                        handleUpdatePurchase();
+                      }}
+                    >
+                      Update
+                    </MenuItem>
+                    <MenuItem
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        event.preventDefault();
+                        openConfirmationModal();
+                      }}
+                    >
+                      Delete
+                    </MenuItem>
+                  </Menu>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
       <PurchaseForm open={openModal} handleClose={handleCloseModal} />
+      <ConfirmationModal
+        open={confirmationModalOpen}
+        onClose={closeConfirmationModal}
+        onConfirm={handleConfirmAction}
+        title="Delete Purchase"
+        content="Are you sure you want to delete this Purchase?"
+      />
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity as "success" | "error"}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

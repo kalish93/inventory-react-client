@@ -7,6 +7,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  makeStyles,
   styled,
 } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -21,6 +22,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import ReceiptIcon from "@mui/icons-material/Receipt";
+import PaidIcon from "@mui/icons-material/Paid";
 import { Link, useLocation } from "react-router-dom";
 
 const drawerWidth = 240;
@@ -29,7 +31,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "flex-end",
-  marginTop: "7px",
   padding: theme.spacing(0, 1),
   ...theme.mixins.toolbar,
 }));
@@ -41,7 +42,6 @@ interface SideBarProps {
 
 const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
   const location = useLocation();
-
   const handleDrawerClose = () => {
     setShowDrawer(false);
   };
@@ -67,7 +67,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
           <ChevronLeftIcon />
         </IconButton>
       </DrawerHeader>
-      <Divider />
+      {/* <Divider /> */}
       <List>
         <ListItem
           button
@@ -76,7 +76,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
           key="Dashboard"
           selected={isLinkActive("/")}
         >
-          <ListItemIcon>
+          <ListItemIcon sx={{ color: "inherit" }}>
             <DashboardIcon />
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
@@ -89,7 +89,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
           key="Inventory"
           selected={isLinkActive("/inventory")}
         >
-          <ListItemIcon>
+          <ListItemIcon sx={{ color: "inherit" }}>
             <InventoryIcon />
           </ListItemIcon>
           <ListItemText primary="Inventory" />
@@ -102,7 +102,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
           key="Users"
           selected={isLinkActive("/users")}
         >
-          <ListItemIcon>
+          <ListItemIcon sx={{ color: "inherit" }}>
             <PeopleIcon />
           </ListItemIcon>
           <ListItemText primary="Users" />
@@ -115,7 +115,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
           key="Customers"
           selected={isLinkActive("/customers")}
         >
-          <ListItemIcon>
+          <ListItemIcon sx={{ color: "inherit" }}>
             <PeopleIcon />
           </ListItemIcon>
           <ListItemText primary="Customers" />
@@ -127,7 +127,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
           key="drivers"
           selected={isLinkActive("/drivers")}
         >
-          <ListItemIcon>
+          <ListItemIcon sx={{ color: "inherit" }}>
             <LocalShippingIcon />
           </ListItemIcon>
           <ListItemText primary="Drivers" />
@@ -139,7 +139,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
           key="stores"
           selected={isLinkActive("/stores")}
         >
-          <ListItemIcon>
+          <ListItemIcon sx={{ color: "inherit" }}>
             <WarehouseIcon />
           </ListItemIcon>
           <ListItemText primary="Stores" />
@@ -151,7 +151,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
           key="Suppliers"
           selected={isLinkActive("/suppliers")}
         >
-          <ListItemIcon>
+          <ListItemIcon sx={{ color: "inherit" }}>
             <HandshakeIcon />
           </ListItemIcon>
           <ListItemText primary="Suppliers" />
@@ -164,7 +164,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
           key="Products"
           selected={isLinkActive("/products")}
         >
-          <ListItemIcon>
+          <ListItemIcon sx={{ color: "inherit" }}>
             <ShoppingCartIcon />
           </ListItemIcon>
           <ListItemText primary="Products" />
@@ -177,7 +177,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
           key="Declarations"
           selected={isLinkActive("/declarations")}
         >
-          <ListItemIcon>
+          <ListItemIcon sx={{ color: "inherit" }}>
             <ArticleIcon />
           </ListItemIcon>
           <ListItemText primary="Declarations" />
@@ -190,7 +190,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
           key="Purchases"
           selected={isLinkActive("/purchases")}
         >
-          <ListItemIcon>
+          <ListItemIcon sx={{ color: "inherit" }}>
             <ShoppingBasketIcon />
           </ListItemIcon>
           <ListItemText primary="Purchases" />
@@ -203,7 +203,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
           key="Sales"
           selected={isLinkActive("/sales")}
         >
-          <ListItemIcon>
+          <ListItemIcon sx={{ color: "inherit" }}>
             <ReceiptIcon />
           </ListItemIcon>
           <ListItemText primary="Sales" />
@@ -215,8 +215,8 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
           key="CATransactions"
           selected={isLinkActive("/ca-transactions")}
         >
-          <ListItemIcon>
-            <AccountBalanceWalletIcon />
+          <ListItemIcon sx={{ color: "inherit" }}>
+            <PaidIcon />
           </ListItemIcon>
           <ListItemText primary="CA Transactions" />
         </ListItem>
@@ -228,7 +228,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
           key="CashOfAccounts"
           selected={isLinkActive("/cash-of-accounts")}
         >
-          <ListItemIcon>
+          <ListItemIcon sx={{ color: "inherit" }}>
             <AccountBalanceWalletIcon />
           </ListItemIcon>
           <ListItemText primary="Cash Of Accounts" />
