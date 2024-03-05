@@ -14,6 +14,7 @@ import accountTypeReducer from "../features/account-type/accountTypeSlice";
 import cashOfAccountReducer from "../features/cash-of-account/cashOfAccountSlice";
 import transactionSlice from '../features/ca-transaction/transactionSlice';
 import dashboardReducer from '../features/dashboard/dashboardSlice';
+import permissionReducer from '../features/permission/permissionSlice';
 
 const store = configureStore({
   reducer: {
@@ -32,6 +33,7 @@ const store = configureStore({
     cashOfAccount: cashOfAccountReducer,
     caTransaction: transactionSlice,
     dashboard: dashboardReducer,
+    permission: permissionReducer,
   },
 });
 

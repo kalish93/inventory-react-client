@@ -1,4 +1,7 @@
 import {
+  changePasswordFailure,
+  changePasswordStart,
+  changePasswordSuccess,
   deleteUserFailure,
   deleteUserStart,
   deleteUserSuccess,
@@ -98,5 +101,21 @@ export const deleteUser = (id: any) => async (dispatch: AppDispatch) => {
     }
   } catch (error) {
     dispatch(deleteUserFailure("Unknown error"));
+  }
+};
+
+export const changePassword = (passwordData: any) => async (dispatch: AppDispatch) => {
+  try {
+    dispatch(changePasswordStart());
+
+    const response = await UserService.changePassword(passwordData);
+
+    if (response.success) {
+      dispatch(changePasswordSuccess(response.data));
+    } else {
+      dispatch(changePasswordFailure(response.error || "Unknown error"));
+    }
+  } catch (error) {
+    dispatch(changePasswordFailure("Unknown error"));
   }
 };

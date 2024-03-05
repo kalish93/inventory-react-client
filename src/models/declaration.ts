@@ -1,6 +1,6 @@
 export interface CreateDeclaration {
     number: string;
-    date: Date | null;
+    date: any | null;
     declarationProducts: CreateDeclarationProduct[];
   }
 

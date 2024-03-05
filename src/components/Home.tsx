@@ -19,6 +19,7 @@ import CashOfAccountList from "./cash-of-account/CashOfAccountList";
 import CATransactionsList from "./ca-transaction/CATransactionsList";
 import DashboardHome from "./dashboard/DashboardHome";
 import { CssBaseline, styled } from "@mui/material";
+import PermissionList from "./auth/PermissionList";
 
 const drawerWidth = 240;
 
@@ -68,6 +69,7 @@ const Home = () => {
           <Route path="/ca-transactions" element={<CATransactionsList />} />
           <Route path="/cash-of-accounts" element={<CashOfAccountList />} />
           <Route path="/" element={<DashboardHome />} />
+          <Route path="/permissions/:id" element={<PermissionList />} />
         </Routes>
       </Main>
     </div>

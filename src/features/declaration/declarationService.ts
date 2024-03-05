@@ -94,4 +94,29 @@ export const DeclarationService = {
       return { success: false, error: "Unexpected error occurred" };
     }
 },
+
+  updateDeclaration: async (DeclarationData: any) => {
+    try{
+      const response = await handleRequest(`${DECLARATIONS_URL}/${DeclarationData.id}`, {
+        method: "PUT",
+        body: JSON.stringify(DeclarationData),
+      });
+
+    if (!response.ok) {
+      let errorMessage = `Bad Request: ${response.statusText}`;
+
+        const data = await response.json();
+        errorMessage = data.error || errorMessage;
+
+      return { success: false, error: errorMessage };
+    }
+
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    console.error("Error in update declaration service:", error);
+    return { success: false, error: "Unexpected error occurred" };
+  }
+  },
+
 };

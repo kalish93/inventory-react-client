@@ -103,7 +103,33 @@ const declarationSlice = createSlice({
         state.error = action.payload;
         state.isError = true;
       },
+
+      updateDeclarationStart: (state) => {
+        state.loading = true;
+        state.error = null;
+        state.isError = false;
+      },
   
+      updateDeclarationSuccess: (state, action) => {
+        const updatedDeclaration = action.payload;
+        state.declarations = {
+          items:
+            state.declarations?.items?.map((declaration) =>
+            declaration.id === updatedDeclaration.id ? updatedDeclaration : declaration
+            ) ?? [],
+          totalCount: state.declarations?.totalCount || 0,
+          pageSize: state.declarations?.pageSize || 10,
+          currentPage: state.declarations?.currentPage || 1,
+          totalPages: state.declarations?.totalPages || 1,
+        };
+        state.loading = false;
+      },
+  
+      updateDeclarationFailure: (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.isError = true;
+        state.error = action.payload;
+      },
     },
 });
 
@@ -119,7 +145,10 @@ export const {
   getDeclarationByIdFailure,
   deleteDeclarationFailure,
   deleteDeclarationStart,
-  deleteDeclarationSuccess
+  deleteDeclarationSuccess,
+  updateDeclarationFailure,
+  updateDeclarationStart,
+  updateDeclarationSuccess
 } = declarationSlice.actions;
 
 export const selectDeclaration = (state: { declaration: DeclarationState }) => state.declaration;

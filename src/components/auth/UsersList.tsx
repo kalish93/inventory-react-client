@@ -15,6 +15,9 @@ import {
   MenuItem,
   Snackbar,
   Alert,
+  Tabs,
+  Tab,
+  Box,
 } from '@mui/material';
 import { deleteUser, getUsers } from '../../features/user/userActions';
 import UserForm from './UserForm';
@@ -23,6 +26,30 @@ import { selectUser } from '../../features/user/userSlice';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ConfirmationModal from '../common/confirmationModal';
 import UpdateUserForm from './UpdateUserForm';
+import RoleList from './RoleList';
+
+const TabPanel = (props: {
+  [x: string]: any;
+  children: any;
+  value: any;
+  index: any;
+}) => {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+};
+
+
 const UsersList = () => {
   const dispatch = useDispatch<AppDispatch>();
   const userState = useSelector(selectUser);
@@ -38,7 +65,11 @@ const UsersList = () => {
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [selectedUserForUpdate, setSelectedUserForUpdate] = useState(null);
+  const [value, setValue] = useState(0);
 
+  const handleChange = (event: any, newValue: any) => {
+    setValue(newValue);
+  };
   const handleUpdateModalOpen = () => {
     setOpenUpdateModal(true);
     handleMenuClose();
@@ -121,6 +152,15 @@ const UsersList = () => {
 
   return (
     <div>
+        <Tabs
+        value={value}
+        onChange={handleChange}
+        centered
+      >
+        <Tab label="Users" />
+        <Tab label="Roles" />
+      </Tabs>
+      <TabPanel value={value} index={0}>
       <Button variant="contained" color="primary" onClick={handleOpenModal}>
         Add User
       </Button>
@@ -208,6 +248,10 @@ const UsersList = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+          <RoleList />
+      </TabPanel>
     </div>
   );
 };

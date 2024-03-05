@@ -1,4 +1,4 @@
-import { LOGIN_URL, USERS_URL } from "../../core/api-routes";
+import { CHANGE_PASSWORD_URL, LOGIN_URL, USERS_URL } from "../../core/api-routes";
 import { CreateUser } from "../../models/user";
 import { handleRequest } from "../../utils/apiService";
 
@@ -121,6 +121,30 @@ export const UserService = {
       return { success: true, data };
     } catch (error) {
       console.error("Error in delete User service:", error);
+      return { success: false, error: "Unexpected error occurred" };
+    }
+  },
+
+  changePassword: async (passwordData: any) => {
+    try {
+      const response = await handleRequest(CHANGE_PASSWORD_URL, {
+        method: "PUT",
+        body: JSON.stringify(passwordData),
+      });
+
+      if (!response.ok) {
+        let errorMessage = `Bad Request: ${response.statusText}`;
+
+        const data = await response.json();
+        errorMessage = data.error || errorMessage;
+
+        return { success: false, error: errorMessage };
+      }
+
+      const data = await response.json();
+      return { success: true, data };
+    } catch (error) {
+      console.error("Error in change password service:", error);
       return { success: false, error: "Unexpected error occurred" };
     }
   },
