@@ -88,5 +88,30 @@ export const PurchaseService = {
           return { success: false, error: "Unexpected error occurred" };
         }
       },
+
+      updatePurchase: async (purchaseId: string, purchaseData: CreatePurchase) => {
+        try {
+          const url = `${PURCHASES_URL}/${purchaseId}`;
+          const response = await handleRequest(url, {
+            method: "PUT",
+            body: JSON.stringify(purchaseData),
+          });
+    
+          if (!response.ok) {
+            let errorMessage = `Bad Request: ${response.statusText}`;
+    
+            const data = await response.json();
+            errorMessage = data.error || errorMessage;
+    
+            return { success: false, error: errorMessage };
+          }
+    
+          const data = await response.json();
+          return { success: true, data };
+        } catch (error) {
+          console.error("Error in updatePurchase service:", error);
+          return { success: false, error: "Unexpected error occurred" };
+        }
+      },
 };
   
