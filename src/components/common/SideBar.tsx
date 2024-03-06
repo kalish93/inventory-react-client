@@ -222,7 +222,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
           <ListItemText primary="CA Transactions" />
         </ListItem>}
 
-       {hasPermission(PERMISSIONS.GetAllChartOfAccounts) && <ListItem
+       {((hasPermission(PERMISSIONS.GetAllChartOfAccounts)) || (hasPermission(PERMISSIONS.GetAllAccountTypes))|| (hasPermission(PERMISSIONS.GetAllAccountSubTypes))) && <ListItem
           button
           component={Link}
           to="/cash-of-accounts"
