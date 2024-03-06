@@ -60,3 +60,17 @@ export const deletePurchase = (id: any) => async (dispatch: AppDispatch) => {
     dispatch(registerPurchaseFailure(error));
   }
 };
+
+export const updatePurchase = (id:any, data: CreatePurchase) => async (dispatch: AppDispatch) => {
+  try {
+    dispatch(registerPurchaseStart());
+    const response = await PurchaseService.updatePurchase(id, data);
+    if (response.success) {
+      dispatch(registerPurchaseSuccess(response.data));
+    } else {
+      dispatch(registerPurchaseFailure(response.error || "Unknown error"));
+    }
+  } catch (error) {
+    dispatch(registerPurchaseFailure("Unknown error"));
+  }
+}
