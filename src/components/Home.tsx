@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Sidebar from "./common/SideBar";
 import Navbar from "./common/ToolBar";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import UsersList from "./auth/UsersList";
 import CustomerList from "./customer/CustomerList";
 import DriversList from "./drivers/DriversList";
@@ -20,6 +20,8 @@ import CATransactionsList from "./ca-transaction/CATransactionsList";
 import DashboardHome from "./dashboard/DashboardHome";
 import { CssBaseline, styled } from "@mui/material";
 import PermissionList from "./auth/PermissionList";
+import { hasPermission } from "../utils/checkPermission";
+import { PERMISSIONS } from "../core/permissions";
 
 const drawerWidth = 240;
 
@@ -43,8 +45,40 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   }),
 }));
 
+const AuthenticatedRoute: React.FC<{ element: React.ReactNode }> = ({ element }) => {
+  const isAuthenticated = !!localStorage.getItem("accessToken");
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <>{element}</>;
+};
+interface ProtectedRouteProps {
+  element: React.ReactNode;
+  permission?: string;
+}
+
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, permission }) => {
+  const isAuthenticated = !!localStorage.getItem("accessToken");
+  if(!isAuthenticated){
+    return <Navigate to="/login" replace />;
+  }
+
+  if (isAuthenticated && hasPermission(permission)) {
+    return <>{element}</>;
+  } else if (isAuthenticated) {
+    // User is authenticated but does not have the required permission
+    return <Navigate to="/" replace />;
+  } else {
+    // User is not authenticated
+    return <Navigate to="/login" replace />;
+  }
+};
+
 const Home = () => {
   const [showDrawer, setShowDrawer] = useState(true);
+
 
   return (
     <div style={{ display: "flex" }}>
@@ -53,23 +87,74 @@ const Home = () => {
       <Sidebar showDrawer={showDrawer} setShowDrawer={setShowDrawer} />
       <Main open={showDrawer}>
         <Routes>
-          <Route path="/users" element={<UsersList />} />
-          <Route path="/customers" element={<CustomerList />} />
-          <Route path="/drivers" element={<DriversList />} />
-          <Route path="/stores" element={<StoresList />} />
-          <Route path="/suppliers" element={<SupplierList />} />
-          <Route path="/products" element={<ProductList />} />
-          <Route path="/declarations" element={<DeclarationList />} />
-          <Route path="/declarations/:id" element={<DeclarationDetail />} />
-          <Route path="/purchases" element={<PurchaseList />} />
-          <Route path="/purchases/:id" element={<PurchaseDetail />} />
-          <Route path="/sales" element={<SalesList />} />
-          <Route path="/sales/:id" element={<SaleDetail />} />
-          <Route path="/inventory" element={<InventoryList />} />
-          <Route path="/ca-transactions" element={<CATransactionsList />} />
-          <Route path="/cash-of-accounts" element={<CashOfAccountList />} />
-          <Route path="/" element={<DashboardHome />} />
-          <Route path="/permissions/:id" element={<PermissionList />} />
+        <Route
+            path="/users"
+            element={<ProtectedRoute element={<UsersList />} permission={PERMISSIONS.GetUsers} />}
+          />
+          <Route
+            path="/customers"
+            element={<ProtectedRoute element={<CustomerList />} permission={PERMISSIONS.GetCustomers} />}
+          />
+          <Route
+            path="/drivers"
+            element={<ProtectedRoute element={<DriversList />} permission={PERMISSIONS.GetDrivers} />}
+          />
+          <Route
+            path="/stores"
+            element={<ProtectedRoute element={<StoresList />} permission={PERMISSIONS.GetStores} />}
+          />
+          <Route
+            path="/suppliers"
+            element={<ProtectedRoute element={<SupplierList />} permission={PERMISSIONS.GetSuppliers} />}
+          />
+          <Route
+            path="/products"
+            element={<ProtectedRoute element={<ProductList />} permission={PERMISSIONS.GetProducts} />}
+          />
+          <Route
+            path="/declarations"
+            element={<ProtectedRoute element={<DeclarationList />} permission={PERMISSIONS.GetDeclarations} />}
+          />
+          <Route
+            path="/declarations/:id"
+            element={<ProtectedRoute element={<DeclarationDetail />} permission={PERMISSIONS.GetDeclarations} />}
+          />
+          <Route
+            path="/purchases"
+            element={<ProtectedRoute element={<PurchaseList />} permission={PERMISSIONS.GetPurchases} />}
+          />
+          <Route
+            path="/purchases/:id"
+            element={<ProtectedRoute element={<PurchaseDetail />} permission={PERMISSIONS.GetPurchases} />}
+          />
+          <Route
+            path="/sales"
+            element={<ProtectedRoute element={<SalesList />} permission={PERMISSIONS.GetSales} />}
+          />
+          <Route
+            path="/sales/:id"
+            element={<ProtectedRoute element={<SaleDetail />} permission={PERMISSIONS.GetSales} />}
+          />
+          <Route
+            path="/inventory"
+            element={<ProtectedRoute element={<InventoryList />} permission={PERMISSIONS.GetInventory} />}
+          />
+          <Route
+            path="/ca-transactions"
+            element={<ProtectedRoute element={<CATransactionsList />} permission={PERMISSIONS.GetCaTransactions} />}
+          />
+          <Route
+            path="/cash-of-accounts"
+            element={<AuthenticatedRoute element={<CashOfAccountList />}/>}
+          />
+          <Route
+            path="/"
+            element={<AuthenticatedRoute element={<DashboardHome />}/>}
+          />
+          <Route
+            path="/permissions/:id"
+            element={<ProtectedRoute element={<PermissionList />} permission={PERMISSIONS.GetPermissions} />}
+          />
         </Routes>
       </Main>
     </div>

@@ -16,8 +16,8 @@ const BankPositions = () => {
 
   return (
     <div>
-      <Card>
-        <CardHeader title="Bank Accounts" />
+      <Card variant="outlined">
+        <CardHeader title="Bank Accounts" style={{textAlign:'center'}}/>
         <CardContent>
           <Grid container spacing={2}>
             {bankPositions?.map((position: any, index: any) => (

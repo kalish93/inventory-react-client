@@ -1,7 +1,7 @@
 import { AppDispatch } from "../../app/store";
 import { selectDashboard } from "../../features/dashboard/dashboardSlice";
 import { getExpenses } from "../../features/dashboard/dashboardActions";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import * as echarts from "echarts/core";
 import { PieChart } from "echarts/charts";
 import {
@@ -10,7 +10,7 @@ import {
 } from "echarts/components";
 import { CanvasRenderer } from "echarts/renderers";
 import { useDispatch, useSelector } from "react-redux";
-import { Card } from "@mui/material";
+import { Button, Card, TextField } from "@mui/material";
 
 interface ExpenseData {
   totalExpense: number;
@@ -96,17 +96,68 @@ const Expenses = () => {
   const dispatch = useDispatch<AppDispatch>();
   const dashboardState = useSelector(selectDashboard);
   const expenses = dashboardState.expenses;
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    if (name === "startDate") {
+      setStartDate(value);
+    } else if (name === "endDate") {
+      setEndDate(value);
+    }
+  };
+
+  const handleFilter = () => {
+    // Dispatch the action with the selected date range
+    dispatch(getExpenses(startDate, endDate));
+  };
+
+  const handleRemoveFilter = () => {
+    // Clear the date range selections
+    setStartDate("");
+    setEndDate("");
+    // Fetch all expenses
+    dispatch(getExpenses());
+  };
 
   useEffect(() => {
     dispatch(getExpenses());
   }, [dispatch]);
 
-  return (
-        <Card variant="outlined" style={{boxSizing:'border-box', width:'70%', padding:'10px', paddingRight:'0rem'}}>
-      <PieChartComponent data={expenses} />
+    return (
+      <Card
+        variant="outlined"
+        style={{ boxSizing: "border-box", width: "100%", padding: "10px", paddingRight: "0rem" }}
+      >
+        <div style={{display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'center', gap:'15px', marginBottom:'15px'}}>
+          <TextField
+            id="startDate"
+            label="Start Date"
+            type="date"
+            InputLabelProps={{ shrink: true }}
+            name="startDate"
+            value={startDate}
+            onChange={handleDateChange}
+          />
+          <TextField
+            id="endDate"
+            label="End Date"
+            type="date"
+            InputLabelProps={{ shrink: true }}
+            name="endDate"
+            value={endDate}
+            onChange={handleDateChange}
+          />
+          <Button variant="contained" onClick={handleFilter}>
+            Apply Filter
+          </Button>
+          <Button color="warning" variant="contained" onClick={handleRemoveFilter}>
+          Remove Filter
+        </Button>
+        </div>
+        <PieChartComponent data={expenses} />
       </Card>
-    
-  );
+    );
 };
 
 export default Expenses;

@@ -7,7 +7,7 @@ import { PERMISSIONS } from "../../core/permissions";
 
 const DashboardHome = () =>{
     return(
-        <div >
+        <div style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'20px'}}>
             {hasPermission(PERMISSIONS.GetAllExpenses) && <Expenses/>}
             {hasPermission(PERMISSIONS.GetAllBanks) && <BankPositions/>}
         </div>
