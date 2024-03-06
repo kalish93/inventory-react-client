@@ -2,10 +2,13 @@ import { BANK_POSITIONS_URL, EXPENSES_URL } from "../../core/api-routes";
 import { handleRequest } from "../../utils/apiService";
 
 export const DashboardService = {
-    getExpenses: async () => {
+    getExpenses: async (startDate?: any, endDate?:any) => {
       try {
         let url = EXPENSES_URL;
-
+  
+        if (startDate && endDate) {
+          url += `?startDate=${startDate}&endDate=${endDate}`;
+        }
         const response = await handleRequest(url, {
           method: "GET",
         });

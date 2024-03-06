@@ -2,11 +2,11 @@ import { AppDispatch } from "../../app/store";
 import { DashboardService } from "./dashboardService";
 import { dashboardFailure, dashboardStart, getBankExpensesSuccess, getExpensesSuccess } from "./dashboardSlice";
 
-export const getExpenses = () => async (dispatch: AppDispatch) => {
+export const getExpenses = (startDate?: any, endDate?: any) => async (dispatch: AppDispatch) => {
     try {
       dispatch(dashboardStart());
   
-      const response = await DashboardService.getExpenses();
+      const response = await DashboardService.getExpenses(startDate, endDate);
       if (response.success) {
         dispatch(getExpensesSuccess(response.data));
       } else {
