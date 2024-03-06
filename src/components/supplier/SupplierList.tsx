@@ -22,6 +22,8 @@ import { deleteSupplier, getSuppliers } from '../../features/supplier/supplierAc
 import SupplierForm from './SupplierForm';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ConfirmationModal from '../common/confirmationModal';
+import { hasPermission } from '../../utils/checkPermission';
+import { PERMISSIONS } from '../../core/permissions';
 
 const SupplierList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -116,9 +118,9 @@ const SupplierList = () => {
   };
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={handleOpenModal}>
+      {hasPermission(PERMISSIONS.CreateSupplier) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
        Add Supplier
-      </Button>
+      </Button>}
       <TablePagination
          rowsPerPageOptions={[5, 10, 25]}
          component="div"
@@ -128,7 +130,7 @@ const SupplierList = () => {
          onPageChange={handleChangePage}
          onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <TableContainer component={Paper}>
+      {hasPermission(PERMISSIONS.GetSuppliers) && <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -165,15 +167,15 @@ const SupplierList = () => {
                       },
                     }}
                   >
-                    <MenuItem onClick={handleUpdateSupplier}>Update</MenuItem>
-                    <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>
+                    {hasPermission(PERMISSIONS.UpdateSupplier) && <MenuItem onClick={handleUpdateSupplier}>Update</MenuItem>}
+                    {hasPermission(PERMISSIONS.DeleteSupplier) && <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>}
                   </Menu>
                   </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer>}
       <SupplierForm open={openModal} handleClose={handleCloseModal} selectedSupplier={selectedSupplier}/>
       <ConfirmationModal
         open={confirmationModalOpen}

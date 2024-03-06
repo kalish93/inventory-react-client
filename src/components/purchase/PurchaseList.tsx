@@ -27,6 +27,8 @@ import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ConfirmationModal from "../common/confirmationModal";
+import { hasPermission } from "../../utils/checkPermission";
+import { PERMISSIONS } from "../../core/permissions";
 
 const PurchaseList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -123,9 +125,9 @@ const PurchaseList = () => {
 
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={handleOpenModal}>
+      {hasPermission(PERMISSIONS.CreatePurchase) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
         Add Purchase
-      </Button>
+      </Button>}
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
@@ -135,7 +137,7 @@ const PurchaseList = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <TableContainer component={Paper}>
+      {hasPermission(PERMISSIONS.GetPurchases) && <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -185,7 +187,7 @@ const PurchaseList = () => {
                       },
                     }}
                   >
-                    <MenuItem
+                    {hasPermission(PERMISSIONS.UpdatePurchase) && <MenuItem
                       onClick={(event) => {
                         event.stopPropagation();
                         event.preventDefault();
@@ -193,8 +195,8 @@ const PurchaseList = () => {
                       }}
                     >
                       Update
-                    </MenuItem>
-                    <MenuItem
+                    </MenuItem>}
+                    {hasPermission(PERMISSIONS.DeletePurchase) && <MenuItem
                       onClick={(event) => {
                         event.stopPropagation();
                         event.preventDefault();
@@ -202,14 +204,14 @@ const PurchaseList = () => {
                       }}
                     >
                       Delete
-                    </MenuItem>
+                    </MenuItem>}
                   </Menu>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer>}
       <PurchaseForm open={openModal} handleClose={handleCloseModal} />
       <ConfirmationModal
         open={confirmationModalOpen}

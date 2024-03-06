@@ -23,6 +23,8 @@ import { selectStore } from '../../features/store/storeSlice';
 import { deleteStore, getStores } from '../../features/store/storeActions';
 import ConfirmationModal from '../common/confirmationModal';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { hasPermission } from '../../utils/checkPermission';
+import { PERMISSIONS } from '../../core/permissions';
 
 const StoresList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -118,9 +120,9 @@ const StoresList = () => {
 
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={handleOpenModal}>
+      {hasPermission(PERMISSIONS.CreateStore) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
         Add store
-      </Button>
+      </Button>}
       <TablePagination
          rowsPerPageOptions={[5, 10, 25]}
          component="div"
@@ -130,7 +132,7 @@ const StoresList = () => {
          onPageChange={handleChangePage}
          onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <TableContainer component={Paper}>
+      {hasPermission(PERMISSIONS.GetStores) && <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -167,15 +169,15 @@ const StoresList = () => {
                       },
                     }}
                   >
-                    <MenuItem onClick={handleUpdateStore}>Update</MenuItem>
-                    <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>
+                    {hasPermission(PERMISSIONS.UpdateStore) && <MenuItem onClick={handleUpdateStore}>Update</MenuItem>}
+                    {hasPermission(PERMISSIONS.DeleteStore) && <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>}
                   </Menu>
                   </TableCell>              
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer>}
       <StoreForm open={openModal} handleClose={handleCloseModal} selectedStore={selectedStore}/>
       <ConfirmationModal
         open={confirmationModalOpen}

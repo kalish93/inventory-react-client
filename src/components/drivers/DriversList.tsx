@@ -23,6 +23,8 @@ import { selectDrivers } from '../../features/driver/driverSlice';
 import { deleteDriver, getDrivers } from '../../features/driver/driverActions';
 import ConfirmationModal from '../common/confirmationModal';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { hasPermission } from '../../utils/checkPermission';
+import { PERMISSIONS } from '../../core/permissions';
 
 const DriversList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -119,9 +121,9 @@ const DriversList = () => {
 
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={handleOpenModal}>
+      {hasPermission(PERMISSIONS.CreateDriver) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
         Add Driver
-      </Button>
+      </Button>}
       <TablePagination
          rowsPerPageOptions={[5, 10, 25]}
          component="div"
@@ -131,7 +133,7 @@ const DriversList = () => {
          onPageChange={handleChangePage}
          onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <TableContainer component={Paper}>
+      {hasPermission(PERMISSIONS.GetDrivers) && <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -180,15 +182,15 @@ const DriversList = () => {
                       },
                     }}
                   >
-                    <MenuItem onClick={handleUpdateDriver}>Update</MenuItem>
-                    <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>
+                    {hasPermission(PERMISSIONS.UpdateDriver) && <MenuItem onClick={handleUpdateDriver}>Update</MenuItem>}
+                    {hasPermission(PERMISSIONS.DeleteDriver) && <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>}
                   </Menu>
                   </TableCell>              
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer>}
       <DriverForm open={openModal} handleClose={handleCloseModal} selectedDriver={selectedDriver}/>
       <ConfirmationModal
         open={confirmationModalOpen}

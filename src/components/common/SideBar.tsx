@@ -24,6 +24,8 @@ import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import PaidIcon from "@mui/icons-material/Paid";
 import { Link, useLocation } from "react-router-dom";
+import { hasPermission } from "../../utils/checkPermission";
+import { PERMISSIONS } from "../../core/permissions";
 
 const drawerWidth = 240;
 
@@ -67,9 +69,8 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
           <ChevronLeftIcon />
         </IconButton>
       </DrawerHeader>
-      {/* <Divider /> */}
       <List>
-        <ListItem
+        {(hasPermission(PERMISSIONS.GetAllBanks) || hasPermission(PERMISSIONS.GetAllExpenses)) && <ListItem
           button
           component={Link}
           to="/"
@@ -80,9 +81,9 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
             <DashboardIcon />
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
-        </ListItem>
+        </ListItem>}
 
-        <ListItem
+        {hasPermission(PERMISSIONS.GetInventory) && <ListItem
           button
           component={Link}
           to="/inventory"
@@ -93,9 +94,9 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
             <InventoryIcon />
           </ListItemIcon>
           <ListItemText primary="Inventory" />
-        </ListItem>
+        </ListItem>}
 
-        <ListItem
+        {hasPermission(PERMISSIONS.GetUsers) && <ListItem
           button
           component={Link}
           to="/users"
@@ -106,9 +107,9 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
             <PeopleIcon />
           </ListItemIcon>
           <ListItemText primary="Users" />
-        </ListItem>
+        </ListItem>}
 
-        <ListItem
+        {hasPermission(PERMISSIONS.GetCustomers) && <ListItem
           button
           component={Link}
           to="/customers"
@@ -119,8 +120,8 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
             <PeopleIcon />
           </ListItemIcon>
           <ListItemText primary="Customers" />
-        </ListItem>
-        <ListItem
+        </ListItem>}
+        {hasPermission(PERMISSIONS.GetDrivers) && <ListItem
           button
           component={Link}
           to="/drivers"
@@ -131,8 +132,8 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
             <LocalShippingIcon />
           </ListItemIcon>
           <ListItemText primary="Drivers" />
-        </ListItem>
-        <ListItem
+        </ListItem>}
+        {hasPermission(PERMISSIONS.GetStores) && <ListItem
           button
           component={Link}
           to="/stores"
@@ -143,8 +144,8 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
             <WarehouseIcon />
           </ListItemIcon>
           <ListItemText primary="Stores" />
-        </ListItem>
-        <ListItem
+        </ListItem>}
+        {hasPermission(PERMISSIONS.GetSuppliers) && <ListItem
           button
           component={Link}
           to="/suppliers"
@@ -155,9 +156,9 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
             <HandshakeIcon />
           </ListItemIcon>
           <ListItemText primary="Suppliers" />
-        </ListItem>
+        </ListItem>}
 
-        <ListItem
+        {hasPermission(PERMISSIONS.GetProducts) && <ListItem
           button
           component={Link}
           to="/products"
@@ -168,9 +169,9 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
             <ShoppingCartIcon />
           </ListItemIcon>
           <ListItemText primary="Products" />
-        </ListItem>
+        </ListItem>}
 
-        <ListItem
+        {hasPermission(PERMISSIONS.GetDeclarations) && <ListItem
           button
           component={Link}
           to="/declarations"
@@ -181,9 +182,9 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
             <ArticleIcon />
           </ListItemIcon>
           <ListItemText primary="Declarations" />
-        </ListItem>
+        </ListItem>}
 
-        <ListItem
+        {hasPermission(PERMISSIONS.GetPurchases) && <ListItem
           button
           component={Link}
           to="/purchases"
@@ -194,9 +195,9 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
             <ShoppingBasketIcon />
           </ListItemIcon>
           <ListItemText primary="Purchases" />
-        </ListItem>
+        </ListItem>}
 
-        <ListItem
+        {hasPermission(PERMISSIONS.GetSales) && <ListItem
           button
           component={Link}
           to="/sales"
@@ -207,8 +208,8 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
             <ReceiptIcon />
           </ListItemIcon>
           <ListItemText primary="Sales" />
-        </ListItem>
-        <ListItem
+        </ListItem>}
+        {hasPermission(PERMISSIONS.GetCaTransactions) && <ListItem
           button
           component={Link}
           to="/ca-transactions"
@@ -219,9 +220,9 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
             <PaidIcon />
           </ListItemIcon>
           <ListItemText primary="CA Transactions" />
-        </ListItem>
+        </ListItem>}
 
-        <ListItem
+       {hasPermission(PERMISSIONS.GetAllChartOfAccounts) && <ListItem
           button
           component={Link}
           to="/cash-of-accounts"
@@ -232,7 +233,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
             <AccountBalanceWalletIcon />
           </ListItemIcon>
           <ListItemText primary="Cash Of Accounts" />
-        </ListItem>
+        </ListItem>}
       </List>
     </Drawer>
   );

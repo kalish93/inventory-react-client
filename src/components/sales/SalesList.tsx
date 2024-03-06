@@ -24,6 +24,8 @@ import { getSales, deleteSale } from "../../features/sales/salesActions";
 import SaleForm from "./SaleForm";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ConfirmationModal from "../common/confirmationModal";
+import { hasPermission } from "../../utils/checkPermission";
+import { PERMISSIONS } from "../../core/permissions";
 
 
 const SalesList = () => {
@@ -117,9 +119,9 @@ const SalesList = () => {
 
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={handleOpenModal}>
+      {hasPermission(PERMISSIONS.CreateSale) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
         Add Sale
-      </Button>
+      </Button>}
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
@@ -129,7 +131,7 @@ const SalesList = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <TableContainer component={Paper}>
+      {hasPermission(PERMISSIONS.GetSales) && <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -179,7 +181,7 @@ const SalesList = () => {
                       },
                     }}
                   >
-                    <MenuItem
+                    {hasPermission(PERMISSIONS.UpdateSale) && <MenuItem
                       onClick={(event) => {
                         event.stopPropagation();
                         event.preventDefault();
@@ -187,8 +189,8 @@ const SalesList = () => {
                       }}
                     >
                       Update
-                    </MenuItem>
-                    <MenuItem
+                    </MenuItem>}
+                    {hasPermission(PERMISSIONS.DeleteSaleBy) && <MenuItem
                       onClick={(event) => {
                         event.stopPropagation();
                         event.preventDefault();
@@ -196,14 +198,14 @@ const SalesList = () => {
                       }}
                     >
                       Delete
-                    </MenuItem>
+                    </MenuItem>}
                   </Menu>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer>}
       <SaleForm open={openModal} handleClose={handleCloseModal} />
       <ConfirmationModal
         open={confirmationModalOpen}
