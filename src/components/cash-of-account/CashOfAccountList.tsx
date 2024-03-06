@@ -23,6 +23,8 @@ import {
   getCashOfAccounts,
 } from "../../features/cash-of-account/cashOfAccountActions";
 import CreateCashOfAccountForm from "./CashOfAccountForm";
+import { hasPermission } from "../../utils/checkPermission";
+import { PERMISSIONS } from "../../core/permissions";
 
 const TabPanel = (props: {
   [x: string]: any;
@@ -102,9 +104,9 @@ const CashOfAccountList = () => {
       <TabPanel value={value} index={0}>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Typography variant="h6">Cash Of Accounts</Typography>
-          <Button variant="contained" color="primary" onClick={handleOpenModal}>
+          {hasPermission(PERMISSIONS.CreateChartOfAccount) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
             Add CA
-          </Button>
+          </Button>}
         </div>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}

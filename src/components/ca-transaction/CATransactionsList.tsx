@@ -21,6 +21,8 @@ import {
 import dayjs from "dayjs";
 import CATransactionsForm from "./CATransactionsForm";
 import JournalEntryForm from "./JournalEntryForm";
+import { hasPermission } from "../../utils/checkPermission";
+import { PERMISSIONS } from "../../core/permissions";
 
 const CATransactionsList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -73,7 +75,7 @@ const CATransactionsList = () => {
 
   return (
     <div>
-      <ButtonGroup style={{display:"flex", justifyContent:"space-between" }}>
+      {hasPermission(PERMISSIONS.CreateCaTransaction) && <ButtonGroup style={{display:"flex", justifyContent:"space-between" }}>
         {[
           "Add Expense",
           "Add Customer Payment",
@@ -90,8 +92,8 @@ const CATransactionsList = () => {
             {text}
           </Button>
         ))}
-      </ButtonGroup>
-      <TablePagination
+      </ButtonGroup>}
+      {hasPermission(PERMISSIONS.GetCaTransactions) &&   <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
         count={totalCount || 0}
@@ -99,8 +101,8 @@ const CATransactionsList = () => {
         page={currentPage && currentPage > 0 ? currentPage - 1 : 0}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-      <TableContainer component={Paper}>
+      />}
+      {hasPermission(PERMISSIONS.GetCaTransactions) && <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -140,7 +142,7 @@ const CATransactionsList = () => {
               ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer>}
       {[
         { title: "Add Expense", label: "CA Full Name" },
         { title: "Add Customer Payment", label: "Customer Name" },

@@ -24,6 +24,8 @@ import dayjs from 'dayjs';
 import { Link } from 'react-router-dom';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ConfirmationModal from '../common/confirmationModal';
+import { hasPermission } from '../../utils/checkPermission';
+import { PERMISSIONS } from '../../core/permissions';
 
 const DeclarationList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -128,9 +130,9 @@ const DeclarationList = () => {
 
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={handleOpenModal}>
+      {hasPermission(PERMISSIONS.CreateDeclaration) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
        Add Declaration
-      </Button>
+      </Button>}
       <TablePagination
          rowsPerPageOptions={[5, 10, 25]}
          component="div"
@@ -140,7 +142,7 @@ const DeclarationList = () => {
          onPageChange={handleChangePage}
          onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <TableContainer component={Paper}>
+      {hasPermission(PERMISSIONS.GetDeclarations) && <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -177,15 +179,15 @@ const DeclarationList = () => {
                       },
                     }}
                   >
-                    <MenuItem onClick={(event)=>handleUpdateDeclaration(event)}>Update</MenuItem>
-                    <MenuItem onClick={(event) => openConfirmationModal(event)}>Delete</MenuItem>
+                    {hasPermission(PERMISSIONS.UpdateDeclaration) && <MenuItem onClick={(event)=>handleUpdateDeclaration(event)}>Update</MenuItem>}
+                    {hasPermission(PERMISSIONS.DeleteDeclaration) && <MenuItem onClick={(event) => openConfirmationModal(event)}>Delete</MenuItem>}
                   </Menu>
                   </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer>}
       <DeclarationForm open={openModal} handleClose={handleCloseModal}/>
       <ConfirmationModal
         open={confirmationModalOpen}

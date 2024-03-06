@@ -21,6 +21,8 @@ import { deleteRole, getRoles } from "../../features/role/roleActions";
 import { useNavigate } from "react-router-dom";
 import ConfirmationModal from "../common/confirmationModal";
 import RoleForm from "./RoleForm";
+import { hasPermission } from "../../utils/checkPermission";
+import { PERMISSIONS } from "../../core/permissions";
 
 const RoleList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -115,10 +117,11 @@ const RoleList = () => {
 
   return (
     <div>
+      {hasPermission(PERMISSIONS.CreateRole) && 
       <Button variant="contained" color="primary" onClick={handleOpenModal}>
         Add Role
-      </Button>
-      <TableContainer component={Paper}>
+      </Button>}
+      {hasPermission(PERMISSIONS.GetRoles) && <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -152,18 +155,18 @@ const RoleList = () => {
                       },
                     }}
                   >
-                    <MenuItem onClick={handleOpenModal}>Update</MenuItem>
-                    <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>
-                    <MenuItem onClick={handleAssignRevokePermissions}>
+                    {hasPermission(PERMISSIONS.UpdateRole) && <MenuItem onClick={handleOpenModal}>Update</MenuItem>}
+                    {hasPermission(PERMISSIONS.DeleteRole) && <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>}
+                    {hasPermission(PERMISSIONS.AssignRevokePermissions) && <MenuItem onClick={handleAssignRevokePermissions}>
                       Assign/Revoke Permissions
-                    </MenuItem>
+                    </MenuItem>}
                   </Menu>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer>}
       <RoleForm open={openModal} handleClose={handleCloseModal} selectedRole={selectedRole}/>
       <ConfirmationModal
         open={confirmationModalOpen}

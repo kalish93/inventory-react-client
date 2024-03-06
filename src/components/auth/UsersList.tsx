@@ -27,6 +27,8 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ConfirmationModal from '../common/confirmationModal';
 import UpdateUserForm from './UpdateUserForm';
 import RoleList from './RoleList';
+import { hasPermission } from '../../utils/checkPermission';
+import { PERMISSIONS } from '../../core/permissions';
 
 const TabPanel = (props: {
   [x: string]: any;
@@ -161,9 +163,9 @@ const UsersList = () => {
         <Tab label="Roles" />
       </Tabs>
       <TabPanel value={value} index={0}>
-      <Button variant="contained" color="primary" onClick={handleOpenModal}>
+      {hasPermission(PERMISSIONS.CreateUser) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
         Add User
-      </Button>
+      </Button>}
       <TablePagination
          rowsPerPageOptions={[5, 10, 25]}
          component="div"
@@ -173,7 +175,7 @@ const UsersList = () => {
          onPageChange={handleChangePage}
          onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <TableContainer component={Paper}>
+      {hasPermission(PERMISSIONS.GetUsers) && <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -212,15 +214,15 @@ const UsersList = () => {
                       },
                     }}
                   >
-                    <MenuItem onClick={handleUpdateModalOpen}>Update</MenuItem>
-                    <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>
+                    {hasPermission(PERMISSIONS.UpdateUser) && <MenuItem onClick={handleUpdateModalOpen}>Update</MenuItem>}
+                    {hasPermission(PERMISSIONS.DeleteUser) && <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>}
                   </Menu>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer>}
       <UserForm open={openModal} handleClose={handleCloseModal} />
       <UpdateUserForm
         open={openUpdateModal}

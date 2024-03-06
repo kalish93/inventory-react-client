@@ -17,6 +17,8 @@ import { AppDispatch } from "../../../app/store";
 import CreateAccountTypeForm from "./AccountTypeForm";
 import AddIcon from "@mui/icons-material/Add";
 import { selectAccountType } from "../../../features/account-type/accountTypeSlice";
+import { hasPermission } from "../../../utils/checkPermission";
+import { PERMISSIONS } from "../../../core/permissions";
 
 const AccountTypeList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -59,16 +61,16 @@ const AccountTypeList = () => {
     <div>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Typography variant="h6">Account Types</Typography>
-        <Button
+        {hasPermission(PERMISSIONS.CreateAccountType) && <Button
           startIcon={<AddIcon />}
           variant="contained"
           color="primary"
           onClick={() => openForm("")}
         >
           Create Account Type
-        </Button>
+        </Button>}
       </div>
-      <Grid container spacing={2}>
+      {hasPermission(PERMISSIONS.GetAllAccountTypes) && <Grid container spacing={2}>
         {accountTypes.map((accountType: any) => (
           <Grid item key={accountType.id} xs={12} sm={6} md={4}>
             <Card>
@@ -91,7 +93,7 @@ const AccountTypeList = () => {
             </Card>
           </Grid>
         ))}
-      </Grid>
+      </Grid>}
       <CreateAccountTypeForm
         open={isFormOpen}
         onClose={closeForm}

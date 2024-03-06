@@ -22,6 +22,8 @@ import { deleteCustomer, getCustomers } from '../../features/customer/customerAc
 import CustomerForm from './CustomerForm';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ConfirmationModal from '../common/confirmationModal';
+import { hasPermission } from '../../utils/checkPermission';
+import { PERMISSIONS } from '../../core/permissions';
 
 const CustomerList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -119,9 +121,9 @@ const CustomerList = () => {
 
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={handleOpenModal}>
+      {hasPermission(PERMISSIONS.CreateCustomer) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
        Add Customer
-      </Button>
+      </Button>}
       <TablePagination
          rowsPerPageOptions={[5, 10, 25]}
          component="div"
@@ -131,7 +133,7 @@ const CustomerList = () => {
          onPageChange={handleChangePage}
          onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <TableContainer component={Paper}>
+      {hasPermission(PERMISSIONS.GetCustomers) && <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -172,15 +174,15 @@ const CustomerList = () => {
                       },
                     }}
                   >
-                    <MenuItem onClick={ () =>handleUpdateCustomer()}>Update</MenuItem>
-                    <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>
+                    {hasPermission(PERMISSIONS.UpdateCustomer) && <MenuItem onClick={ () =>handleUpdateCustomer()}>Update</MenuItem>}
+                    {hasPermission(PERMISSIONS.DeleteCustomer) && <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>}
                   </Menu>
                   </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer>}
       <CustomerForm open={openModal} handleClose={handleCloseModal} selectedCustomer={selectedCustomer} />
       <ConfirmationModal
         open={confirmationModalOpen}

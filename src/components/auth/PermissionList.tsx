@@ -15,6 +15,8 @@ import {
   getRolePermissions,
   assignRevokePermissions,
 } from "../../features/role/roleActions";
+import { hasPermission } from "../../utils/checkPermission";
+import { PERMISSIONS } from "../../core/permissions";
 
 interface Permission {
   id: string;
@@ -94,6 +96,7 @@ const PermissionList = () => {
         }}
       >
         <Typography variant="h5">Assign/Revoke Permissions</Typography>
+        {hasPermission(PERMISSIONS.AssignRevokePermissions) && 
         <Button
           style={{ marginRight: "50px" }}
           variant="contained"
@@ -101,7 +104,7 @@ const PermissionList = () => {
           onClick={handleSaveChanges}
         >
           Save
-        </Button>
+        </Button>}
       </div>
       <Grid container spacing={2}>
         {permissions.map((permission) => (

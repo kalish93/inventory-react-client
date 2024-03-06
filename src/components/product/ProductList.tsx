@@ -22,6 +22,8 @@ import { deleteProduct, getProducts } from '../../features/product/productAction
 import ProductForm from './ProductForm';
 import ConfirmationModal from '../common/confirmationModal';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { hasPermission } from '../../utils/checkPermission';
+import { PERMISSIONS } from '../../core/permissions';
 
 const ProductList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -118,9 +120,9 @@ const ProductList = () => {
 
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={handleOpenModal}>
+      {hasPermission(PERMISSIONS.CreateProduct) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
        Add Product
-      </Button>
+      </Button>}
       <TablePagination
          rowsPerPageOptions={[5, 10, 25]}
          component="div"
@@ -130,7 +132,7 @@ const ProductList = () => {
          onPageChange={handleChangePage}
          onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <TableContainer component={Paper}>
+      {hasPermission(PERMISSIONS.GetProducts) && <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -169,15 +171,15 @@ const ProductList = () => {
                       },
                     }}
                   >
-                    <MenuItem onClick={ () => handleUpdateProduct()}>Update</MenuItem>
-                    <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>
+                    {hasPermission(PERMISSIONS.UpdateProduct) && <MenuItem onClick={ () => handleUpdateProduct()}>Update</MenuItem>}
+                    {hasPermission(PERMISSIONS.DeleteProduct) && <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>}
                   </Menu>
                   </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer>}
       <ProductForm open={openModal} handleClose={handleCloseModal} selectedProduct={selectedProduct}/>
       <ConfirmationModal
         open={confirmationModalOpen}
