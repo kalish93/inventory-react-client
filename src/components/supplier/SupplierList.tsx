@@ -136,6 +136,7 @@ const SupplierList = () => {
             <TableRow>
               <TableCell>Name</TableCell>
               <TableCell>Address</TableCell>
+              <TableCell>Currency</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -144,6 +145,7 @@ const SupplierList = () => {
               <TableRow key={supplier.id}>
                 <TableCell>{supplier.name }</TableCell>
                 <TableCell>{supplier.address}</TableCell>
+                <TableCell>{supplier.currency}</TableCell>
                 <TableCell>
                 <IconButton
                     aria-label="Actions"

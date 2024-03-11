@@ -8,6 +8,7 @@ import {
   Button,
   Alert,
   Snackbar,
+  MenuItem,
 } from "@mui/material";
 import { AppDispatch } from "../../app/store";
 import * as yup from "yup";
@@ -53,12 +54,14 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ open, handleClose, selected
   const validationSchema = yup.object({
     name: yup.string().required("Name is required"),
     address: yup.string().required("Address is required"),
+    currency: yup.string().required("Currency is required")
   });
 
   const formik = useFormik({
     initialValues: {
       name: "",
       address: "",
+      currency: "ETB",
       ...(selectedSupplier || {}),
     },
     validationSchema: validationSchema,
@@ -138,6 +141,23 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ open, handleClose, selected
               error={formik.touched.address && Boolean(formik.errors.address)}
               helperText={formik.touched.address && formik.errors.address as React.ReactNode}
             />
+             <TextField
+              required
+              select
+              name="currency"
+              label="Currency"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.currency}
+              error={formik.touched.currency && Boolean(formik.errors.currency)}
+              helperText={formik.touched.currency && formik.errors.currency as React.ReactNode}
+            >
+              <MenuItem value="ETB">ETB</MenuItem>
+              <MenuItem value="USD">USD</MenuItem>
+            </TextField>
             <div style={{ display: "flex", gap: "8px" }}>
               <Button
                 variant="contained"
