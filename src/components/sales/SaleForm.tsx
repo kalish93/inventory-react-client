@@ -47,7 +47,7 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
       if (isError) {
         showSnackbar(error || "Unknown error", "error");
       } else {
-        showSnackbar("Purchase created successfully.", "success");
+        showSnackbar("Sale created successfully.", "success");
       }
       setIsFormSubmitted(false);
     }
