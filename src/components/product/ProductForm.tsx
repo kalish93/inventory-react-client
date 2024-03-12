@@ -297,6 +297,14 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose, selectedPr
       setIsFormSubmitted(true);
       handleClose();
     }
+    setFormData(
+      {
+        id: undefined,
+        name: '',
+        category: '',
+        unitOfMeasurement: '',
+      }
+    )
   };
 
   useEffect(() => {
