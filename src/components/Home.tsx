@@ -22,6 +22,7 @@ import { CssBaseline, styled } from "@mui/material";
 import PermissionList from "./auth/PermissionList";
 import { hasPermission } from "../utils/checkPermission";
 import { PERMISSIONS } from "../core/permissions";
+import BanksList from "./bank/bankList";
 
 const drawerWidth = 240;
 
@@ -146,6 +147,10 @@ const Home = () => {
           <Route
             path="/cash-of-accounts"
             element={<AuthenticatedRoute element={<CashOfAccountList />}/>}
+          />
+          <Route
+            path="/banks"
+            element={<AuthenticatedRoute element={<BanksList />}/>}
           />
           <Route
             path="/"

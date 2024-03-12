@@ -70,170 +70,213 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
         </IconButton>
       </DrawerHeader>
       <List>
-        {(hasPermission(PERMISSIONS.GetAllBanks) || hasPermission(PERMISSIONS.GetAllExpenses)) && <ListItem
-          button
-          component={Link}
-          to="/"
-          key="Dashboard"
-          selected={isLinkActive("/")}
-        >
-          <ListItemIcon sx={{ color: "inherit" }}>
-            <DashboardIcon />
-          </ListItemIcon>
-          <ListItemText primary="Dashboard" />
-        </ListItem>}
+        {(hasPermission(PERMISSIONS.GetAllBanks) ||
+          hasPermission(PERMISSIONS.GetAllExpenses)) && (
+          <ListItem
+            button
+            component={Link}
+            to="/"
+            key="Dashboard"
+            selected={isLinkActive("/")}
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <DashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary="Dashboard" />
+          </ListItem>
+        )}
 
-        {hasPermission(PERMISSIONS.GetInventory) && <ListItem
-          button
-          component={Link}
-          to="/inventory"
-          key="Inventory"
-          selected={isLinkActive("/inventory")}
-        >
-          <ListItemIcon sx={{ color: "inherit" }}>
-            <InventoryIcon />
-          </ListItemIcon>
-          <ListItemText primary="Inventory" />
-        </ListItem>}
+        {hasPermission(PERMISSIONS.GetInventory) && (
+          <ListItem
+            button
+            component={Link}
+            to="/inventory"
+            key="Inventory"
+            selected={isLinkActive("/inventory")}
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <InventoryIcon />
+            </ListItemIcon>
+            <ListItemText primary="Inventory" />
+          </ListItem>
+        )}
 
-        {hasPermission(PERMISSIONS.GetUsers) && <ListItem
-          button
-          component={Link}
-          to="/users"
-          key="Users"
-          selected={isLinkActive("/users")}
-        >
-          <ListItemIcon sx={{ color: "inherit" }}>
-            <PeopleIcon />
-          </ListItemIcon>
-          <ListItemText primary="Users" />
-        </ListItem>}
+        {hasPermission(PERMISSIONS.GetUsers) && (
+          <ListItem
+            button
+            component={Link}
+            to="/users"
+            key="Users"
+            selected={isLinkActive("/users")}
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <PeopleIcon />
+            </ListItemIcon>
+            <ListItemText primary="Users" />
+          </ListItem>
+        )}
 
-        {hasPermission(PERMISSIONS.GetCustomers) && <ListItem
-          button
-          component={Link}
-          to="/customers"
-          key="Customers"
-          selected={isLinkActive("/customers")}
-        >
-          <ListItemIcon sx={{ color: "inherit" }}>
-            <PeopleIcon />
-          </ListItemIcon>
-          <ListItemText primary="Customers" />
-        </ListItem>}
-        {hasPermission(PERMISSIONS.GetDrivers) && <ListItem
-          button
-          component={Link}
-          to="/drivers"
-          key="drivers"
-          selected={isLinkActive("/drivers")}
-        >
-          <ListItemIcon sx={{ color: "inherit" }}>
-            <LocalShippingIcon />
-          </ListItemIcon>
-          <ListItemText primary="Drivers" />
-        </ListItem>}
-        {hasPermission(PERMISSIONS.GetStores) && <ListItem
-          button
-          component={Link}
-          to="/stores"
-          key="stores"
-          selected={isLinkActive("/stores")}
-        >
-          <ListItemIcon sx={{ color: "inherit" }}>
-            <WarehouseIcon />
-          </ListItemIcon>
-          <ListItemText primary="Stores" />
-        </ListItem>}
-        {hasPermission(PERMISSIONS.GetSuppliers) && <ListItem
-          button
-          component={Link}
-          to="/suppliers"
-          key="Suppliers"
-          selected={isLinkActive("/suppliers")}
-        >
-          <ListItemIcon sx={{ color: "inherit" }}>
-            <HandshakeIcon />
-          </ListItemIcon>
-          <ListItemText primary="Suppliers" />
-        </ListItem>}
+        {hasPermission(PERMISSIONS.GetCustomers) && (
+          <ListItem
+            button
+            component={Link}
+            to="/customers"
+            key="Customers"
+            selected={isLinkActive("/customers")}
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <PeopleIcon />
+            </ListItemIcon>
+            <ListItemText primary="Customers" />
+          </ListItem>
+        )}
+        {hasPermission(PERMISSIONS.GetDrivers) && (
+          <ListItem
+            button
+            component={Link}
+            to="/drivers"
+            key="drivers"
+            selected={isLinkActive("/drivers")}
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <LocalShippingIcon />
+            </ListItemIcon>
+            <ListItemText primary="Drivers" />
+          </ListItem>
+        )}
+        {hasPermission(PERMISSIONS.GetStores) && (
+          <ListItem
+            button
+            component={Link}
+            to="/stores"
+            key="stores"
+            selected={isLinkActive("/stores")}
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <WarehouseIcon />
+            </ListItemIcon>
+            <ListItemText primary="Stores" />
+          </ListItem>
+        )}
+        {hasPermission(PERMISSIONS.GetSuppliers) && (
+          <ListItem
+            button
+            component={Link}
+            to="/suppliers"
+            key="Suppliers"
+            selected={isLinkActive("/suppliers")}
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <HandshakeIcon />
+            </ListItemIcon>
+            <ListItemText primary="Suppliers" />
+          </ListItem>
+        )}
 
-        {hasPermission(PERMISSIONS.GetProducts) && <ListItem
-          button
-          component={Link}
-          to="/products"
-          key="Products"
-          selected={isLinkActive("/products")}
-        >
-          <ListItemIcon sx={{ color: "inherit" }}>
-            <ShoppingCartIcon />
-          </ListItemIcon>
-          <ListItemText primary="Products" />
-        </ListItem>}
+        {hasPermission(PERMISSIONS.GetProducts) && (
+          <ListItem
+            button
+            component={Link}
+            to="/products"
+            key="Products"
+            selected={isLinkActive("/products")}
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <ShoppingCartIcon />
+            </ListItemIcon>
+            <ListItemText primary="Products" />
+          </ListItem>
+        )}
 
-        {hasPermission(PERMISSIONS.GetDeclarations) && <ListItem
-          button
-          component={Link}
-          to="/declarations"
-          key="Declarations"
-          selected={isLinkActive("/declarations")}
-        >
-          <ListItemIcon sx={{ color: "inherit" }}>
-            <ArticleIcon />
-          </ListItemIcon>
-          <ListItemText primary="Declarations" />
-        </ListItem>}
+        {hasPermission(PERMISSIONS.GetDeclarations) && (
+          <ListItem
+            button
+            component={Link}
+            to="/declarations"
+            key="Declarations"
+            selected={isLinkActive("/declarations")}
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <ArticleIcon />
+            </ListItemIcon>
+            <ListItemText primary="Declarations" />
+          </ListItem>
+        )}
 
-        {hasPermission(PERMISSIONS.GetPurchases) && <ListItem
-          button
-          component={Link}
-          to="/purchases"
-          key="Purchases"
-          selected={isLinkActive("/purchases")}
-        >
-          <ListItemIcon sx={{ color: "inherit" }}>
-            <ShoppingBasketIcon />
-          </ListItemIcon>
-          <ListItemText primary="Purchases" />
-        </ListItem>}
+        {hasPermission(PERMISSIONS.GetPurchases) && (
+          <ListItem
+            button
+            component={Link}
+            to="/purchases"
+            key="Purchases"
+            selected={isLinkActive("/purchases")}
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <ShoppingBasketIcon />
+            </ListItemIcon>
+            <ListItemText primary="Purchases" />
+          </ListItem>
+        )}
 
-        {hasPermission(PERMISSIONS.GetSales) && <ListItem
-          button
-          component={Link}
-          to="/sales"
-          key="Sales"
-          selected={isLinkActive("/sales")}
-        >
-          <ListItemIcon sx={{ color: "inherit" }}>
-            <ReceiptIcon />
-          </ListItemIcon>
-          <ListItemText primary="Sales" />
-        </ListItem>}
-        {hasPermission(PERMISSIONS.GetCaTransactions) && <ListItem
-          button
-          component={Link}
-          to="/ca-transactions"
-          key="CATransactions"
-          selected={isLinkActive("/ca-transactions")}
-        >
-          <ListItemIcon sx={{ color: "inherit" }}>
-            <PaidIcon />
-          </ListItemIcon>
-          <ListItemText primary="CA Transactions" />
-        </ListItem>}
+        {hasPermission(PERMISSIONS.GetSales) && (
+          <ListItem
+            button
+            component={Link}
+            to="/sales"
+            key="Sales"
+            selected={isLinkActive("/sales")}
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <ReceiptIcon />
+            </ListItemIcon>
+            <ListItemText primary="Sales" />
+          </ListItem>
+        )}
+        {hasPermission(PERMISSIONS.GetCaTransactions) && (
+          <ListItem
+            button
+            component={Link}
+            to="/ca-transactions"
+            key="CATransactions"
+            selected={isLinkActive("/ca-transactions")}
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <PaidIcon />
+            </ListItemIcon>
+            <ListItemText primary="CA Transactions" />
+          </ListItem>
+        )}
 
-       {((hasPermission(PERMISSIONS.GetAllChartOfAccounts)) || (hasPermission(PERMISSIONS.GetAllAccountTypes))|| (hasPermission(PERMISSIONS.GetAllAccountSubTypes))) && <ListItem
-          button
-          component={Link}
-          to="/cash-of-accounts"
-          key="CashOfAccounts"
-          selected={isLinkActive("/cash-of-accounts")}
-        >
-          <ListItemIcon sx={{ color: "inherit" }}>
-            <AccountBalanceWalletIcon />
-          </ListItemIcon>
-          <ListItemText primary="Cash Of Accounts" />
-        </ListItem>}
+        {(hasPermission(PERMISSIONS.GetAllChartOfAccounts) ||
+          hasPermission(PERMISSIONS.GetAllAccountTypes) ||
+          hasPermission(PERMISSIONS.GetAllAccountSubTypes)) && (
+          <ListItem
+            button
+            component={Link}
+            to="/cash-of-accounts"
+            key="CashOfAccounts"
+            selected={isLinkActive("/cash-of-accounts")}
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <AccountBalanceWalletIcon />
+            </ListItemIcon>
+            <ListItemText primary="Cash Of Accounts" />
+          </ListItem>
+        )}
+        {hasPermission(PERMISSIONS.GetBanks) && (
+          <ListItem
+            button
+            component={Link}
+            to="/banks"
+            key="Banks"
+            selected={isLinkActive("/banks")}
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <PaidIcon />
+            </ListItemIcon>
+            <ListItemText primary="Banks" />
+          </ListItem>
+        )}
       </List>
     </Drawer>
   );
