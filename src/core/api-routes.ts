@@ -23,3 +23,4 @@ export const BANK_POSITIONS_URL = `${BASE_URL}/dashboard/bank-positions`
 export const CHANGE_PASSWORD_URL = `${BASE_URL}/change-password`
 export const PERMISSIONS_URL = `${BASE_URL}/permissions`
 export const PRODUCT_CATEGORIES_URL = `${BASE_URL}/product-categories`
+export const BANK_URL = `${BASE_URL}/banks`

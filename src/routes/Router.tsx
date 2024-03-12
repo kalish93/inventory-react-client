@@ -20,6 +20,7 @@ import CATransactionsList from "../components/ca-transaction/CATransactionsList"
 import DashboardHome from "../components/dashboard/DashboardHome";
 import ChangePassword from "../components/auth/changePassword";
 import PermissionList from "../components/auth/PermissionList";
+import BanksList from "../components/bank/bankList";
 
 const routes = createBrowserRouter([
   {
@@ -94,6 +95,10 @@ const routes = createBrowserRouter([
         path: "permissions/:id",
         element: <PermissionList />,
       },
+      {
+        path: "banks",
+        element: <BanksList />
+      }
     ],
   },
   {
