@@ -72,6 +72,10 @@ export const PERMISSIONS = {
     CreateCustomer: "CreateCustomer",
     UpdateCustomer: "UpdateCustomer",
     DeleteCustomer: "DeleteCustomer",
-    GetCustomerById: "GetCustomerById"
+    GetCustomerById: "GetCustomerById",
+    GetProductCategories: "GetProductCategories",
+    CreateProductCategory: "CreateProductCategory",
+    UpdateProductCategory: "UpdateProductCategory",
+    DeleteProductCategory : "DeleteProductCategory",
 };
   
