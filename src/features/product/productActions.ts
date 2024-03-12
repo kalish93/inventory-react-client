@@ -1,7 +1,7 @@
 import { AppDispatch } from "../../app/store";
 import { CreateProduct } from "../../models/product";
 import { ProductService } from "./productService";
-import { deleteProductStart, deleteProductSuccess, deleteproductFailure, getProductsFailure, getProductsStart, getProductsSuccess, registerProductFailure, registerProductStart, registerProductSuccess, updateProductStart, updateProductSuccess, updateproductFailure } from "./productSlice";
+import { createProductCategorySuccess, deleteProductCategorySuccess, deleteProductStart, deleteProductSuccess, deleteproductFailure, getProductCategoriesSuccess, getProductsFailure, getProductsStart, getProductsSuccess, productCategoriesFailure, productCategoriesStart, registerProductFailure, registerProductStart, registerProductSuccess, updateProductCategorySuccess, updateProductStart, updateProductSuccess, updateproductFailure } from "./productSlice";
 
 export const getProducts = (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
@@ -13,7 +13,7 @@ export const getProducts = (page?: number, pageSize?: number) => async (dispatch
     }
   };
 
-export const createProduct = (data: CreateProduct) => async (dispatch: AppDispatch) => {
+export const createProduct = (data: any) => async (dispatch: AppDispatch) => {
     try {
       dispatch(registerProductStart());
       const response = await ProductService.registerProduct(data);
@@ -53,5 +53,60 @@ export const createProduct = (data: CreateProduct) => async (dispatch: AppDispat
       }
     } catch (error) {
       dispatch(updateproductFailure('Unknown error'));
+    }
+  };
+
+
+  export const getProductCategories = () => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(productCategoriesStart());
+      const response = await ProductService.getProductCategories();
+      dispatch(getProductCategoriesSuccess(response));
+    } catch (error) {
+      dispatch(productCategoriesFailure(error));
+    }
+  };
+
+export const createProductCategory = (data: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(productCategoriesStart());
+      const response = await ProductService.registerProductCategories(data);
+      if (response.success) {
+        dispatch(createProductCategorySuccess(response.data));
+      } else {
+        dispatch(productCategoriesFailure(response.error || 'Unknown error'));
+      }
+    } catch (error) {
+      dispatch(productCategoriesFailure('Unknown error'));
+    }
+  };
+
+export const updateProductCategory = (data: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(productCategoriesStart());
+      const response = await ProductService.updateProductCategory(data);
+      if (response.success) {
+        dispatch(updateProductCategorySuccess(response.data));
+      } else {
+        dispatch(productCategoriesFailure(response.error || 'Unknown error'));
+      }
+    } catch (error) {
+      dispatch(productCategoriesFailure('Unknown error'));
+    }
+  };
+
+
+  export const deleteProductCategory =
+  (id: string) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(productCategoriesStart());
+      const response = await ProductService.deleteProductCategory(id);
+      if (response.success) {
+        dispatch(deleteProductCategorySuccess(response.data));
+      } else {
+        dispatch(productCategoriesFailure(response.error || 'Unknown error'));
+      }
+    } catch (error) {
+      dispatch(productCategoriesFailure('Unknown error'));
     }
   };

@@ -8,6 +8,7 @@ interface ProductState {
   error: any | null;
   isError: boolean;
   successMessage: string | null;
+  productCategories: any;
 }
 
 const initialState: ProductState = {
@@ -22,6 +23,7 @@ const initialState: ProductState = {
   error: null,
   isError: false,
   successMessage: null,
+  productCategories: []
 };
 
 const productSlice = createSlice({
@@ -116,6 +118,47 @@ const productSlice = createSlice({
         state.isError = true;
         state.error = action.payload;
       },
+
+      productCategoriesStart: (state) => {
+        state.loading = true;
+        state.error = null;
+        state.isError = false;
+      },
+    getProductCategoriesSuccess: (state, action) => {
+        state.productCategories = action.payload;
+        state.loading = false;
+      },
+    createProductCategorySuccess: (state, action) => {
+        const createdCategory = action.payload
+        state.productCategories = [createdCategory,...state.productCategories];
+        state.loading = false;
+      },
+    updateProductCategorySuccess: (state, action) => {
+      const updatedCategory = action.payload;
+      const categoryIndex = state.productCategories.findIndex(
+        (category: any) => category.id === updatedCategory.id
+      );
+      if (categoryIndex !== -1) {
+        state.productCategories = state.productCategories.map((category: any) =>
+        category.id === updatedCategory.id ? updatedCategory : category
+        );
+      } else {
+        state.productCategories = [updatedCategory, ...state.productCategories];
+      }
+      state.loading = false;
+      state.successMessage = 'Product category updated Successfully.'
+      },
+
+    deleteProductCategorySuccess: (state, action) => {
+      const deletedCategory = action.payload
+      state.productCategories = state.productCategories?.filter((category: any) => category.id !== deletedCategory.id);
+      state.loading = false;
+    },
+    productCategoriesFailure: (state, action) => {
+    state.loading = false;
+    state.isError = true;
+    state.error = action.payload;
+    },
   },
 });
 
@@ -131,7 +174,13 @@ export const {
   deleteproductFailure,
   updateProductStart,
   updateProductSuccess,
-  updateproductFailure
+  updateproductFailure,
+  productCategoriesFailure,
+  productCategoriesStart,
+  getProductCategoriesSuccess,
+  createProductCategorySuccess,
+  updateProductCategorySuccess,
+  deleteProductCategorySuccess
 } = productSlice.actions;
 
 export const selectProduct = (state: { product: ProductState }) => state.product;

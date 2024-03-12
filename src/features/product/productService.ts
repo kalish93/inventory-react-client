@@ -1,4 +1,4 @@
-import { PRODUCTS_URL } from "../../core/api-routes";
+import { PRODUCTS_URL, PRODUCT_CATEGORIES_URL } from "../../core/api-routes";
 import { CreateProduct } from "../../models/product";
 import { handleRequest } from "../../utils/apiService";
 
@@ -98,6 +98,99 @@ export const ProductService = {
     return { success: false, error: "Unexpected error occurred" };
   }
 },
+
+
+  getProductCategories: async () => {
+    try {
+        const response = await handleRequest(PRODUCT_CATEGORIES_URL, {
+              method: "GET",
+            });
+
+        if (!response.ok) {
+            throw new Error('Error retrieving products');
+        }
+
+        const data = await response.json();
+        return data;
+
+    } catch (error) {
+        console.error('Error in get product categories service:', error);
+        throw error;
+    }
+},
+      registerProductCategories: async (productCategoryData: CreateProduct) => {
+        try{
+          const response = await handleRequest(PRODUCT_CATEGORIES_URL, {
+            method: "POST",
+            body: JSON.stringify(productCategoryData),
+
+          });
+    
+        if (!response.ok) {
+          let errorMessage = `Bad Request: ${response.statusText}`;
+  
+            const data = await response.json();
+            errorMessage = data.error || errorMessage;
+  
+          return { success: false, error: errorMessage };
+        }
+  
+        const data = await response.json();
+        return { success: true, data };
+      } catch (error) {
+        console.error("Error in create product categories service:", error);
+        return { success: false, error: "Unexpected error occurred" };
+      }
+    },
+
+  updateProductCategory: async (productCategoryData: any) => {
+    try{
+      const response = await handleRequest(`${PRODUCT_CATEGORIES_URL}/${productCategoryData.id}`, {
+        method: "PUT",
+        body: JSON.stringify(productCategoryData),
+
+      });
+
+    if (!response.ok) {
+      let errorMessage = `Bad Request: ${response.statusText}`;
+
+        const data = await response.json();
+        errorMessage = data.error || errorMessage;
+
+      return { success: false, error: errorMessage };
+    }
+
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    console.error("Error in update product categories service:", error);
+    return { success: false, error: "Unexpected error occurred" };
+  }
+},
+
+deleteProductCategory: async (id: string) => {
+  try {
+    const response = await handleRequest(`${PRODUCT_CATEGORIES_URL}/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      let errorMessage = `Bad Request: ${response.statusText}`;
+
+        const data = await response.json();
+        errorMessage = data.error || errorMessage;
+
+      return { success: false, error: errorMessage };
+    }
+
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    console.error("Error in delete product category service:", error);
+    return { success: false, error: "Unexpected error occurred" };
+  }
+},
+
 
 };
   
