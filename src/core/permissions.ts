@@ -1,5 +1,3 @@
-import { createBank } from "../features/bank/bankActions";
-
 export const PERMISSIONS = {
     CreateUser: "CreateUser",
     UpdateUser: "UpdateUser",
