@@ -1,5 +1,4 @@
 import { AppDispatch } from "../../app/store";
-import { CreateProduct } from "../../models/product";
 import { ProductService } from "./productService";
 import { createProductCategorySuccess, deleteProductCategorySuccess, deleteProductStart, deleteProductSuccess, deleteproductFailure, getProductCategoriesSuccess, getProductsFailure, getProductsStart, getProductsSuccess, productCategoriesFailure, productCategoriesStart, registerProductFailure, registerProductStart, registerProductSuccess, updateProductCategorySuccess, updateProductStart, updateProductSuccess, updateproductFailure } from "./productSlice";
 

@@ -4,6 +4,9 @@ import { Purchase } from "../../models/purchase";
 
 interface PurchaseState {
   purchases: PaginatedList<Purchase>;
+  transportCosts: PaginatedList<any>;
+  eslCosts: PaginatedList<any>;
+  transitFees: PaginatedList<any>;
   loading: boolean;
   error: any | null;
   purchase: any;
@@ -12,6 +15,27 @@ interface PurchaseState {
 
 const initialState: PurchaseState = {
   purchases: {
+    items: [],
+    totalCount: 0,
+    pageSize: 0,
+    currentPage: 1,
+    totalPages: 1,
+  },
+  transportCosts: {
+    items: [],
+    totalCount: 0,
+    pageSize: 0,
+    currentPage: 1,
+    totalPages: 1,
+  },
+  eslCosts: {
+    items: [],
+    totalCount: 0,
+    pageSize: 0,
+    currentPage: 1,
+    totalPages: 1,
+  },
+  transitFees: {
     items: [],
     totalCount: 0,
     pageSize: 0,
@@ -90,6 +114,28 @@ const purchaseSlice = createSlice({
       };
       state.loading = false;
     },
+
+
+    getPurchaseCostsStart: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    getTransportCosts: (state, action) => {
+      state.transportCosts = action.payload;
+      state.loading = false;
+    },
+    getEslCustomCosts: (state, action) => {
+      state.eslCosts = action.payload;
+      state.loading = false;
+    },
+    getTransitFees: (state, action) => {
+      state.transitFees = action.payload;
+      state.loading = false;
+    },
+    getPurchaseCostsFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -104,6 +150,11 @@ export const {
   getPurchaseByIdSuccess,
   getPurchaseByIdFailure,
   deletePurchaseSuccess,
+  getEslCustomCosts,
+  getPurchaseCostsFailure,
+  getPurchaseCostsStart,
+  getTransitFees,
+  getTransportCosts
 } = purchaseSlice.actions;
 
 export const selectPurchase = (state: { purchase: PurchaseState }) =>

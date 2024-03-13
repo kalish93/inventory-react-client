@@ -15,6 +15,9 @@ import {
   Menu,
   Alert,
   Snackbar,
+  Box,
+  Tabs,
+  Tab,
 } from "@mui/material";
 import { AppDispatch } from "../../app/store";
 import { selectPurchase } from "../../features/purchase/purchaseSlice";
@@ -29,6 +32,31 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ConfirmationModal from "../common/confirmationModal";
 import { hasPermission } from "../../utils/checkPermission";
 import { PERMISSIONS } from "../../core/permissions";
+import Transport from "./Transport";
+import Esl from "./Esl";
+import Transit from "./Transit";
+
+
+const TabPanel = (props: {
+  [x: string]: any;
+  children: any;
+  value: any;
+  index: any;
+}) => {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+};
 
 const PurchaseList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -49,6 +77,11 @@ const PurchaseList = () => {
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
   const { isError, error, loading } = useSelector(selectPurchase);
   const [selectedPurchase, setSelectedPurchase] = useState(null);
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event: any, newValue: any) => {
+    setValue(newValue);
+  };
 
   const openConfirmationModal = () => {
     setConfirmationModalOpen(true);
@@ -125,6 +158,17 @@ const PurchaseList = () => {
 
   return (
     <div>
+        <Tabs
+        value={value}
+        onChange={handleChange}
+        centered
+      >
+        <Tab label="Purchases" />
+        <Tab label="Transport" />
+        <Tab label="ESL custom cost" />
+        <Tab label="Transit Fees" />
+      </Tabs>
+      <TabPanel value={value} index={0}>
       {hasPermission(PERMISSIONS.CreatePurchase) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
         Add Purchase
       </Button>}
@@ -234,6 +278,16 @@ const PurchaseList = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+          <Transport />
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+          <Esl />
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+          <Transit />
+      </TabPanel>
     </div>
   );
 };
