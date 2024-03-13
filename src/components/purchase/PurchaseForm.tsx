@@ -12,6 +12,10 @@ import {
   Card,
   Snackbar,
   Alert,
+  InputLabel,
+  Select,
+  FormControl,
+  MenuItem,
 } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { AppDispatch } from "../../app/store";
@@ -23,6 +27,7 @@ import { createPurchase } from "../../features/purchase/purchaseActions";
 import { getDeclarations } from "../../features/declaration/declarationAction";
 import { getDrivers } from "../../features/driver/driverActions";
 import { selectPurchase } from "../../features/purchase/purchaseSlice";
+import { getSuppliers } from "../../features/supplier/supplierActions";
 interface PurchaseFormProps {
   open: boolean;
   handleClose: () => void;
@@ -33,6 +38,9 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
   const products = useSelector((state: any) => state.product.products.items);
   const declarations = useSelector(
     (state: any) => state.declaration.declarations.items
+  );
+  const suppliers = useSelector(
+    (state: any) => state.supplier.suppliers.items
   );
   const drivers = useSelector((state: any) => state.driver.drivers.items);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -66,8 +74,10 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
     number: null,
     date: null,
     truckNumber: "",
+    exchangeRate: null,
     transportCost: null,
     eslCustomCost: null,
+    supplierId: null,
     transitFees: null,
     productId: "",
     declarationId: "",
@@ -78,8 +88,10 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
     number?: boolean;
     date?: boolean;
     truckNumber?: boolean;
+    exchangeRate?: boolean;
     transportCost?: boolean;
     eslCustomCost?: boolean;
+    supplierId?: boolean;
     transitFees?: boolean;
     productId?: boolean;
     purchaseQuantity?: boolean;
@@ -98,6 +110,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
 
   useEffect(() => {
     dispatch(getDeclarations());
+    dispatch(getSuppliers());
   }, [dispatch]);
 
   useEffect(() => {
@@ -113,23 +126,38 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
   };
 
   const handleAddProduct = () => {
-    const newProduct = {
-      productId: formData.productId,
-      declarationId: formData.declarationId,
-      purchaseQuantity: formData.purchaseQuantity,
-      purchaseUnitPrice: formData.purchaseUnitPrice,
-    };
+    const selectedDeclaration = declarations.find(
+      (d: any) => d.id === formData.declarationId
+    );
 
-    setAddedProducts((prevProducts) => [...prevProducts, newProduct]);
-    setFormData((prevData: any) => ({
-      ...prevData,
+    const productDeclaration = selectedDeclaration.declarationProducts.find(
+      (item: any) => item.product.id === formData.productId
+    )
+  
+    if (selectedDeclaration) {
+      if ((productDeclaration.declarationBalance == null && productDeclaration.declarationQuantity >= formData.purchaseQuantity) || (productDeclaration.declarationBalance >= formData.purchaseQuantity)) {
+        const newProduct = {
+          productId: formData.productId,
+          declarationId: formData.declarationId,
+          purchaseQuantity: formData.purchaseQuantity,
+          purchaseUnitPrice: formData.purchaseUnitPrice,
+        };
+  
+        setAddedProducts((prevProducts) => [...prevProducts, newProduct]);
+        setFormData((prevData: any) => ({
+          ...prevData,
           productId: "",
           declarationId: "",
           purchaseQuantity: null,
           purchaseUnitPrice: null,
-
-    }));
+        }));
+      } else {
+        // Display an error message or handle the case where purchase quantity exceeds declaration balance
+        showSnackbar(`Purchase quantity exceeds the declaration balance.`, "error");
+      }
+    }
   };
+  
 
   const handleRemoveProduct = (index: number) => () => {
     setAddedProducts((prevProducts) =>
@@ -158,8 +186,10 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
       number: formData.number,
       date: formData.date,
       truckNumber: formData.truckNumber,
+      exchangeRate: formData.exchangeRate,
       transportCost: formData.transportCost,
       eslCustomCost: formData.eslCustomCost,
+      supplierId: formData.supplierId,
       transitFees: formData.transitFees,
       purchaseProducts: addedProducts,
     };
@@ -169,8 +199,10 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
       number: null,
       date: null,
       truckNumber: "",
+      exchangeRate: null,
       transportCost: null,
       eslCustomCost: null,
+      supplierId: null,
       transitFees: null,
       productId: "",
       declarationId: "",
@@ -188,8 +220,10 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
       number: null,
       date: null,
       truckNumber: "",
+      exchangeRate: null,
       transportCost: null,
       eslCustomCost: null,
+      supplierId: null,
       transitFees: null,
       productId: "",
       declarationId: "",
@@ -344,6 +378,41 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
         />
 
         <TextField
+          name="exchangeRate"
+          label="Exchange rate"
+          variant="outlined"
+          type="number"
+          fullWidth
+          margin="normal"
+          onChange={handleChange}
+          required
+          error={touched.exchangeRate && !formData.exchangeRate}
+          onBlur={() => setTouched({ ...touched, exchangeRate: true })}
+        />
+        {touched.exchangeRate && !formData.exchangeRate && (
+          <FormHelperText error>Exchange rate is required</FormHelperText>
+        )}
+
+         <FormControl fullWidth variant="outlined" margin="normal">
+            <InputLabel id="supplier-label">Supplier</InputLabel>
+            <Select
+              labelId="supplier-label"
+              id="supplier"
+              name="supplierId"
+              value={formData.supplierId}
+              onChange={handleChange}
+              label="Supplier"
+              required
+            >
+              {suppliers.map((supplier: any) => (
+                <MenuItem key={supplier.id} value={supplier.id}>
+                  {supplier.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+        <TextField
           name="transportCost"
           label="Transport Cost"
           variant="outlined"
@@ -394,7 +463,11 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
 
           <div style={{ marginBottom: 15 }}>
             <Autocomplete
-              options={declarations}
+              options={declarations.filter((declaration: any) =>
+                declaration.declarationProducts.some(
+                  (product: any) => product.declarationBalance !== 0
+                )
+              )}
               getOptionLabel={(option) => option.number}
               value={
                 declarations.find(
