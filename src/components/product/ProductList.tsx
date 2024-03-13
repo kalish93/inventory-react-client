@@ -67,6 +67,7 @@ const ProductList = () => {
   const { isError, error, loading } = useSelector(selectProduct);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [value, setValue] = useState(0); // State for Tabs
+  const [deleteSubmitted, setDeleteSubmitted] = useState(false); // State for Tabs
 
   const openConfirmationModal = () => {
     setConfirmationModalOpen(true);
@@ -86,18 +87,27 @@ const ProductList = () => {
     handleMenuClose();
   };
 
+  useEffect(() => {
+    if (deleteSubmitted) {
+      if (error) {
+        showSnackbar(error, "error");
+      } else {
+        showSnackbar("Category deleted successfully", "success");
+      }
+      setDeleteSubmitted(false);
+    }
+  }, [deleteSubmitted, error]);
+
   const handleDeleteProduct = () => {
     handleMenuClose();
-
     if (selectedProductId !== null) {
       dispatch(deleteProduct(selectedProductId))
         .then(() => {
-          if (!isError && !loading) {
-            showSnackbar('Product deleted successfully', 'success');
-          } else {
-            showSnackbar(error, 'error');
-          }
+          setDeleteSubmitted(true);
         })
+        .catch(() => {
+          setDeleteSubmitted(true);
+        });
     }
   };
 

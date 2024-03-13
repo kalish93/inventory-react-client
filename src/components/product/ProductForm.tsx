@@ -56,12 +56,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose, selectedPr
       startingQuantityDate: selectedProduct ? selectedProduct.startingQuantityDate.split('T')[0] : '', // Extract date part
     },
     validationSchema: Yup.object().shape({
-      name: Yup.string().required('This field is required'),
+      name: Yup.string().required('Name is required'),
       categoryId: Yup.string().required('Please select a category'),
-      unitOfMeasurement: Yup.string().required('This field is required'),
-      startingQuantity: Yup.number().required('This field is required').positive('Starting quantity must be positive'),
-      startingQuantityUnitPrice: Yup.number().required('This field is required').positive('Unit price must be positive'),
-      startingQuantityDate: Yup.date().required('This field is required'),
+      unitOfMeasurement: Yup.string().required('Unit of measurement is required'),
+      startingQuantity: Yup.number().required('Starting quanitity is required').min(0, 'Starting quantity must be zero or positive'),
+      startingQuantityUnitPrice: Yup.number().required('Unit price required').min(0, 'Unit price must be zero or positive'),
+      startingQuantityDate: Yup.date().required('Starting quantity date is required'),
     }),
     onSubmit: (values, { setSubmitting }) => {
       const { categoryId, startingQuantityDate, ...rest } = values;

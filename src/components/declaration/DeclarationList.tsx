@@ -69,7 +69,12 @@ const DeclarationList = () => {
 
     if (selectedDeclarationId !== null) {
       dispatch(deleteDeclaration(selectedDeclarationId))
-      setIsDeleteSubmitted(true);
+      .then(() => {
+        setIsDeleteSubmitted(true);
+      })
+      .catch(() => {
+        setIsDeleteSubmitted(true);
+      });
       }
   }
 
