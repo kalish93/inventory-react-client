@@ -12,6 +12,11 @@ import {
   registerPurchaseStart,
   registerPurchaseSuccess,
   deletePurchaseSuccess,
+  getPurchaseCostsStart,
+  getPurchaseCostsFailure,
+  getTransportCosts,
+  getEslCustomCosts,
+  getTransitFees,
 } from "./purchaseSlice";
 
 export const getPurchases =
@@ -74,3 +79,35 @@ export const updatePurchase = (id:any, data: CreatePurchase) => async (dispatch:
     dispatch(registerPurchaseFailure("Unknown error"));
   }
 }
+
+
+export const getTransportCost =
+  (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(getPurchaseCostsStart());
+      const response = await PurchaseService.getTransportcosts(page, pageSize);
+      dispatch(getTransportCosts(response));
+    } catch (error) {
+      dispatch(getPurchaseCostsFailure(error));
+    }
+  };
+export const getEslCosts =
+  (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(getPurchaseCostsStart());
+      const response = await PurchaseService.getEslCustomCosts(page, pageSize);
+      dispatch(getEslCustomCosts(response));
+    } catch (error) {
+      dispatch(getPurchaseCostsFailure(error));
+    }
+  };
+export const getTransitFee =
+  (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(getPurchaseCostsStart());
+      const response = await PurchaseService.getTransitFees(page, pageSize);
+      dispatch(getTransitFees(response));
+    } catch (error) {
+      dispatch(getPurchaseCostsFailure(error));
+    }
+  };

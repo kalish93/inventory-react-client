@@ -1,5 +1,4 @@
 import { AppDispatch } from "../../app/store";
-import { CreateCATransaction } from "../../models/ca-transaction";
 import { CATransactionService } from "./transactionService";
 import {
   getTransactionsFailure,

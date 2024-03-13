@@ -1,4 +1,4 @@
-import { PURCHASES_URL } from "../../core/api-routes";
+import { ESL_URL, PURCHASES_URL, TRANSIT_FEES_URL, TRANSPORT_URL } from "../../core/api-routes";
 import { CreatePurchase } from "../../models/purchase";
 import { handleRequest } from "../../utils/apiService";
 
@@ -113,5 +113,64 @@ export const PurchaseService = {
           return { success: false, error: "Unexpected error occurred" };
         }
       },
+
+
+      getTransportcosts: async (page = 1, pageSize = 10) => {
+        try {
+          const response = await handleRequest(`${TRANSPORT_URL}?page=${page}&pageSize=${pageSize}`, {
+            method: "GET",
+          });
+    
+          if (!response.ok) {
+            throw new Error('Error retrieving users');
+          }
+          
+          const data = await response.json();
+          return data;
+        
+        } catch (error) {
+          console.error('Error in getUsers service:', error);
+          throw error;
+        }
+      },
+
+      getEslCustomCosts: async (page = 1, pageSize = 10) => {
+        try {
+          const response = await handleRequest(`${ESL_URL}?page=${page}&pageSize=${pageSize}`, {
+            method: "GET",
+          });
+    
+          if (!response.ok) {
+            throw new Error('Error retrieving users');
+          }
+          
+          const data = await response.json();
+          return data;
+        
+        } catch (error) {
+          console.error('Error in getUsers service:', error);
+          throw error;
+        }
+      },
+
+      getTransitFees: async (page = 1, pageSize = 10) => {
+        try {
+          const response = await handleRequest(`${TRANSIT_FEES_URL}?page=${page}&pageSize=${pageSize}`, {
+            method: "GET",
+          });
+    
+          if (!response.ok) {
+            throw new Error('Error retrieving users');
+          }
+          
+          const data = await response.json();
+          return data;
+        
+        } catch (error) {
+          console.error('Error in getUsers service:', error);
+          throw error;
+        }
+      },
+
 };
   
