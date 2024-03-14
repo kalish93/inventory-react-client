@@ -284,6 +284,8 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
     }
   }, [formData.declarationId, declarations, products]);
 
+  const selectedSupplier = suppliers.find((s: any) => s.id === formData.supplierId);
+  const supplierCurrency = selectedSupplier ? selectedSupplier.currency : "";
 
   return (
     <div>
@@ -377,40 +379,42 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
           )}
         />
 
-        <TextField
-          name="exchangeRate"
-          label="Exchange rate"
-          variant="outlined"
-          type="number"
-          fullWidth
-          margin="normal"
-          onChange={handleChange}
-          required
-          error={touched.exchangeRate && !formData.exchangeRate}
-          onBlur={() => setTouched({ ...touched, exchangeRate: true })}
-        />
+        <FormControl fullWidth variant="outlined" margin="normal">
+          <InputLabel id="supplier-label">Supplier</InputLabel>
+          <Select
+            labelId="supplier-label"
+            id="supplier"
+            name="supplierId"
+            value={formData.supplierId}
+            onChange={handleChange}
+            label="Supplier"
+            required
+          >
+            {suppliers.map((supplier: any) => (
+              <MenuItem key={supplier.id} value={supplier.id}>
+                {supplier.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {supplierCurrency === "USD" && (
+          <TextField
+            name="exchangeRate"
+            label="Exchange rate"
+            variant="outlined"
+            type="number"
+            fullWidth
+            margin="normal"
+            onChange={handleChange}
+            required
+            error={touched.exchangeRate && !formData.exchangeRate}
+            onBlur={() => setTouched({ ...touched, exchangeRate: true })}
+          />
+        )}
         {touched.exchangeRate && !formData.exchangeRate && (
           <FormHelperText error>Exchange rate is required</FormHelperText>
         )}
-
-         <FormControl fullWidth variant="outlined" margin="normal">
-            <InputLabel id="supplier-label">Supplier</InputLabel>
-            <Select
-              labelId="supplier-label"
-              id="supplier"
-              name="supplierId"
-              value={formData.supplierId}
-              onChange={handleChange}
-              label="Supplier"
-              required
-            >
-              {suppliers.map((supplier: any) => (
-                <MenuItem key={supplier.id} value={supplier.id}>
-                  {supplier.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
 
         <TextField
           name="transportCost"

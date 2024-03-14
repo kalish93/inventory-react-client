@@ -23,6 +23,7 @@ import PermissionList from "./auth/PermissionList";
 import { hasPermission } from "../utils/checkPermission";
 import { PERMISSIONS } from "../core/permissions";
 import BanksList from "./bank/bankList";
+import { jwtDecode } from "jwt-decode";
 
 const drawerWidth = 240;
 
@@ -47,12 +48,25 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
 }));
 
 const AuthenticatedRoute: React.FC<{ element: React.ReactNode }> = ({ element }) => {
-  const isAuthenticated = !!localStorage.getItem("accessToken");
+  const token = localStorage.getItem("accessToken");
 
-  if (!isAuthenticated) {
+  if (!token) {
+    // If the user is not authenticated, redirect to the login page
     return <Navigate to="/login" replace />;
   }
 
+  // Decode the token to extract expiration time
+  const decodedToken = jwtDecode(token);
+  const currentTime = Math.floor(Date.now() / 1000); // Convert to seconds
+
+  if (decodedToken.exp! < currentTime) {
+    // If the token has expired, remove it from local storage
+    localStorage.removeItem("accessToken");
+    // Redirect to the login page
+    return <Navigate to="/login" replace />;
+  }
+
+  // If the user is authenticated and the token is valid, render the element
   return <>{element}</>;
 };
 interface ProtectedRouteProps {
@@ -62,7 +76,25 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, permission }) => {
   const isAuthenticated = !!localStorage.getItem("accessToken");
-  if(!isAuthenticated){
+  // if(!isAuthenticated){
+  //   return <Navigate to="/login" replace />;
+  // }
+
+  const token = localStorage.getItem("accessToken");
+
+  if (!token) {
+    // If the user is not authenticated, redirect to the login page
+    return <Navigate to="/login" replace />;
+  }
+
+  // Decode the token to extract expiration time
+  const decodedToken = jwtDecode(token);
+  const currentTime = Math.floor(Date.now() / 1000); // Convert to seconds
+
+  if (decodedToken.exp! < currentTime) {
+    // If the token has expired, remove it from local storage
+    localStorage.removeItem("accessToken");
+    // Redirect to the login page
     return <Navigate to="/login" replace />;
   }
 
