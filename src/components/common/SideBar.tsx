@@ -26,16 +26,32 @@ import PaidIcon from "@mui/icons-material/Paid";
 import { Link, useLocation } from "react-router-dom";
 import { hasPermission } from "../../utils/checkPermission";
 import { PERMISSIONS } from "../../core/permissions";
+import logo from '../../assets/logo-1.png'
 
-const drawerWidth = 240;
+
+// const drawerWidth = 240;
+
+// const DrawerHeader = styled("div")(({ theme }) => ({
+//   display: "flex",
+//   alignItems: "center",
+//   justifyContent: "flex-end",
+//   padding: theme.spacing(0, 1),
+//   ...theme.mixins.toolbar,
+// }));
+
+const drawerWidth = 255;
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  justifyContent: "flex-end",
+  justifyContent: "space-between", // Align logo and close icon
   padding: theme.spacing(0, 1),
   ...theme.mixins.toolbar,
 }));
+
+const Logo = styled("img")({
+  maxHeight: 64,
+});
 
 interface SideBarProps {
   showDrawer: boolean;
@@ -64,11 +80,15 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
       variant="persistent"
       anchor="left"
     >
-      <DrawerHeader>
-        <IconButton onClick={handleDrawerClose}>
-          <ChevronLeftIcon />
-        </IconButton>
-      </DrawerHeader>
+      <DrawerHeader style={{marginBottom:'10px', marginTop:'10px'}}>
+  <Logo src={logo} alt="Logo" />
+
+    <IconButton onClick={handleDrawerClose}>
+      <ChevronLeftIcon />
+    </IconButton>
+
+</DrawerHeader>
+
       <List>
         {(hasPermission(PERMISSIONS.GetAllBanks) ||
           hasPermission(PERMISSIONS.GetAllExpenses)) && (

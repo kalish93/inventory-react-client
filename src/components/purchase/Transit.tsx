@@ -13,7 +13,7 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-import { getTransportCost } from "../../features/purchase/purchaseActions";
+import { getTransitFee, getTransportCost } from "../../features/purchase/purchaseActions";
 
 const Transit = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -27,7 +27,7 @@ const Transit = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
-    dispatch(getTransportCost(page + 1, rowsPerPage));
+    dispatch(getTransitFee(page + 1, rowsPerPage));
   }, [dispatch, page, rowsPerPage]);
 
   const handleChangePage = (_: any, newPage: React.SetStateAction<number>) => {
@@ -65,14 +65,14 @@ const Transit = () => {
           <TableBody>
             {transit.map((item: any) => (
               <TableRow key={item.id}>
-                <TableCell>{item.date}</TableCell>
-                <TableCell>{item.tranistFee}</TableCell>
-                <TableCell>{item.truckNumber}</TableCell>
-                <TableCell>{item.declarationNumber}</TableCell>
-                <TableCell>{item.purchaseNumber}</TableCell>
-                <TableCell>{item.type}</TableCell>
-                <TableCell>{item.amountPaid}</TableCell>
-              </TableRow>
+              <TableCell>{item.date}</TableCell>
+              <TableCell>{item.cost}</TableCell>
+              <TableCell>{item.purchase.truckNumber}</TableCell>
+              <TableCell>{item?.productPurchase?.declaration?.number}</TableCell>
+              <TableCell>{item.purchase.number}</TableCell>
+              <TableCell>{item.type}</TableCell>
+              <TableCell>{item.amountPaid}</TableCell>
+            </TableRow>
             ))}
           </TableBody>
         </Table>

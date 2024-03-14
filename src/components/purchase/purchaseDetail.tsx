@@ -51,11 +51,9 @@ const PurchaseDetail = () => {
               <TableCell>Declaration Number</TableCell>
               <TableCell>Product Name</TableCell>
               <TableCell>Purchase Quantity</TableCell>
-              <TableCell>Purchase Unit Price</TableCell>
-              <TableCell>Purchase Total</TableCell>
-              <TableCell>Transport cost</TableCell>
-              <TableCell>Transit fees</TableCell>
-              <TableCell>ESL Custom cost</TableCell>
+              <TableCell>Purchase ETB Unit Price</TableCell>
+              <TableCell>Purchase USD Unit Price</TableCell>
+              <TableCell>Purchase Total ETB</TableCell>
               <TableCell>Purchase Unit COGS</TableCell>
             </TableRow>
           </TableHead>
@@ -65,11 +63,9 @@ const PurchaseDetail = () => {
                 <TableCell>{item.declaration.number}</TableCell>
                 <TableCell>{item.product.name}</TableCell>
                 <TableCell>{item.purchaseQuantity}</TableCell>
-                <TableCell>{item.purchaseUnitPrice}</TableCell>
-                <TableCell>{item.purchaseTotal}</TableCell>
-                <TableCell>{Number(item.transportCost).toFixed(2)}</TableCell>
-                <TableCell>{item.transitFees}</TableCell>
-                <TableCell>{item.eslCustomCost}</TableCell>
+                <TableCell>{item.purchaseUnitPriceETB}</TableCell>
+                <TableCell>{item.purchaseUnitPriceUSD}</TableCell>
+                <TableCell>{item.purchaseTotalETB}</TableCell>
                 <TableCell>{item.purchaseUnitCostOfGoods}</TableCell>
               </TableRow>
             ))}
