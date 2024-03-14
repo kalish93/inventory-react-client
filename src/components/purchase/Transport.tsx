@@ -38,6 +38,7 @@ const Transport = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
   return (
     <div>
       <TablePagination
@@ -66,10 +67,10 @@ const Transport = () => {
             {transport.map((item: any) => (
               <TableRow key={item.id}>
                 <TableCell>{item.date}</TableCell>
-                <TableCell>{item.transportCost}</TableCell>
-                <TableCell>{item.truckNumber}</TableCell>
-                <TableCell>{item.declarationNumber}</TableCell>
-                <TableCell>{item.purchaseNumber}</TableCell>
+                <TableCell>{item.cost}</TableCell>
+                <TableCell>{item.purchase.truckNumber}</TableCell>
+                <TableCell>{item?.productPurchase?.declaration?.number}</TableCell>
+                <TableCell>{item.purchase.number}</TableCell>
                 <TableCell>{item.type}</TableCell>
                 <TableCell>{item.amountPaid}</TableCell>
               </TableRow>

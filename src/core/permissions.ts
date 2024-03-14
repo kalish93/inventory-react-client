@@ -81,5 +81,8 @@ export const PERMISSIONS = {
     CreateProductCategory: "CreateProductCategory",
     UpdateProductCategory: "UpdateProductCategory",
     DeleteProductCategory : "DeleteProductCategory",
+    GetTransportCost : "GetTransportCost",
+    GetEslCustomCost : "GetEslCustomCost",
+    GetTransiFees : "GetTransiFees",
 };
   

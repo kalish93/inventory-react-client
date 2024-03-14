@@ -138,6 +138,7 @@ const Expenses = () => {
             name="startDate"
             value={startDate}
             onChange={handleDateChange}
+            size="small"
           />
           <TextField
             id="endDate"
@@ -147,6 +148,7 @@ const Expenses = () => {
             name="endDate"
             value={endDate}
             onChange={handleDateChange}
+            size="small"
           />
           <Button variant="contained" onClick={handleFilter}>
             Apply Filter

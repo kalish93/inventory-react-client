@@ -67,7 +67,7 @@ const LoginComponent: React.FC = () => {
 
   return (
     <Grid container style={{ height: "100vh" }}>
-      <Grid item xs={6} style={{ backgroundColor: "#267D9E", padding: "2rem" , display:'flex', flexDirection:'column-reverse', alignItems:'center', justifyContent:'center'}}>
+      <Grid item xs={6} style={{ backgroundColor: "#222831", padding: "2rem" , display:'flex', flexDirection:'column-reverse', alignItems:'center', justifyContent:'center'}}>
         <Typography variant="h3" color="white" gutterBottom style={{textAlign:'center'}}>
           Welcome to F.O.R Inventory Management
         </Typography>

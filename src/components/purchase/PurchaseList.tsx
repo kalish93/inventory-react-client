@@ -188,6 +188,8 @@ const PurchaseList = () => {
               <TableCell>Purchase Number</TableCell>
               <TableCell>Purchase Date</TableCell>
               <TableCell>Track Number</TableCell>
+              <TableCell>Exchange Rate</TableCell>
+              <TableCell>Supplier Name</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -204,6 +206,8 @@ const PurchaseList = () => {
                   {dayjs(purchase.date).format("YYYY-MM-DD")}
                 </TableCell>
                 <TableCell>{purchase.truckNumber}</TableCell>
+                <TableCell>{purchase.exchangeRate}</TableCell>
+                <TableCell>{purchase.supplier.name}</TableCell>
                 <TableCell>
                   <IconButton
                     aria-label="Actions"
