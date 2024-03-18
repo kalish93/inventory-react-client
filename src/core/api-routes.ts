@@ -27,3 +27,4 @@ export const BANK_URL = `${BASE_URL}/banks`
 export const TRANSPORT_URL = `${BASE_URL}/transports`
 export const ESL_URL = `${BASE_URL}/esl`
 export const TRANSIT_FEES_URL = `${BASE_URL}/transit-fees`
+export const DECLARATION_DETAIL_URL = `${BASE_URL}/declaration-detail`

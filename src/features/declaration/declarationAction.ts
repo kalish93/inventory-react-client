@@ -1,7 +1,7 @@
 import { AppDispatch } from "../../app/store";
 import { CreateDeclaration } from "../../models/declaration";
 import { DeclarationService } from "./declarationService";
-import { deleteDeclarationFailure, deleteDeclarationStart, deleteDeclarationSuccess, getDeclarationByIdFailure, getDeclarationByIdStart, getDeclarationByIdSuccess, getDeclarationsFailure, getDeclarationsStart, getDeclarationsSuccess, registerDeclarationFailure, registerDeclarationStart, registerDeclarationSuccess, updateDeclarationFailure, updateDeclarationStart, updateDeclarationSuccess } from "./declarationSlice";
+import { createProductDeclarationSuccess, deleteDeclarationFailure, deleteDeclarationStart, deleteDeclarationSuccess, deleteProductDeclarationSuccess, getDeclarationByIdFailure, getDeclarationByIdStart, getDeclarationByIdSuccess, getDeclarationsFailure, getDeclarationsStart, getDeclarationsSuccess, productDeclarationFailure, productDeclarationStart, registerDeclarationFailure, registerDeclarationStart, registerDeclarationSuccess, updateDeclarationFailure, updateDeclarationStart, updateDeclarationSuccess, updateProductDeclarationSuccess } from "./declarationSlice";
 
 export const getDeclarations = (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
@@ -67,5 +67,49 @@ export const getDeclaration = (id:any) => async (dispatch: AppDispatch) => {
       }
     } catch (error) {
       dispatch(updateDeclarationFailure('Unknown error'));
+    }
+  };
+  export const deleteDeclarationDetail = (id: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(productDeclarationStart());
+  
+      const response = await DeclarationService.deleteDeclarationDetail(id);
+      if (response.success) {
+        dispatch(deleteProductDeclarationSuccess(response.data));
+      } else {
+        dispatch(productDeclarationFailure(response.error || 'Unknown error'));
+      }
+    } catch (error) {
+      dispatch(productDeclarationFailure('Unknown error'));
+    }
+  };
+
+  export const updateDeclarationDetail = (data: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(productDeclarationStart());
+  
+      const response = await DeclarationService.updateDeclarationDetail(data);
+      if (response.success) {
+        dispatch(updateProductDeclarationSuccess(response.data));
+      } else {
+        dispatch(productDeclarationFailure(response.error || 'Unknown error'));
+      }
+    } catch (error) {
+      dispatch(productDeclarationFailure('Unknown error'));
+    }
+  };
+  
+  export const createDeclarationDetail = (data: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(productDeclarationStart());
+  
+      const response = await DeclarationService.createDeclarationDetail(data);
+      if (response.success) {
+        dispatch(createProductDeclarationSuccess(response.data));
+      } else {
+        dispatch(productDeclarationFailure(response.error || 'Unknown error'));
+      }
+    } catch (error) {
+      dispatch(productDeclarationFailure('Unknown error'));
     }
   };
