@@ -60,7 +60,7 @@ export const deletePurchase = (id: any) => async (dispatch: AppDispatch) => {
   try {
     dispatch(getPurchaseByIdStart());
     const response = await PurchaseService.deletePurchase(id);
-    dispatch(deletePurchaseSuccess(response));
+    dispatch(deletePurchaseSuccess(response.data));
   } catch (error) {
     dispatch(registerPurchaseFailure(error));
   }

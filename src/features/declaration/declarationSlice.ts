@@ -8,6 +8,7 @@ interface DeclarationState {
   loading: boolean;
   error: any | null;
   isError: boolean;
+  successMessage: any;
 }
 
 const initialState: DeclarationState = {
@@ -22,6 +23,7 @@ const initialState: DeclarationState = {
   loading: false,
   error: null,
   isError: false,
+  successMessage: null
 };
 
 const declarationSlice = createSlice({
@@ -130,6 +132,47 @@ const declarationSlice = createSlice({
         state.isError = true;
         state.error = action.payload;
       },
+
+      productDeclarationStart: (state) => {
+        state.loading = true;
+        state.error = null;
+        state.isError = false;
+        state.successMessage = null;
+      },
+
+      updateProductDeclarationSuccess: (state, action) => {
+        const updatedProductDeclaration = action.payload;
+        state.declaration.declarationProducts = state.declaration?.declarationProducts?.map((productDeclaration: any) =>
+            productDeclaration.id === updatedProductDeclaration.id ? updatedProductDeclaration : productDeclaration
+            ) ?? [];
+        
+        state.loading = false;
+        state.successMessage = "Declaration detail updated successfully.";
+      },
+
+      deleteProductDeclarationSuccess: (state, action) => {
+        const productDeclarationToDelete = action.payload;
+
+        state.declaration.declarationProducts = state.declaration?.declarationProducts?.filter(
+          (productDeclaration: any) => productDeclaration.id !== productDeclarationToDelete.id
+        ) ?? [];
+        state.loading = false;        
+      },
+
+      createProductDeclarationSuccess: (state, action) => {
+        const productDeclaration = action.payload;
+
+        state.declaration.declarationProducts = [productDeclaration, ...state.declaration?.declarationProducts]
+        state.loading = false;   
+        state.successMessage = "Declaration detail created successfully";
+      },
+
+      productDeclarationFailure: (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.isError = true;
+        state.error = action.payload;
+        state.successMessage = null;
+      },
     },
 });
 
@@ -148,7 +191,12 @@ export const {
   deleteDeclarationSuccess,
   updateDeclarationFailure,
   updateDeclarationStart,
-  updateDeclarationSuccess
+  updateDeclarationSuccess,
+  productDeclarationFailure,
+  productDeclarationStart,
+  updateProductDeclarationSuccess,
+  deleteProductDeclarationSuccess,
+  createProductDeclarationSuccess
 } = declarationSlice.actions;
 
 export const selectDeclaration = (state: { declaration: DeclarationState }) => state.declaration;

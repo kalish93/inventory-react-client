@@ -280,7 +280,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
             <ListItemIcon sx={{ color: "inherit" }}>
               <AccountBalanceWalletIcon />
             </ListItemIcon>
-            <ListItemText primary="Cash Of Accounts" />
+            <ListItemText primary="Chart Of Accounts" />
           </ListItem>
         )}
         {hasPermission(PERMISSIONS.GetBanks) && (

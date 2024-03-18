@@ -82,7 +82,8 @@ export const PurchaseService = {
             return { success: false, error: errorMessage };
           }
     
-          return { success: true };
+          const data = await response.json();
+          return { success: true, data };
         } catch (error) {
           console.error("Error in deletePurchase service:", error);
           return { success: false, error: "Unexpected error occurred" };

@@ -84,5 +84,8 @@ export const PERMISSIONS = {
     GetTransportCost : "GetTransportCost",
     GetEslCustomCost : "GetEslCustomCost",
     GetTransiFees : "GetTransiFees",
+    DeleteDeclarationDetail: "DeleteDeclarationDetail",
+    UpdateDeclarationDetail: "UpdateDeclarationDetail",
+    CreateDeclarationDetail : "CreateDeclarationDetail",
 };
   
