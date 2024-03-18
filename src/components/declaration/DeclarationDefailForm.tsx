@@ -23,10 +23,9 @@ const DeclarationDetailForm: React.FC<DeclarationDetailFormProps> = ({ open, ini
   const productState = useSelector(selectProduct);
   const products = productState.products;
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const { isError, error, loading } = useSelector(selectDeclaration);
+  const { isError, error, loading, successMessage } = useSelector(selectDeclaration);
 
   const showSnackbar = (message: string, severity: "success" | "error") => {
     setSnackbarMessage(message);
@@ -51,33 +50,28 @@ const DeclarationDetailForm: React.FC<DeclarationDetailFormProps> = ({ open, ini
       totalIncomeTax: '',
     },
     validationSchema,
-    onSubmit: (values) => {
+    onSubmit: (values,{setSubmitting}) => {
       if (initialValues) {
         dispatch(updateDeclarationDetail({id: initialValues.id,...values})) 
       } else {
         dispatch(createDeclarationDetail({declarationId: id, ...values}))
       }
-      setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
-      
+      setSubmitting(false);
     },
   });
 
   useEffect(() => {
-    if (isFormSubmitted && !loading) {
-      if (isError) {
-        showSnackbar(error || "Unknown error", "error");
-      } else {
-        if(initialValues){
-        showSnackbar('Declaration detail updated Successfully.', "success");
-        } else{
-        showSnackbar('Declaration detail created Successfully.', "success");
-        }
-      }
-      setIsFormSubmitted(false);
+    if (successMessage) {
+      const severity = isError ? 'error' : 'success';
+      const message = isError ? (error || 'Unknown error') : successMessage;
+      formik.resetForm();
+      formik.setSubmitting(false);
+      handleClose();
+      showSnackbar(message, severity);
     }
-  }, [error, isError, loading, isFormSubmitted, initialValues]);
+  }, [error, isError, loading, successMessage]);
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);

@@ -75,6 +75,8 @@ const DeclarationDetail = () => {
         setIsDeleteSubmitted(true);
       });
     setConfirmationModalOpen(false); 
+    setSelectedDeclarationDetail(null);
+    setSelectedDeclarationDetailId(null);
     }// Close the confirmation modal after confirming delete
   };
 
