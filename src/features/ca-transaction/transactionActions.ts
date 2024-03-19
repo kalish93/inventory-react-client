@@ -9,27 +9,32 @@ import {
   createTransactionSuccess,
 } from "./transactionSlice";
 
-
-export const getCATransactions = (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
+export const getCATransactions =
+  (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
     try {
-        dispatch(getTransactionsStart());
-        const response = await CATransactionService.getCATransactions(page, pageSize);
-        dispatch(getTransactionsSuccess(response));
+      dispatch(getTransactionsStart());
+      const response = await CATransactionService.getCATransactions(
+        page,
+        pageSize
+      );
+      dispatch(getTransactionsSuccess(response));
     } catch (error) {
-        dispatch(getTransactionsFailure(error));
+      dispatch(getTransactionsFailure(error));
     }
-    };
+  };
 
-export const createCATransaction = (data: any) => async (dispatch: AppDispatch) => {
+export const createCATransaction =
+  (data: any) => async (dispatch: AppDispatch) => {
     try {
-        dispatch(createTransactionStart());
-        const response = await CATransactionService.registerCATransactions(data);
-        if (response.success) {
-            dispatch(createTransactionSuccess(response.data));
-        } else {
-            dispatch(createTransactionFailure(response.error || 'Unknown error'));
-        }
+      dispatch(createTransactionStart());
+      const response = await CATransactionService.registerCATransactions(data);
+      if (response.success) {
+        dispatch(createTransactionSuccess(response.data));
+      } else {
+        dispatch(createTransactionFailure(response.error || "Unknown error"));
+      }
     } catch (error) {
-        dispatch(createTransactionFailure('Unknown error'));
+      dispatch(createTransactionFailure("Unknown error"));
     }
-}
+  };
+

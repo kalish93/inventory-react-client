@@ -11,7 +11,7 @@ import { bankService } from "./bankServices";
 import { Bank } from "../../models/bank";
 
 export const getBanks =
-  (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
+  (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
       dispatch(bankStart());
       const response = await bankService.getBanks(page, pageSize);

@@ -23,6 +23,54 @@ import CATransactionsForm from "./CATransactionsForm";
 import JournalEntryForm from "./JournalEntryForm";
 import { hasPermission } from "../../utils/checkPermission";
 import { PERMISSIONS } from "../../core/permissions";
+import SupplierPaymentForm from "./SupplierPaymentForm";
+import Menu, { MenuProps } from "@mui/material/Menu";
+import { styled, alpha } from "@mui/material/styles";
+import MenuItem from "@mui/material/MenuItem";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+
+const StyledMenu = styled((props: MenuProps) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "right",
+    }}
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "right",
+    }}
+    {...props}
+  />
+))(({ theme }) => ({
+  "& .MuiPaper-root": {
+    borderRadius: 6,
+    marginTop: theme.spacing(1),
+    minWidth: 180,
+    color:
+      theme.palette.mode === "light"
+        ? "rgb(55, 65, 81)"
+        : theme.palette.grey[300],
+    boxShadow:
+      "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
+    "& .MuiMenu-list": {
+      padding: "4px 0",
+    },
+    "& .MuiMenuItem-root": {
+      "& .MuiSvgIcon-root": {
+        fontSize: 18,
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(1.5),
+      },
+      "&:active": {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          theme.palette.action.selectedOpacity
+        ),
+      },
+    },
+  },
+}));
 
 const CATransactionsList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -34,18 +82,12 @@ const CATransactionsList = () => {
   } = CATransactionState.transactions;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [value, setValue] = useState(0);
   const [openModal, setOpenModal] = useState({
     1: false,
     2: false,
-    3: false,
-    4: false,
-    5: false,
   });
-
-  const handleChange = (event: any, newValue: any) => {
-    setValue(newValue);
-  };
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
   useEffect(() => {
     dispatch(getCATransactions(page + 1, rowsPerPage));
@@ -68,98 +110,194 @@ const CATransactionsList = () => {
     setOpenModal({ ...openModal, [idx]: false });
   };
 
-  const handleCreateCA = (values: any, idx: number) => {
-    dispatch(createCATransaction(values));
-    setOpenModal({ ...openModal, [idx]: false });
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   return (
     <div>
-      {hasPermission(PERMISSIONS.CreateCaTransaction) && <ButtonGroup style={{display:"flex", justifyContent:"space-between" }}>
-        {[
-          "Add Expense",
-          "Add Customer Payment",
-          "Add Transport Payment",
-          "Add Supplier Payment",
-          "Add Journal Entry",
-        ].map((text: string, index: number) => (
+      {hasPermission(PERMISSIONS.CreateCaTransaction) && (
+        <ButtonGroup
+          style={{ display: "flex", justifyContent: "space-between" }}
+        >
           <Button
-            key={index}
+            id="demo-customized-button"
+            aria-controls={open ? "demo-customized-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            variant="contained"
+            disableElevation
+            endIcon={<KeyboardArrowDownIcon />}
+            onClick={(event: React.MouseEvent<HTMLElement>) => {
+              setAnchorEl(event.currentTarget);
+            }}
+          >
+            Expense Types
+          </Button>
+
+          <StyledMenu
+            id="demo-customized-menu"
+            MenuListProps={{
+              "aria-labelledby": "demo-customized-button",
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+          >
+            <MenuItem
+              onClick={() => {
+                handleClose();
+                handleOpenModal(1);
+              }}
+            >
+              Add Supplier Payment
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleClose();
+                handleOpenModal(1);
+              }}
+              disableRipple
+            >
+              Add Customer Payment
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleClose();
+                handleOpenModal(1);
+              }}
+              disableRipple
+            >
+              Add Operation Expenses Payment
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleClose();
+                handleOpenModal(1);
+              }}
+              disableRipple
+            >
+              Add Transport Payment
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleClose();
+                handleOpenModal(1);
+              }}
+              disableRipple
+            >
+              Add Custom Tax Payment
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleClose();
+                handleOpenModal(1);
+              }}
+              disableRipple
+            >
+              Add Transit Fees
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleClose();
+                handleOpenModal(1);
+              }}
+              disableRipple
+            >
+              Add ESL Warehouse Fees
+            </MenuItem>
+          </StyledMenu>
+          <Button
             variant="contained"
             color="primary"
-            onClick={() => handleOpenModal(index + 1)}
+            onClick={() => handleOpenModal(2)}
           >
-            {text}
+            Add Journal Enty
           </Button>
-        ))}
-      </ButtonGroup>}
-      {hasPermission(PERMISSIONS.GetCaTransactions) &&   <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={totalCount || 0}
-        rowsPerPage={rowsPerPage}
-        page={currentPage && currentPage > 0 ? currentPage - 1 : 0}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />}
-      {hasPermission(PERMISSIONS.GetCaTransactions) && <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>CA Full name</TableCell>
-              <TableCell>Transaction Date</TableCell>
-              <TableCell>Transaction Remark</TableCell>
-              <TableCell>Pruchase/Invoice Num</TableCell>
-              <TableCell>Declaration Num</TableCell>
-              <TableCell>Debit</TableCell>
-              <TableCell>Credit</TableCell>
-              <TableCell>Account Payable/Recievable Details</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {CATransactions &&
-              CATransactions.map((ca: any) => (
-                <TableRow key={ca.id}>
-                  <TableCell>{ca.chartofAccount}</TableCell>
-                  <TableCell>{dayjs(ca.date).format("YYYY-MM-DD")}</TableCell>
-                  <TableCell>{ca.remark}</TableCell>
-                  <TableCell>
-                    {ca.purchaseNumber
-                      ? ca.purchaseNumber
-                      : ca.invoiceNumber
-                      ? ca.invoiceNumber
-                      : null}
-                  </TableCell>
-                  <TableCell>
-                    {ca.declarationNumbers
-                      ? ca.declarationNumbers.join(", ")
-                      : null}
-                  </TableCell>
-                  <TableCell>{ca.debit}</TableCell>
-                  <TableCell>{ca.credit}</TableCell>
-                  <TableCell>{ca.accountDetails}</TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>}
-      {[
-        { title: "Add Expense", label: "CA Full Name" },
-        { title: "Add Customer Payment", label: "Customer Name" },
-        { title: "Add Transport Payment", label: "Purchase Number" },
-        { title: "Add Supplier Payment", label: "Supplier Name" },
-      ].map((item, index) => (
-        <CATransactionsForm
-          key={index}
-          open={openModal[(index + 1) as keyof typeof openModal]}
-          handleClose={() => handleCloseModal(index + 1)}
-          title={item.title}
-          formLabel={item.label}
+        </ButtonGroup>
+      )}
+
+      {hasPermission(PERMISSIONS.GetCaTransactions) && (
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={totalCount || 0}
+          rowsPerPage={rowsPerPage}
+          page={currentPage && currentPage > 0 ? currentPage - 1 : 0}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      ))}
+      )}
+      {hasPermission(PERMISSIONS.GetCaTransactions) && (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Transaction Date</TableCell>
+                <TableCell>Transaction Type</TableCell>
+                <TableCell>Pruchase/Invoice Num</TableCell>
+                <TableCell>Transaction Remark</TableCell>
+                <TableCell>Debit</TableCell>
+                <TableCell>Credit</TableCell>
+                <TableCell>Product Name</TableCell>
+                <TableCell>Customer</TableCell>
+                <TableCell>Supplier</TableCell>
+                <TableCell>CA Full name</TableCell>
+                <TableCell>Exchange Rate</TableCell>
+                <TableCell>USD Amount</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {CATransactions &&
+                CATransactions.map((ca: any) => (
+                  <TableRow key={ca.id}>
+                    <TableCell>{dayjs(ca.date).format("YYYY-MM-DD")}</TableCell>
+                    <TableCell>{ca.type}</TableCell>
+                    <TableCell>
+                      {ca.purchase
+                        ? ca.purchase.number
+                        : ca.sale
+                        ? ca.sale.invoiceNumber
+                        : null}
+                    </TableCell>
+                    <TableCell>{ca.remark}</TableCell>
+                    <TableCell>{ca.debit}</TableCell>
+                    <TableCell>{ca.credit}</TableCell>
+                    <TableCell>
+                      {ca.productPurchase
+                        ? ca.productPPurchase.product.name
+                        : null}
+                    </TableCell>
+                    <TableCell>
+                      {ca.customer
+                        ? ca.customer.firstName + " " + ca.customer.lastName
+                        : null}
+                    </TableCell>
+                    <TableCell>{ca.supplier ? ca.supplier.name: null}</TableCell>
+                    <TableCell>
+                      {ca.chartofAccount
+                        ? ca.chartofAccount.name
+                        : ca.bank
+                        ? ca.bank.name
+                        : null}
+                    </TableCell>
+                    <TableCell>{ca.exchangeRate}</TableCell>
+                    <TableCell>{ca.USDAmount}</TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+
+      <SupplierPaymentForm
+        open={openModal[1]}
+        handleClose={() => handleCloseModal(1)}
+      />
+
       <JournalEntryForm
-        open={openModal[5]}
-        handleClose={() => handleCloseModal(5)}
+        open={openModal[2]}
+        handleClose={() => handleCloseModal(2)}
       />
     </div>
   );
