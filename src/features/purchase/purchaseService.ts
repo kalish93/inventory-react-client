@@ -82,14 +82,15 @@ export const PurchaseService = {
             return { success: false, error: errorMessage };
           }
     
-          return { success: true };
+          const data = await response.json();
+          return { success: true, data };
         } catch (error) {
           console.error("Error in deletePurchase service:", error);
           return { success: false, error: "Unexpected error occurred" };
         }
       },
 
-      updatePurchase: async (purchaseId: string, purchaseData: CreatePurchase) => {
+      updatePurchase: async (purchaseId: string, purchaseData: any) => {
         try {
           const url = `${PURCHASES_URL}/${purchaseId}`;
           const response = await handleRequest(url, {

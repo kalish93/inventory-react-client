@@ -35,6 +35,7 @@ import { PERMISSIONS } from "../../core/permissions";
 import Transport from "./Transport";
 import Esl from "./Esl";
 import Transit from "./Transit";
+import UpdatePurchaseForm from "./UpdatePurchaseForm";
 
 
 const TabPanel = (props: {
@@ -75,9 +76,12 @@ const PurchaseList = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
-  const { isError, error, loading } = useSelector(selectPurchase);
+  const { error } = useSelector(selectPurchase);
   const [selectedPurchase, setSelectedPurchase] = useState(null);
   const [value, setValue] = useState(0);
+  const [openUpdateForm, setOpenUpdateForm] = useState(false); // State to control opening and closing of update form
+  const [deleteSubmitted, setDeleteSubmitted] = useState(false); // State to control opening and closing of update form
+
 
   const handleChange = (event: any, newValue: any) => {
     setValue(newValue);
@@ -97,7 +101,8 @@ const PurchaseList = () => {
   };
 
   const handleUpdatePurchase = () => {
-    handleOpenModal();
+    
+    setOpenUpdateForm(true); 
     handleMenuClose();
   };
 
@@ -105,14 +110,23 @@ const PurchaseList = () => {
     handleMenuClose();
     if (selectedPurchaseId !== null) {
       dispatch(deletePurchase(selectedPurchaseId)).then(() => {
-        if (!isError && !loading) {
-          showSnackbar("Purchase deleted successfully", "success");
-        } else {
-          showSnackbar(error, "error");
-        }
+        setDeleteSubmitted(true);
+      }).catch(() => {
+        setDeleteSubmitted(true);
       });
     }
   };
+
+  useEffect(() => {
+    if (deleteSubmitted) {
+      if (error) {
+        showSnackbar(error, "error");
+      } else {
+        showSnackbar("Purchase deleted successfully", "success");
+      }
+      setDeleteSubmitted(false);
+    }
+  }, [deleteSubmitted, error]);
 
   const handleMenuOpen = (event: any, purchaseId: any, purchase: any) => {
     setAnchorEl(event.currentTarget);
@@ -153,6 +167,7 @@ const PurchaseList = () => {
   };
 
   const handleCloseModal = () => {
+    setOpenUpdateForm(false);
     setOpenModal(false);
   };
 
@@ -261,6 +276,11 @@ const PurchaseList = () => {
         </Table>
       </TableContainer>}
       <PurchaseForm open={openModal} handleClose={handleCloseModal} />
+      <UpdatePurchaseForm
+  open={openUpdateForm}
+    selectedPurchase={selectedPurchase}
+    handleClose={handleCloseModal}
+  />
       <ConfirmationModal
         open={confirmationModalOpen}
         onClose={closeConfirmationModal}

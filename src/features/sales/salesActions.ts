@@ -54,7 +54,7 @@ export const deleteSale = (id: any) => async (dispatch: AppDispatch) => {
   try {
     dispatch(getSaleByIdStart());
     const response = await SalesService.deleteSale(id);
-    dispatch(deleteSaleSuccess(response));
+    dispatch(deleteSaleSuccess(response.data));
   } catch (error) {
     dispatch(registerSaleFailure(error));
   }

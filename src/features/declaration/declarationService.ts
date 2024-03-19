@@ -1,4 +1,4 @@
-import { DECLARATIONS_URL } from "../../core/api-routes";
+import { DECLARATIONS_URL, DECLARATION_DETAIL_URL } from "../../core/api-routes";
 import { CreateDeclaration } from "../../models/declaration";
 import { handleRequest } from "../../utils/apiService";
 
@@ -115,6 +115,76 @@ export const DeclarationService = {
     return { success: true, data };
   } catch (error) {
     console.error("Error in update declaration service:", error);
+    return { success: false, error: "Unexpected error occurred" };
+  }
+  },
+  updateDeclarationDetail: async (declarationDetail: any) => {
+    try{
+      const response = await handleRequest(`${DECLARATION_DETAIL_URL}/${declarationDetail.id}`, {
+        method: "PUT",
+        body: JSON.stringify(declarationDetail),
+      });
+
+    if (!response.ok) {
+      let errorMessage = `Bad Request: ${response.statusText}`;
+
+        const data = await response.json();
+        errorMessage = data.error || errorMessage;
+
+      return { success: false, error: errorMessage };
+    }
+
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    console.error("Error in update declaration detail service:", error);
+    return { success: false, error: "Unexpected error occurred" };
+  }
+  },
+
+  deleteDeclarationDetail: async (id: any) => {
+    try{
+      const response = await handleRequest(`${DECLARATION_DETAIL_URL}/${id}`, {
+        method: "DELETE",
+      });
+
+    if (!response.ok) {
+      let errorMessage = `Bad Request: ${response.statusText}`;
+
+        const data = await response.json();
+        errorMessage = data.error || errorMessage;
+
+      return { success: false, error: errorMessage };
+    }
+
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    console.error("Error in delete declaration detail service:", error);
+    return { success: false, error: "Unexpected error occurred" };
+  }
+  },
+
+  createDeclarationDetail: async (declarationDetail: any) => {
+    try{
+      const response = await handleRequest(DECLARATION_DETAIL_URL, {
+        method: "POST",
+        body: JSON.stringify(declarationDetail),
+      });
+
+    if (!response.ok) {
+      let errorMessage = `Bad Request: ${response.statusText}`;
+
+        const data = await response.json();
+        errorMessage = data.error || errorMessage;
+
+      return { success: false, error: errorMessage };
+    }
+
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    console.error("Error in create declaration detail service:", error);
     return { success: false, error: "Unexpected error occurred" };
   }
   },

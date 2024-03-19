@@ -26,6 +26,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ConfirmationModal from '../common/confirmationModal';
 import { hasPermission } from '../../utils/checkPermission';
 import { PERMISSIONS } from '../../core/permissions';
+import UpdateDeclarationForm from './UpdateDeclarationForm';
 
 const DeclarationList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -43,6 +44,7 @@ const DeclarationList = () => {
   const {isError, error, loading} = useSelector(selectDeclaration);
   const [selectedDeclaration, setSelectedDeclaration] = useState(null);
   const [isDeleteSubmitted, setIsDeleteSubmitted] = useState(false);
+  const [openUpdateForm, setOpenUpdateForm] = useState(false); // State to control opening and closing of update form
 
   const openConfirmationModal = (event: any) => {
     event.preventDefault()
@@ -59,11 +61,11 @@ const DeclarationList = () => {
   };
 
   const handleUpdateDeclaration = (event: any) =>{
-    event.preventDefault()
-      handleOpenModal();
-      handleMenuClose();
+    event.preventDefault();
+    setOpenUpdateForm(true); 
+    handleMenuClose(); // Close the menu after selecting "Update"
   }
-
+  
   const handleDeleteDeclaration = () =>{
     handleMenuClose();
 
@@ -131,6 +133,8 @@ const DeclarationList = () => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+    setOpenUpdateForm(false);
+    setSelectedDeclaration(null)
   };
 
   return (
@@ -201,6 +205,13 @@ const DeclarationList = () => {
         title="Delete Driver"
         content="Are you sure you want to delete this declaration?"
       />
+
+  <UpdateDeclarationForm
+  open={openUpdateForm}
+    selectedDeclaration={selectedDeclaration} // Pass the selected declaration as initialValues
+    handleClose={handleCloseModal} // Close the update form
+  />
+
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}

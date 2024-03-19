@@ -116,6 +116,21 @@ const purchaseSlice = createSlice({
     },
 
 
+    updatePurchaseSuccess: (state, action) =>{
+      const updatedPurchase = action.payload;
+      state.purchases = {
+        items:
+          state.purchases?.items?.map((purchase) =>
+          purchase.id === updatedPurchase.id ? updatedPurchase : purchase
+          ) ?? [],
+        totalCount: state.purchases?.totalCount || 0,
+        pageSize: state.purchases?.pageSize || 10,
+        currentPage: state.purchases?.currentPage || 1,
+        totalPages: state.purchases?.totalPages || 1,
+      };
+      state.loading = false;
+    },
+
     getPurchaseCostsStart: (state) => {
       state.loading = true;
       state.error = null;
@@ -154,7 +169,8 @@ export const {
   getPurchaseCostsFailure,
   getPurchaseCostsStart,
   getTransitFees,
-  getTransportCosts
+  getTransportCosts,
+  updatePurchaseSuccess
 } = purchaseSlice.actions;
 
 export const selectPurchase = (state: { purchase: PurchaseState }) =>
