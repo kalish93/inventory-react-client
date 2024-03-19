@@ -21,19 +21,17 @@ import {
 import { getSuppliers } from "../../features/supplier/supplierActions";
 import dayjs from "dayjs";
 import { getCustomers } from "../../features/customer/customerActions";
+import { useFormik } from "formik";
+import * as yup from "yup";
 
 interface ProductFormProps {
   open: boolean;
   handleClose: () => void;
-  title: string;
-  formLabel: string;
 }
 
 const CATransactionsForm: React.FC<ProductFormProps> = ({
   open,
   handleClose,
-  title,
-  formLabel,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const cashOfAccountBanks = useSelector(
@@ -50,6 +48,7 @@ const CATransactionsForm: React.FC<ProductFormProps> = ({
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const { isError, error, loading } = useSelector(selectTransactions);
+  const [title, setTitle] = useState("");
 
   const showSnackbar = (message: string, severity: "success" | "error") => {
     setSnackbarMessage(message);
@@ -88,66 +87,59 @@ const CATransactionsForm: React.FC<ProductFormProps> = ({
     setSnackbarOpen(false);
   };
 
-  const [formData, setFormData] = useState({
-    chartofAccountId1: "",
-    chartofAccountId2: "",
-    date: null,
-    amount: 0,
-    transactionRemark: "",
+  const validationSchema = yup.object({
+    chartofAccountId1: yup.string().required("Bank name is required"),
+    chartofAccountId2: yup.string().required("Expense name is required"),
+    date: yup.string().required("Transaction date is required"),
+    amount: yup.number().required("Transaction amount is required"),
   });
-  const [touched, setTouched] = useState<{
-    chartofAccountId1?: boolean;
-    chartofAccountId2?: boolean;
-    date?: boolean;
-    amount?: boolean;
-    transactionRemark?: boolean;
-  }>({});
 
-  const handleChange = (e: { target: { name: any; value: any } }) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleBlur = (field: keyof typeof formData) => {
-    setTouched({ ...touched, [field]: true });
-  };
-
-  const handleSubmit = () => {
-    let newFormData = {
-      chartofAccountId1: formData.chartofAccountId1,
-      chartofAccountId2: formData.chartofAccountId2,
-      date: formData.date,
-      remark: formData.transactionRemark,
-      credit: "",
-      debit: "",
-      purchaseId: ""
-    };
-    if (title === "Add Expense") {
-      newFormData.credit = formData.amount.toString();
-    } else if (title === "Add Supplier Payment") {
-      newFormData.chartofAccountId2 = "9145a724-1650-4416-bbcf-f1e1ac3619e5";
-      newFormData.debit = formData.amount.toString();
-    } else if (title === "Add Customer Payment") {
-      const customer = customers.find(
-        (customer: { id: string }) => customer.id === formData.chartofAccountId2
-      );
-      newFormData.chartofAccountId2 = "6e57436a-8c19-426a-a260-f8fc5e6de0e1";
-      newFormData.remark = `Payment made by ${customer.firstName} for ${formData.transactionRemark}`;
-      newFormData.debit = formData.amount.toString();
-    } else if (title === "Add Transport Payment") {
-      newFormData.purchaseId = formData.chartofAccountId2;
-      newFormData.chartofAccountId2 = "3f2d5f0e-7ac4-4fd4-b4b6-bf7ae1f05f4c";
-      newFormData.debit = formData.amount.toString();
-
-    }
-    dispatch(createCATransaction(newFormData));
-    handleClose();
-    setIsFormSubmitted(true);
-    setTouched({});
-  };
+  const formik = useFormik({
+    initialValues: {
+      chartofAccountId1: "",
+      chartofAccountId2: "",
+      date: null,
+      amount: 0,
+      transactionRemark: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      let newFormData = {
+        chartofAccountId1: values.chartofAccountId1,
+        chartofAccountId2: values.chartofAccountId2,
+        date: values.date,
+        remark: values.transactionRemark,
+        credit: "",
+        debit: "",
+        purchaseId: "",
+      };
+      if (title === "Add Expense") {
+        newFormData.credit = values.amount.toString();
+      } else if (title === "Add Supplier Payment") {
+        newFormData.chartofAccountId2 = "9145a724-1650-4416-bbcf-f1e1ac3619e5";
+        newFormData.debit = values.amount.toString();
+      } else if (title === "Add Customer Payment") {
+        const customer = customers.find(
+          (customer: { id: string }) => customer.id === values.chartofAccountId2
+        );
+        newFormData.chartofAccountId2 = "6e57436a-8c19-426a-a260-f8fc5e6de0e1";
+        newFormData.remark = `Payment made by ${customer.firstName} for ${values.transactionRemark}`;
+        newFormData.debit = values.amount.toString();
+      } else if (title === "Add Transport Payment") {
+        newFormData.purchaseId = values.chartofAccountId2;
+        newFormData.chartofAccountId2 = "3f2d5f0e-7ac4-4fd4-b4b6-bf7ae1f05f4c";
+        newFormData.debit = values.amount.toString();
+      }
+      dispatch(createCATransaction(newFormData));
+      setIsFormSubmitted(true);
+      handleClose();
+      formik.resetForm();
+    },
+  });
 
   const handleCancel = () => {
     handleClose();
-    setTouched({});
+    formik.resetForm();
   };
 
   return (
@@ -167,7 +159,7 @@ const CATransactionsForm: React.FC<ProductFormProps> = ({
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 500,
+            width: 1000,
             maxHeight: "80vh",
             overflowY: "auto",
             bgcolor: "background.paper",
@@ -175,41 +167,47 @@ const CATransactionsForm: React.FC<ProductFormProps> = ({
             p: 4,
           }}
         >
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" component="div">
             {title} Form
           </Typography>
-          <Autocomplete
-            options={cashOfAccountBanks}
-            getOptionLabel={(option) => option.name}
-            value={
-              cashOfAccountBanks.find(
-                (d: { id: string }) => d.id === formData.chartofAccountId1
-              ) || null
-            }
-            onChange={(event, newValue) => {
-              handleChange({
-                target: {
-                  name: "chartofAccountId1",
-                  value: newValue ? newValue.id : "",
-                },
-              });
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Bank Name"
-                variant="outlined"
-                fullWidth
-                required
-                error={touched.chartofAccountId1 && !formData.chartofAccountId1}
-                onBlur={() =>
-                  setTouched({ ...touched, chartofAccountId1: true })
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop: "1rem" }}>
+            <div style={{ width: "45%" }}>
+              <Autocomplete
+                options={cashOfAccountBanks}
+                getOptionLabel={(option) => option.name}
+                value={
+                  cashOfAccountBanks.find(
+                    (d: { id: string }) =>
+                      d.id === formik.values.chartofAccountId1
+                  ) || null
                 }
+                onChange={(event, newValue) => {
+                  formik.setFieldValue(
+                    "chartofAccountId1",
+                    newValue ? newValue.id : ""
+                  );
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Bank Name"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    value={formik.values.chartofAccountId1}
+                    onChange={formik.handleChange}
+                    error={
+                      formik.touched.chartofAccountId1 &&
+                      Boolean(formik.errors.chartofAccountId1)
+                    }
+                    onBlur={formik.handleBlur}
+                    helperText={
+                      formik.touched.chartofAccountId1 &&
+                      (formik.errors.chartofAccountId1 as React.ReactNode)
+                    }
+                  />
+                )}
               />
-            )}
-          />
-          {formLabel === "CA Full Name" ? (
-            <>
               <Typography
                 style={{ marginTop: "10px", marginBottom: "10px" }}
               ></Typography>
@@ -219,16 +217,15 @@ const CATransactionsForm: React.FC<ProductFormProps> = ({
                 getOptionLabel={(option) => option.name}
                 value={
                   cashOfAccountExpenses.find(
-                    (d: { id: string }) => d.id === formData.chartofAccountId2
+                    (d: { id: string }) =>
+                      d.id === formik.values.chartofAccountId2
                   ) || null
                 }
                 onChange={(event, newValue) => {
-                  handleChange({
-                    target: {
-                      name: "chartofAccountId2",
-                      value: newValue ? newValue.id : "",
-                    },
-                  });
+                  formik.setFieldValue(
+                    "chartofAccountId2",
+                    newValue ? newValue.id : ""
+                  );
                 }}
                 renderInput={(params) => (
                   <TextField
@@ -237,161 +234,73 @@ const CATransactionsForm: React.FC<ProductFormProps> = ({
                     variant="outlined"
                     fullWidth
                     required
+                    value={formik.values.chartofAccountId2}
+                    onChange={formik.handleChange}
                     error={
-                      touched.chartofAccountId2 && !formData.chartofAccountId2
+                      formik.touched.chartofAccountId2 &&
+                      Boolean(formik.errors.chartofAccountId2)
                     }
-                    onBlur={() =>
-                      setTouched({ ...touched, chartofAccountId2: true })
+                    onBlur={formik.handleBlur}
+                    helperText={
+                      formik.touched.chartofAccountId2 &&
+                      (formik.errors.chartofAccountId2 as React.ReactNode)
                     }
                   />
                 )}
               />
-            </>
-          ) : formLabel === "Supplier Name" ? (
-            <>
-              <Typography
-                style={{ marginTop: "10px", marginBottom: "10px" }}
-              ></Typography>
+              <TextField
+                name="date"
+                label="Transaction Date"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                type="date"
+                value={dayjs(formik.values.date).format("YYYY-MM-DD")}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.date && Boolean(formik.errors.date)}
+                helperText={
+                  formik.touched.date && (formik.errors.date as React.ReactNode)
+                }
+                required
+              />
+            </div>
 
-              <Autocomplete
-                options={suppliers}
-                getOptionLabel={(option) => option.name}
-                value={
-                  suppliers.find(
-                    (d: { id: string }) => d.id === formData.chartofAccountId2
-                  ) || null
+            <div>
+              <TextField
+                name="amount"
+                label="Amount"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                onChange={formik.handleChange}
+                value={formik.values.amount}
+                type="number"
+                error={formik.touched.amount && Boolean(formik.errors.amount)}
+                onBlur={formik.handleBlur}
+                helperText={
+                  formik.touched.amount &&
+                  (formik.errors.amount as React.ReactNode)
                 }
-                onChange={(event, newValue) => {
-                  handleChange({
-                    target: {
-                      name: "chartofAccountId2",
-                      value: newValue ? newValue.id : "",
-                    },
-                  });
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Supplier Name"
-                    variant="outlined"
-                    fullWidth
-                    required
-                    error={
-                      touched.chartofAccountId2 && !formData.chartofAccountId2
-                    }
-                    onBlur={() =>
-                      setTouched({ ...touched, chartofAccountId2: true })
-                    }
-                  />
-                )}
+                required
               />
-            </>
-          ) : formLabel === "Customer Name" ? (
-            <>
-              <Typography
-                style={{ marginTop: "10px", marginBottom: "10px" }}
-              ></Typography>
-              <Autocomplete
-                options={customers}
-                getOptionLabel={(option) => option.firstName}
-                value={
-                  customers.find(
-                    (d: { id: string }) => d.id === formData.chartofAccountId2
-                  ) || null
-                }
-                onChange={(event, newValue) => {
-                  handleChange({
-                    target: {
-                      name: "chartofAccountId2",
-                      value: newValue ? newValue.id : "",
-                    },
-                  });
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Customer"
-                    variant="outlined"
-                    fullWidth
-                    required
-                    error={
-                      touched.chartofAccountId2 && !formData.chartofAccountId2
-                    }
-                    onBlur={() =>
-                      setTouched({ ...touched, chartofAccountId2: true })
-                    }
-                  />
-                )}
+              <TextField
+                name="transactionRemark"
+                label="Transaction Remark"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                onChange={formik.handleChange}
+                value={formik.values.transactionRemark}
               />
-            </>
-          ) : (
-            <TextField
-              name="chartofAccountId2"
-              label={formLabel}
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              onChange={handleChange}
-              required
-              error={touched.chartofAccountId2 && !formData.chartofAccountId2}
-              onBlur={() => handleBlur("chartofAccountId2")}
-            />
-          )}
-          {touched.chartofAccountId2 && !formData.chartofAccountId2 && (
-            <FormHelperText error>{formLabel} is required</FormHelperText>
-          )}
-          <TextField
-            name="date"
-            label="Transaction Date"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            type="date"
-            value={dayjs(formData.date).format("YYYY-MM-DD")}
-            onChange={handleChange}
-            required
-            error={touched.date && !formData.date}
-            onBlur={() => handleBlur("date")}
-          />
-          {touched.date && !formData.date && (
-            <FormHelperText error>Transaction date is required</FormHelperText>
-          )}
-          <TextField
-            name="amount"
-            label="Amount"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            onChange={handleChange}
-            required
-            error={touched.amount && !formData.amount}
-            onBlur={() => handleBlur("amount")}
-          />
-          {touched.amount && !formData.amount && (
-            <FormHelperText error>
-              Transaction amount is required
-            </FormHelperText>
-          )}
-          <TextField
-            name="transactionRemark"
-            label="Transaction Remark"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            onChange={handleChange}
-            error={touched.transactionRemark && !formData.transactionRemark}
-            onBlur={() => handleBlur("transactionRemark")}
-          />
+            </div>
+          </div>
+
           <Button
             variant="contained"
             color="primary"
-            onClick={handleSubmit}
-            disabled={
-              !formData.chartofAccountId1 ||
-              !formData.amount ||
-              !formData.chartofAccountId2 ||
-              !formData.date
-            }
+            type="submit"
+            disabled={!formik.isValid || formik.isSubmitting}
           >
             Submit
           </Button>

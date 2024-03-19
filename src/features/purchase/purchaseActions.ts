@@ -20,7 +20,7 @@ import {
 } from "./purchaseSlice";
 
 export const getPurchases =
-  (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
+  (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
       dispatch(getPurchasesStart());
       const response = await PurchaseService.getPurchases(page, pageSize);
@@ -30,20 +30,19 @@ export const getPurchases =
     }
   };
 
-export const createPurchase =
-  (data: CreatePurchase) => async (dispatch: AppDispatch) => {
-    try {
-      dispatch(registerPurchaseStart());
-      const response = await PurchaseService.registerPurchase(data);
-      if (response.success) {
-        dispatch(registerPurchaseSuccess(response.data));
-      } else {
-        dispatch(registerPurchaseFailure(response.error || "Unknown error"));
-      }
-    } catch (error) {
-      dispatch(registerPurchaseFailure("Unknown error"));
+export const createPurchase = (data: any) => async (dispatch: AppDispatch) => {
+  try {
+    dispatch(registerPurchaseStart());
+    const response = await PurchaseService.registerPurchase(data);
+    if (response.success) {
+      dispatch(registerPurchaseSuccess(response.data));
+    } else {
+      dispatch(registerPurchaseFailure(response.error || "Unknown error"));
     }
-  };
+  } catch (error) {
+    dispatch(registerPurchaseFailure("Unknown error"));
+  }
+};
 
 export const getPurchase = (id: any) => async (dispatch: AppDispatch) => {
   try {
@@ -66,20 +65,20 @@ export const deletePurchase = (id: any) => async (dispatch: AppDispatch) => {
   }
 };
 
-export const updatePurchase = (id:any, data: CreatePurchase) => async (dispatch: AppDispatch) => {
-  try {
-    dispatch(registerPurchaseStart());
-    const response = await PurchaseService.updatePurchase(id, data);
-    if (response.success) {
-      dispatch(registerPurchaseSuccess(response.data));
-    } else {
-      dispatch(registerPurchaseFailure(response.error || "Unknown error"));
+export const updatePurchase =
+  (id: any, data: CreatePurchase) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(registerPurchaseStart());
+      const response = await PurchaseService.updatePurchase(id, data);
+      if (response.success) {
+        dispatch(registerPurchaseSuccess(response.data));
+      } else {
+        dispatch(registerPurchaseFailure(response.error || "Unknown error"));
+      }
+    } catch (error) {
+      dispatch(registerPurchaseFailure("Unknown error"));
     }
-  } catch (error) {
-    dispatch(registerPurchaseFailure("Unknown error"));
-  }
-}
-
+  };
 
 export const getTransportCost =
   (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
@@ -111,3 +110,22 @@ export const getTransitFee =
       dispatch(getPurchaseCostsFailure(error));
     }
   };
+
+  export const createSupplierPayment =
+      (data: any) => async (dispatch: AppDispatch) => {
+        try {
+          dispatch(registerPurchaseStart());
+          const response = await PurchaseService.createSupplierPayment(
+            data
+          );
+          if (response.success) {
+            dispatch(registerPurchaseSuccess(response.data));
+          } else {
+            dispatch(
+              registerPurchaseFailure(response.error || "Unknown error")
+            );
+          }
+        } catch (error) {
+          dispatch(registerPurchaseFailure("Unknown error"));
+        }
+      };

@@ -7,7 +7,6 @@ export const CashOfAccountService = {
       let url = CA_URL;
 
       if (page && pageSize) {
-        console.log("got a page and pageSize", page, pageSize);
         url += `?page=${page}&pageSize=${pageSize}`;
       }
       const response = await handleRequest(url, {
