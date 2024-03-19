@@ -17,6 +17,7 @@ import {
   getTransportCosts,
   getEslCustomCosts,
   getTransitFees,
+  updatePurchaseSuccess,
 } from "./purchaseSlice";
 
 export const getPurchases =
@@ -66,12 +67,12 @@ export const deletePurchase = (id: any) => async (dispatch: AppDispatch) => {
   }
 };
 
-export const updatePurchase = (id:any, data: CreatePurchase) => async (dispatch: AppDispatch) => {
+export const updatePurchase = (id:any, data: any) => async (dispatch: AppDispatch) => {
   try {
     dispatch(registerPurchaseStart());
     const response = await PurchaseService.updatePurchase(id, data);
     if (response.success) {
-      dispatch(registerPurchaseSuccess(response.data));
+      dispatch(updatePurchaseSuccess(response.data));
     } else {
       dispatch(registerPurchaseFailure(response.error || "Unknown error"));
     }

@@ -90,7 +90,7 @@ export const PurchaseService = {
         }
       },
 
-      updatePurchase: async (purchaseId: string, purchaseData: CreatePurchase) => {
+      updatePurchase: async (purchaseId: string, purchaseData: any) => {
         try {
           const url = `${PURCHASES_URL}/${purchaseId}`;
           const response = await handleRequest(url, {

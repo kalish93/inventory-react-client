@@ -66,7 +66,7 @@ const PurchaseDetail = () => {
                 <TableCell>{item.purchaseUnitPriceETB}</TableCell>
                 <TableCell>{item.purchaseUnitPriceUSD}</TableCell>
                 <TableCell>{item.purchaseTotalETB}</TableCell>
-                <TableCell>{item.purchaseUnitCostOfGoods}</TableCell>
+                <TableCell>{item.purchaseUnitCostOfGoods.toFixed(2)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
