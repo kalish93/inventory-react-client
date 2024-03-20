@@ -1,4 +1,4 @@
-import { ESL_URL, PURCHASES_URL, TRANSIT_FEES_URL, TRANSPORT_URL } from "../../core/api-routes";
+import { ESL_URL, PURCHASES_URL, TRANSIT_FEES_URL, TRANSPORT_URL, CATRANSACTIONS_URL } from "../../core/api-routes";
 import { CreatePurchase } from "../../models/purchase";
 import { handleRequest } from "../../utils/apiService";
 
@@ -172,6 +172,31 @@ export const PurchaseService = {
           throw error;
         }
       },
+
+      
+    createSupplierPayment: async (purchaseInfo: any) => {
+      try{
+          const response = await handleRequest(`${CATRANSACTIONS_URL}/supplier-payment`, {
+              method: "POST",
+              body: JSON.stringify(purchaseInfo),
+          });
+
+          if(!response.ok){
+              let errorMessage = `Bad Request: ${response.statusText}`;
+              const data = await response.json();
+              errorMessage = data.error || errorMessage;
+              return { success: false, error: errorMessage };
+          }
+
+          const data = await response.json();
+          return { success: true, data };
+
+      }catch(error) {
+          console.error("Error in createSupplierPayment service:", error);
+          return { success: false, error: "Unexpected error occurred" };
+      }
+  },
+
 
 };
   

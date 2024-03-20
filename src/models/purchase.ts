@@ -1,11 +1,15 @@
 export interface CreatePurchase {
     number: number| null;
     date: Date | null;
-    truckNumber: string;
+    truckNumber: string | null;
     transportCost: number| null;
     eslCustomCost:number| null;
     transitFees: number| null;
-    purchaseProducts: CreateProductPurchase[];
+    purchaseProducts: CreateProductPurchase[] | null;
+    supplierId: string;
+    exchangeRate: number| null;
+    paidAmountUSD: number| null;
+    paidAmountETB: number | null;
   }
 
 export interface CreateProductPurchase{
