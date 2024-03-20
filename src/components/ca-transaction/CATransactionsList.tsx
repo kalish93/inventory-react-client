@@ -28,6 +28,7 @@ import Menu, { MenuProps } from "@mui/material/Menu";
 import { styled, alpha } from "@mui/material/styles";
 import MenuItem from "@mui/material/MenuItem";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import CustomerPaymentForm from "./CustomerPaymentForm";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -85,6 +86,7 @@ const CATransactionsList = () => {
   const [openModal, setOpenModal] = useState({
     1: false,
     2: false,
+    3: false,
   });
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -155,7 +157,7 @@ const CATransactionsList = () => {
             <MenuItem
               onClick={() => {
                 handleClose();
-                handleOpenModal(1);
+                handleOpenModal(2);
               }}
               disableRipple
             >
@@ -273,12 +275,14 @@ const CATransactionsList = () => {
                         ? ca.customer.firstName + " " + ca.customer.lastName
                         : null}
                     </TableCell>
-                    <TableCell>{ca.supplier ? ca.supplier.name: null}</TableCell>
+                    <TableCell>
+                      {ca.supplier ? ca.supplier.name : null}
+                    </TableCell>
                     <TableCell>
                       {ca.chartofAccount
                         ? ca.chartofAccount.name
-                        : ca.bank
-                        ? ca.bank.name
+                        : ca.bankTransaction
+                        ? ca.bankTransaction.bank.name
                         : null}
                     </TableCell>
                     <TableCell>{ca.exchangeRate}</TableCell>
@@ -295,9 +299,14 @@ const CATransactionsList = () => {
         handleClose={() => handleCloseModal(1)}
       />
 
-      <JournalEntryForm
+      <CustomerPaymentForm
         open={openModal[2]}
         handleClose={() => handleCloseModal(2)}
+      />
+
+      <JournalEntryForm
+        open={openModal[3]}
+        handleClose={() => handleCloseModal(3)}
       />
     </div>
   );
