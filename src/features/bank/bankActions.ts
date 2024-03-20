@@ -4,6 +4,7 @@ import {
   createBankSuccess,
   deleteBankSuccess,
   getBankSuccess,
+  getBankByIdSuccess,
   updateBankSuccess,
 } from "./bankSlice";
 import { AppDispatch } from "../../app/store";
@@ -21,6 +22,16 @@ export const getBanks =
     }
   };
 
+export const getBank = (id: any) => async (dispatch: AppDispatch) => {
+  try {
+    dispatch(bankStart());
+    const response = await bankService.getBank(id);
+    dispatch(getBankByIdSuccess(response));
+  } catch (error) {
+    dispatch(bankFailure(error));
+  }
+};
+
 export const createBank = (bankData: Bank) => async (dispatch: AppDispatch) => {
   try {
     dispatch(bankStart());
@@ -34,6 +45,21 @@ export const createBank = (bankData: Bank) => async (dispatch: AppDispatch) => {
     dispatch(bankFailure("Unknown error"));
   }
 };
+
+export const createBankTransaction =
+  (bankData: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(bankStart());
+      const response = await bankService.createBankTransaction(bankData);
+      if (response.success) {
+        dispatch(createBankSuccess(response.data));
+      } else {
+        dispatch(bankFailure(response.error || "Unknown error"));
+      }
+    } catch (error) {
+      dispatch(bankFailure("Unknown error"));
+    }
+  };
 
 export const updateBank = (bankData: Bank) => async (dispatch: AppDispatch) => {
   try {

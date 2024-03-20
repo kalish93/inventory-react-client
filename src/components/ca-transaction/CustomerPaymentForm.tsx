@@ -13,23 +13,21 @@ import {
 import { AppDispatch } from "../../app/store";
 import { selectTransactions } from "../../features/ca-transaction/transactionSlice";
 import { createCATransaction } from "../../features/ca-transaction/transactionActions";
-import {
-  createSupplierPayment,
-  getPurchases,
-} from "../../features/purchase/purchaseActions";
 import { getCashOfAccounts } from "../../features/cash-of-account/cashOfAccountActions";
-import { getSuppliers } from "../../features/supplier/supplierActions";
 import { getCustomers } from "../../features/customer/customerActions";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { createBank, createBankTransaction, getBanks, updateBank } from "../../features/bank/bankActions";
+import {
+  createBankTransaction,
+  getBanks,
+} from "../../features/bank/bankActions";
 
 interface ProductFormProps {
   open: boolean;
   handleClose: () => void;
 }
 
-const SupplierPaymentForm: React.FC<ProductFormProps> = ({
+const CustomerPaymentForm: React.FC<ProductFormProps> = ({
   open,
   handleClose,
 }) => {
@@ -38,8 +36,8 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
     (state: any) => state.cashOfAccount.cashOfAccounts.items
   );
   const banks = useSelector((state: any) => state.bank.banks.items);
-  const purchases = useSelector((state: any) => state.purchase.purchases.items);
-  const suppliers = useSelector((state: any) => state.supplier.suppliers.items);
+  const customers = useSelector((state: any) => state.customer.customers.items);
+
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -57,27 +55,15 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(getSuppliers());
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(getPurchases());
+    dispatch(getCustomers());
   }, [dispatch]);
 
   useEffect(() => {
     dispatch(getBanks());
   }, [dispatch]);
 
-  const foringnCurrencySupplier = suppliers.filter(
-    (supplier: any) => supplier.currency === "USD"
-  );
-
-  const accountsPayableUSD = cashOfAccounts.find(
-    (ca: any) => ca.name === "Accounts Payable (A/P) - USD"
-  );
-
-  const accountsPayable = cashOfAccounts.find(
-    (ca: any) => ca.name === "Accounts Payable (A/P) - ETB"
+  const accountReceivable = cashOfAccounts.find(
+    (ca: any) => ca.name === "Accounts Receivable (A/R)"
   );
 
   useEffect(() => {
@@ -109,9 +95,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
       date: "",
       amount: null,
       transactionRemark: "",
-      exchangeRate: undefined,
       type: "",
-      purchaseId: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -120,62 +104,38 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
         date: values.date,
         remark: values.transactionRemark,
         credit: null,
-        debit: values.exchangeRate
-          ? values.amount! * values.exchangeRate
-          : values.amount,
-        supplierId: values.chartofAccountId2,
-        purchaseId: values.purchaseId,
-        type: "Supplier Payment",
+        debit: values.amount,
+        customerId: values.chartofAccountId2,
+        type: "Customer Payment",
       };
 
       const formDataToSend2 = {
-        chartofAccountId: values.exchangeRate
-          ? accountsPayableUSD.id
-          : accountsPayable.id,
+        chartofAccountId: accountReceivable.id,
         date: values.date,
         remark: values.transactionRemark,
-        exchangeRate: values.exchangeRate,
-        credit: values.exchangeRate
-          ? values.amount! * values.exchangeRate
-          : values.amount,
+        credit: values.amount,
         debit: null,
-        supplierId: values.chartofAccountId2,
-        type: "Supplier Payment",
-        purchaseId: values.purchaseId,
-        USDAmount: values.amount,
-      };
-
-      const formDataToSend3 = {
-        date: values.date,
-        number: values.purchaseId,
-        supplierId: values.chartofAccountId2,
-        exchangeRate: values.exchangeRate,
-        paidAmountUSD: values.exchangeRate ? values.amount : null,
-        padiAmountETB: values.exchangeRate
-          ? values.amount! * values.exchangeRate
-          : values.amount,
+        customerId: values.chartofAccountId2,
+        type: "Customer Payment",
       };
 
       const formDataToSend4 = {
         bankId: values.chartofAccountId1,
         payee: values.chartofAccountId2,
-        foreignCurrency: values.exchangeRate ? -values.amount! : null,
-        payment: values.exchangeRate
-        ? values.amount! * values.exchangeRate
-        : values.amount,
-        deposit: null,
-        type: "Supplier Payment",
-        exchangeRate: values.exchangeRate,
-        chartofAccountId: values.exchangeRate
-        ? accountsPayableUSD.id
-        : accountsPayable.id,
-      }
+        foreignCurrency: null,
+        payment: null,
+        deposit: values.amount,
+        type: "Customer Payment",
+        exchangeRate: null,
+        chartofAccountId: accountReceivable.id,
+      };
+
+      console.log(formDataToSend1, formDataToSend2, formDataToSend4)
 
       Promise.all([
         dispatch(createCATransaction(formDataToSend1)),
         dispatch(createCATransaction(formDataToSend2)),
-        dispatch(createSupplierPayment(formDataToSend3)),
-        dispatch(createBankTransaction(formDataToSend4))
+        dispatch(createBankTransaction(formDataToSend4)),
       ]);
       setIsFormSubmitted(true);
       handleClose();
@@ -215,7 +175,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
         >
           <form onSubmit={formik.handleSubmit}>
             <Typography variant="h6" component="div">
-              Supplier Payment Form
+              Customer Payment Form
             </Typography>
             <div
               style={{
@@ -270,10 +230,10 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                 />
 
                 <Autocomplete
-                  options={suppliers}
-                  getOptionLabel={(option) => option.name}
+                  options={customers}
+                  getOptionLabel={(option) => option.firstName}
                   value={
-                    suppliers.find(
+                    customers.find(
                       (d: { id: string }) =>
                         d.id === formik.values.chartofAccountId2
                     ) || null
@@ -287,7 +247,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Supplier Name"
+                      label="Customer Name"
                       variant="outlined"
                       fullWidth
                       required
@@ -351,75 +311,6 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                   onChange={formik.handleChange}
                   value={formik.values.transactionRemark}
                 />
-
-                {
-                  //check if the supplier is in foreign currency by checking chartofAccountId2 in the foreignCurrencySupplier list
-
-                  foringnCurrencySupplier.find(
-                    (supplier: any) =>
-                      supplier.id === formik.values.chartofAccountId2
-                  ) ? (
-                    <>
-                      <TextField
-                        name="exchangeRate"
-                        label="Exchange Rate"
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        onChange={formik.handleChange}
-                        value={formik.values.exchangeRate}
-                        type="number"
-                        error={
-                          formik.touched.exchangeRate &&
-                          Boolean(formik.errors.exchangeRate)
-                        }
-                        onBlur={formik.handleBlur}
-                        helperText={
-                          formik.touched.exchangeRate &&
-                          (formik.errors.exchangeRate as React.ReactNode)
-                        }
-                        required
-                      />
-                      <Typography style={{ marginTop: "1rem" }}></Typography>
-                      <Autocomplete
-                        options={purchases}
-                        getOptionLabel={(option) => option.number.toString()}
-                        value={
-                          purchases.find(
-                            (d: { id: string }) =>
-                              d.id === formik.values.purchaseId
-                          ) || null
-                        }
-                        onChange={(event, newValue) => {
-                          formik.setFieldValue(
-                            "purchaseId",
-                            newValue ? newValue.id : ""
-                          );
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Purchase Number"
-                            variant="outlined"
-                            fullWidth
-                            required
-                            value={formik.values.purchaseId}
-                            onChange={formik.handleChange}
-                            error={
-                              formik.touched.purchaseId &&
-                              Boolean(formik.errors.purchaseId)
-                            }
-                            onBlur={formik.handleBlur}
-                            helperText={
-                              formik.touched.purchaseId &&
-                              (formik.errors.purchaseId as React.ReactNode)
-                            }
-                          />
-                        )}
-                      />
-                    </>
-                  ) : null
-                }
               </div>
             </div>
 
@@ -460,4 +351,4 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
   );
 };
 
-export default SupplierPaymentForm;
+export default CustomerPaymentForm;

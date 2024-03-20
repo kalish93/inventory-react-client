@@ -26,6 +26,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { hasPermission } from "../../utils/checkPermission";
 import { PERMISSIONS } from "../../core/permissions";
 import dayjs from "dayjs";
+import { Link } from "react-router-dom";
 
 const BanksList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -143,67 +144,63 @@ const BanksList = () => {
                 <TableCell>Address</TableCell>
                 <TableCell>Starting Value</TableCell>
                 <TableCell>Starting Date</TableCell>
-                <TableCell>Payee</TableCell>
-                <TableCell>Foreign Currency</TableCell>
-                <TableCell>Payment</TableCell>
-                <TableCell>Deposit</TableCell>
-                <TableCell>Balance</TableCell>
-                <TableCell>Type</TableCell>
-                <TableCell>CA</TableCell>
-                <TableCell>Exchange Rate</TableCell>
+
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {banks && banks.map((bank: any) => (
-                <TableRow key={bank.id}>
-                  <TableCell>{bank.name}</TableCell>
-                  <TableCell>{bank.address}</TableCell>
-                  <TableCell>{bank.startingValue}</TableCell>
-                  <TableCell>{dayjs(bank.startingValueDate).format("YYYY-MM-DD")}</TableCell>
-                  <TableCell>{bank.payee}</TableCell>
-                  <TableCell>{bank.foreignCurrency}</TableCell>
-                  <TableCell>{bank.payment}</TableCell>
-                  <TableCell>{bank.deposit}</TableCell>
-                  <TableCell>{bank.balance}</TableCell>
-                  <TableCell>{bank.type}</TableCell>
-                  <TableCell>{bank.chartofAccountId}</TableCell>
-                  <TableCell>{bank.exchangeRate}</TableCell>
-                  <TableCell>
-                    <IconButton
-                      aria-label="Actions"
-                      onClick={(event) => handleMenuOpen(event, bank.id, bank)}
-                      style={{ margin: 0, padding: 0 }}
-                    >
-                      <MoreVertIcon />
-                    </IconButton>
-                    <Menu
-                      id="actions-menu"
-                      MenuListProps={{
-                        "aria-labelledby": "long-button",
-                      }}
-                      anchorEl={anchorEl}
-                      open={Boolean(anchorEl)}
-                      onClose={handleMenuClose}
-                      PaperProps={{
-                        style: {
-                          width: "20ch",
-                          boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
-                        },
-                      }}
-                    >
-                      {hasPermission(PERMISSIONS.UpdateBank) && (
-                        <MenuItem onClick={handleUpdateBank}>Update</MenuItem>
-                      )}
-                      {hasPermission(PERMISSIONS.DeleteBank) && (
-                        <MenuItem onClick={openConfirmationModal}>
-                          Delete
-                        </MenuItem>
-                      )}
-                    </Menu>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {banks &&
+                banks.map((bank: any) => (
+                  <TableRow
+                    key={bank.id}
+                    component={Link}
+                    to={`/banks/${bank.id}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <TableCell>{bank.name}</TableCell>
+                    <TableCell>{bank.address}</TableCell>
+                    <TableCell>{bank.startingValue}</TableCell>
+                    <TableCell>
+                      {dayjs(bank.startingValueDate).format("YYYY-MM-DD")}
+                    </TableCell>
+
+                    <TableCell>
+                      <IconButton
+                        aria-label="Actions"
+                        onClick={(event) =>
+                          handleMenuOpen(event, bank.id, bank)
+                        }
+                        style={{ margin: 0, padding: 0 }}
+                      >
+                        <MoreVertIcon />
+                      </IconButton>
+                      <Menu
+                        id="actions-menu"
+                        MenuListProps={{
+                          "aria-labelledby": "long-button",
+                        }}
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleMenuClose}
+                        PaperProps={{
+                          style: {
+                            width: "20ch",
+                            boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
+                          },
+                        }}
+                      >
+                        {hasPermission(PERMISSIONS.UpdateBank) && (
+                          <MenuItem onClick={handleUpdateBank}>Update</MenuItem>
+                        )}
+                        {hasPermission(PERMISSIONS.DeleteBank) && (
+                          <MenuItem onClick={openConfirmationModal}>
+                            Delete
+                          </MenuItem>
+                        )}
+                      </Menu>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>
