@@ -60,6 +60,7 @@ const purchaseSlice = createSlice({
       state.purchases = action.payload;
       state.loading = false;
     },
+
     getPurchasesFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
@@ -82,6 +83,7 @@ const purchaseSlice = createSlice({
 
       state.loading = false;
     },
+
     registerPurchaseFailure: (state, action) => {
       state.loading = false;
       state.isError = true;
@@ -115,13 +117,12 @@ const purchaseSlice = createSlice({
       state.loading = false;
     },
 
-
-    updatePurchaseSuccess: (state, action) =>{
+    updatePurchaseSuccess: (state, action) => {
       const updatedPurchase = action.payload;
       state.purchases = {
         items:
           state.purchases?.items?.map((purchase) =>
-          purchase.id === updatedPurchase.id ? updatedPurchase : purchase
+            purchase.id === updatedPurchase.id ? updatedPurchase : purchase
           ) ?? [],
         totalCount: state.purchases?.totalCount || 0,
         pageSize: state.purchases?.pageSize || 10,
@@ -137,6 +138,18 @@ const purchaseSlice = createSlice({
     },
     getTransportCosts: (state, action) => {
       state.transportCosts = action.payload;
+      state.loading = false;
+    },
+    registerTransportCostSuccess: (state, action) => {
+      const newTransportCost = action.payload;
+      state.transportCosts = {
+        items: [newTransportCost, ...(state.transportCosts?.items || [])],
+        totalCount: (state.transportCosts?.totalCount || 0) + 1,
+        pageSize: state.transportCosts?.pageSize || 10,
+        currentPage: state.transportCosts?.currentPage || 1,
+        totalPages: state.transportCosts?.totalPages || 1,
+      };
+
       state.loading = false;
     },
     getEslCustomCosts: (state, action) => {
@@ -170,7 +183,8 @@ export const {
   getPurchaseCostsStart,
   getTransitFees,
   getTransportCosts,
-  updatePurchaseSuccess
+  updatePurchaseSuccess,
+  registerTransportCostSuccess,
 } = purchaseSlice.actions;
 
 export const selectPurchase = (state: { purchase: PurchaseState }) =>

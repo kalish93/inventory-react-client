@@ -144,42 +144,6 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Journal Entry Form
           </Typography>
-          <>
-            <Typography
-              style={{ marginTop: "10px", marginBottom: "10px" }}
-            ></Typography>
-            <Autocomplete
-              options={users}
-              getOptionLabel={(option) => option.firstName + " " + option.lastName}
-              value={
-                users.find(
-                  (d: { id: string }) => d.id === formData.journalKeeper
-                ) || null
-              }
-              onChange={(event, newValue) => {
-                handleChange({
-                  target: {
-                    name: "journalKeeper",
-                    value: newValue ? newValue.id : "",
-                  },
-                });
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Journal Keeper"
-                  variant="outlined"
-                  fullWidth
-                  required
-                  error={touched.journalKeeper && !formData.journalKeeper}
-                  onBlur={() => setTouched({ ...touched, journalKeeper: true })}
-                />
-              )}
-            />
-          </>
-          {touched.journalKeeper && !formData.journalKeeper && (
-            <FormHelperText error>Journal Keeper is required</FormHelperText>
-          )}
           <Typography
             style={{ marginTop: "10px", marginBottom: "10px" }}
           ></Typography>

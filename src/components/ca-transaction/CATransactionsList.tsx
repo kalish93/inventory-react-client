@@ -29,6 +29,8 @@ import { styled, alpha } from "@mui/material/styles";
 import MenuItem from "@mui/material/MenuItem";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import CustomerPaymentForm from "./CustomerPaymentForm";
+import ExpensesPaymentForm from "./ExpensesPaymentForm";
+import TransportExpensePayment from "./TransportExpensePayment";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -87,6 +89,11 @@ const CATransactionsList = () => {
     1: false,
     2: false,
     3: false,
+    4: false,
+    5: false,
+    6: false,
+    7: false,
+    8: false,
   });
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -166,7 +173,7 @@ const CATransactionsList = () => {
             <MenuItem
               onClick={() => {
                 handleClose();
-                handleOpenModal(1);
+                handleOpenModal(3);
               }}
               disableRipple
             >
@@ -175,7 +182,7 @@ const CATransactionsList = () => {
             <MenuItem
               onClick={() => {
                 handleClose();
-                handleOpenModal(1);
+                handleOpenModal(4);
               }}
               disableRipple
             >
@@ -184,7 +191,7 @@ const CATransactionsList = () => {
             <MenuItem
               onClick={() => {
                 handleClose();
-                handleOpenModal(1);
+                handleOpenModal(5);
               }}
               disableRipple
             >
@@ -193,7 +200,7 @@ const CATransactionsList = () => {
             <MenuItem
               onClick={() => {
                 handleClose();
-                handleOpenModal(1);
+                handleOpenModal(6);
               }}
               disableRipple
             >
@@ -202,7 +209,7 @@ const CATransactionsList = () => {
             <MenuItem
               onClick={() => {
                 handleClose();
-                handleOpenModal(1);
+                handleOpenModal(7);
               }}
               disableRipple
             >
@@ -212,7 +219,7 @@ const CATransactionsList = () => {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => handleOpenModal(2)}
+            onClick={() => handleOpenModal(8)}
           >
             Add Journal Enty
           </Button>
@@ -304,9 +311,19 @@ const CATransactionsList = () => {
         handleClose={() => handleCloseModal(2)}
       />
 
-      <JournalEntryForm
+      <ExpensesPaymentForm
         open={openModal[3]}
         handleClose={() => handleCloseModal(3)}
+      />
+
+      <TransportExpensePayment
+        open={openModal[4]}
+        handleClose={() => handleCloseModal(4)}
+      />
+
+      <JournalEntryForm
+        open={openModal[8]}
+        handleClose={() => handleCloseModal(8)}
       />
     </div>
   );
