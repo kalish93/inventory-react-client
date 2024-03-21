@@ -41,11 +41,11 @@ const UpdatePurchaseForm: React.FC<UpdatePurchaseFormProps> = ({
 
   useEffect(() => {
     dispatch(getSuppliers());
-  });
+  },[dispatch]);
 
   useEffect(() => {
     dispatch(getDrivers());
-  });
+  },[dispatch]);
 
   const showSnackbar = (message: string, severity: "success" | "error") => {
     setSnackbarMessage(message);
