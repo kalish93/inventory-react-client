@@ -135,7 +135,16 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
     )
   
     if (selectedDeclaration) {
-      if ((productDeclaration.declarationBalance == null && productDeclaration.declarationQuantity >= formData.purchaseQuantity) || (productDeclaration.declarationBalance >= formData.purchaseQuantity)) {
+      let purchaseQuantity = parseInt(formData.purchaseQuantity);
+      if(addedProducts.find(product => product.productId === formData.productId )){
+        addedProducts.forEach(product => {
+          if(product.productId === formData.productId )
+          purchaseQuantity += parseInt(product.purchaseQuantity as any)
+        });
+      }else{
+        purchaseQuantity = parseInt(formData.purchaseQuantity);
+      }
+      if ((productDeclaration.declarationBalance == null && productDeclaration.declarationQuantity >= purchaseQuantity) || (productDeclaration.declarationBalance >= purchaseQuantity)) {
         const newProduct = {
           productId: formData.productId,
           declarationId: formData.declarationId,
@@ -321,7 +330,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
         </Typography>
         <TextField
           name="number"
-          label="Purchase/Waybill Number"
+          label="Purchase/ Waybill Number"
           variant="outlined"
           type="number"
           fullWidth
