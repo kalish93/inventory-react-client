@@ -7,6 +7,7 @@ interface BankState {
   loading: boolean;
   error: any | null;
   isError: boolean;
+  bank: any;
   successMessage: string | null;
 }
 
@@ -18,6 +19,7 @@ const initialState: BankState = {
     currentPage: 1,
     totalPages: 1,
   },
+  bank: undefined,
   loading: false,
   error: null,
   isError: false,
@@ -41,6 +43,10 @@ const bankSlice = createSlice({
     },
     getBankSuccess: (state, action: PayloadAction<PaginatedList<Bank>>) => {
       state.banks = action.payload;
+      state.loading = false;
+    },
+    getBankByIdSuccess: (state, action: PayloadAction<Bank>) => {
+      state.bank = action.payload;
       state.loading = false;
     },
     createBankSuccess: (state, action: PayloadAction<Bank>) => {
@@ -72,9 +78,10 @@ const bankSlice = createSlice({
     updateBankSuccess: (state, action: PayloadAction<Bank>) => {
       const updatedBank = action.payload;
       state.banks = {
-        items: state.banks?.items?.map((bank) =>
-          bank.id === updatedBank.id ? updatedBank : bank
-        ) || [],
+        items:
+          state.banks?.items?.map((bank) =>
+            bank.id === updatedBank.id ? updatedBank : bank
+          ) || [],
         totalCount: state.banks?.totalCount || 0,
         pageSize: state.banks?.pageSize || 10,
         currentPage: state.banks?.currentPage || 1,
@@ -87,13 +94,14 @@ const bankSlice = createSlice({
 });
 
 export const {
-    bankStart,
-    bankFailure,
-    getBankSuccess,
-    createBankSuccess,
-    deleteBankSuccess,
-    updateBankSuccess,
-    } = bankSlice.actions;
+  bankStart,
+  bankFailure,
+  getBankSuccess,
+  createBankSuccess,
+  deleteBankSuccess,
+  updateBankSuccess,
+  getBankByIdSuccess,
+} = bankSlice.actions;
 
 export const selectBank = (state: { bank: BankState }) => state.bank;
 

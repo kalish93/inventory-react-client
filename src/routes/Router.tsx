@@ -21,6 +21,7 @@ import DashboardHome from "../components/dashboard/DashboardHome";
 import ChangePassword from "../components/auth/changePassword";
 import PermissionList from "../components/auth/PermissionList";
 import BanksList from "../components/bank/bankList";
+import BankDetail from "../components/bank/bankDetail";
 
 const routes = createBrowserRouter([
   {
@@ -43,49 +44,49 @@ const routes = createBrowserRouter([
         path: "drivers",
         element: <DriversList />,
       },
-      { 
-        path: "stores", 
-        element: <StoresList /> 
+      {
+        path: "stores",
+        element: <StoresList />,
       },
-      { 
+      {
         path: "suppliers",
-        element: <SupplierList /> 
+        element: <SupplierList />,
       },
-      { 
+      {
         path: "products",
-        element: <ProductList /> 
+        element: <ProductList />,
       },
-      { 
+      {
         path: "declarations",
-        element: <DeclarationList /> 
+        element: <DeclarationList />,
       },
-      { 
+      {
         path: "declarations/:id",
-        element: <DeclarationDetail /> 
+        element: <DeclarationDetail />,
       },
-      { 
+      {
         path: "purchases",
-        element: <PurchaseList /> 
+        element: <PurchaseList />,
       },
-      { 
+      {
         path: "purchases/:id",
-        element: <PurchaseDetail /> 
+        element: <PurchaseDetail />,
       },
-      { 
+      {
         path: "sales",
-        element: <SalesList /> 
+        element: <SalesList />,
       },
-      { 
+      {
         path: "sales/:id",
-        element: <SaleDetail /> 
+        element: <SaleDetail />,
       },
-      { 
+      {
         path: "inventory",
-        element: <InventoryList /> 
+        element: <InventoryList />,
       },
-      { 
+      {
         path: "cash-of-accounts",
-        element: <CashOfAccountList /> 
+        element: <CashOfAccountList />,
       },
       {
         path: "ca-transactions",
@@ -97,8 +98,12 @@ const routes = createBrowserRouter([
       },
       {
         path: "banks",
-        element: <BanksList />
-      }
+        element: <BanksList />,
+      },
+      {
+        path: "banks/:id",
+        element: <BankDetail />,
+      },
     ],
   },
   {

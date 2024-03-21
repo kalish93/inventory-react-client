@@ -1,5 +1,5 @@
 import { handleRequest } from "../../utils/apiService";
-import { BANK_URL } from "../../core/api-routes";
+import { BANK_URL, CATRANSACTIONS_URL } from "../../core/api-routes";
 import { CreateBank, Bank } from "../../models/bank";
 
 export const bankService = {
@@ -27,6 +27,33 @@ export const bankService = {
         method: "POST",
         body: JSON.stringify(bankData),
       });
+
+      if (!response.ok) {
+        let errorMessage = `Bad Request: ${response.statusText}`;
+
+        const data = await response.json();
+        errorMessage = data.error || errorMessage;
+
+        return { success: false, error: errorMessage };
+      }
+
+      const data = await response.json();
+      return { success: true, data };
+    } catch (error) {
+      console.error("Error in registerBank service:", error);
+      return { success: false, error: "Unexpected error occurred" };
+    }
+  },
+
+  createBankTransaction: async (bankData: CreateBank) => {
+    try {
+      const response = await handleRequest(
+        `${CATRANSACTIONS_URL}/bank-transaction`,
+        {
+          method: "POST",
+          body: JSON.stringify(bankData),
+        }
+      );
 
       if (!response.ok) {
         let errorMessage = `Bad Request: ${response.statusText}`;

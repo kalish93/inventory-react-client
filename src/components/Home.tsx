@@ -24,6 +24,7 @@ import { hasPermission } from "../utils/checkPermission";
 import { PERMISSIONS } from "../core/permissions";
 import BanksList from "./bank/bankList";
 import { jwtDecode } from "jwt-decode";
+import BankDetail from "./bank/bankDetail";
 
 const drawerWidth = 240;
 
@@ -47,7 +48,9 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   }),
 }));
 
-const AuthenticatedRoute: React.FC<{ element: React.ReactNode }> = ({ element }) => {
+const AuthenticatedRoute: React.FC<{ element: React.ReactNode }> = ({
+  element,
+}) => {
   const token = localStorage.getItem("accessToken");
 
   if (!token) {
@@ -74,7 +77,10 @@ interface ProtectedRouteProps {
   permission?: string;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, permission }) => {
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  element,
+  permission,
+}) => {
   const isAuthenticated = !!localStorage.getItem("accessToken");
   // if(!isAuthenticated){
   //   return <Navigate to="/login" replace />;
@@ -112,7 +118,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, permission }) 
 const Home = () => {
   const [showDrawer, setShowDrawer] = useState(true);
 
-
   return (
     <div style={{ display: "flex" }}>
       <CssBaseline />
@@ -120,77 +125,161 @@ const Home = () => {
       <Sidebar showDrawer={showDrawer} setShowDrawer={setShowDrawer} />
       <Main open={showDrawer}>
         <Routes>
-        <Route
+          <Route
             path="/users"
-            element={<ProtectedRoute element={<UsersList />} permission={PERMISSIONS.GetUsers} />}
+            element={
+              <ProtectedRoute
+                element={<UsersList />}
+                permission={PERMISSIONS.GetUsers}
+              />
+            }
           />
           <Route
             path="/customers"
-            element={<ProtectedRoute element={<CustomerList />} permission={PERMISSIONS.GetCustomers} />}
+            element={
+              <ProtectedRoute
+                element={<CustomerList />}
+                permission={PERMISSIONS.GetCustomers}
+              />
+            }
           />
           <Route
             path="/drivers"
-            element={<ProtectedRoute element={<DriversList />} permission={PERMISSIONS.GetDrivers} />}
+            element={
+              <ProtectedRoute
+                element={<DriversList />}
+                permission={PERMISSIONS.GetDrivers}
+              />
+            }
           />
           <Route
             path="/stores"
-            element={<ProtectedRoute element={<StoresList />} permission={PERMISSIONS.GetStores} />}
+            element={
+              <ProtectedRoute
+                element={<StoresList />}
+                permission={PERMISSIONS.GetStores}
+              />
+            }
           />
           <Route
             path="/suppliers"
-            element={<ProtectedRoute element={<SupplierList />} permission={PERMISSIONS.GetSuppliers} />}
+            element={
+              <ProtectedRoute
+                element={<SupplierList />}
+                permission={PERMISSIONS.GetSuppliers}
+              />
+            }
           />
           <Route
             path="/products"
-            element={<ProtectedRoute element={<ProductList />} permission={PERMISSIONS.GetProducts} />}
+            element={
+              <ProtectedRoute
+                element={<ProductList />}
+                permission={PERMISSIONS.GetProducts}
+              />
+            }
           />
           <Route
             path="/declarations"
-            element={<ProtectedRoute element={<DeclarationList />} permission={PERMISSIONS.GetDeclarations} />}
+            element={
+              <ProtectedRoute
+                element={<DeclarationList />}
+                permission={PERMISSIONS.GetDeclarations}
+              />
+            }
           />
           <Route
             path="/declarations/:id"
-            element={<ProtectedRoute element={<DeclarationDetail />} permission={PERMISSIONS.GetDeclarations} />}
+            element={
+              <ProtectedRoute
+                element={<DeclarationDetail />}
+                permission={PERMISSIONS.GetDeclarations}
+              />
+            }
           />
           <Route
             path="/purchases"
-            element={<ProtectedRoute element={<PurchaseList />} permission={PERMISSIONS.GetPurchases} />}
+            element={
+              <ProtectedRoute
+                element={<PurchaseList />}
+                permission={PERMISSIONS.GetPurchases}
+              />
+            }
           />
           <Route
             path="/purchases/:id"
-            element={<ProtectedRoute element={<PurchaseDetail />} permission={PERMISSIONS.GetPurchases} />}
+            element={
+              <ProtectedRoute
+                element={<PurchaseDetail />}
+                permission={PERMISSIONS.GetPurchases}
+              />
+            }
           />
           <Route
             path="/sales"
-            element={<ProtectedRoute element={<SalesList />} permission={PERMISSIONS.GetSales} />}
+            element={
+              <ProtectedRoute
+                element={<SalesList />}
+                permission={PERMISSIONS.GetSales}
+              />
+            }
           />
           <Route
             path="/sales/:id"
-            element={<ProtectedRoute element={<SaleDetail />} permission={PERMISSIONS.GetSales} />}
+            element={
+              <ProtectedRoute
+                element={<SaleDetail />}
+                permission={PERMISSIONS.GetSales}
+              />
+            }
           />
           <Route
             path="/inventory"
-            element={<ProtectedRoute element={<InventoryList />} permission={PERMISSIONS.GetInventory} />}
+            element={
+              <ProtectedRoute
+                element={<InventoryList />}
+                permission={PERMISSIONS.GetInventory}
+              />
+            }
           />
           <Route
             path="/ca-transactions"
-            element={<ProtectedRoute element={<CATransactionsList />} permission={PERMISSIONS.GetCaTransactions} />}
+            element={
+              <ProtectedRoute
+                element={<CATransactionsList />}
+                permission={PERMISSIONS.GetCaTransactions}
+              />
+            }
           />
           <Route
             path="/cash-of-accounts"
-            element={<AuthenticatedRoute element={<CashOfAccountList />}/>}
+            element={<AuthenticatedRoute element={<CashOfAccountList />} />}
           />
           <Route
             path="/banks"
-            element={<AuthenticatedRoute element={<BanksList />}/>}
+            element={<AuthenticatedRoute element={<BanksList />} />}
           />
           <Route
             path="/"
-            element={<AuthenticatedRoute element={<DashboardHome />}/>}
+            element={<AuthenticatedRoute element={<DashboardHome />} />}
           />
           <Route
             path="/permissions/:id"
-            element={<ProtectedRoute element={<PermissionList />} permission={PERMISSIONS.GetPermissions} />}
+            element={
+              <ProtectedRoute
+                element={<PermissionList />}
+                permission={PERMISSIONS.GetPermissions}
+              />
+            }
+          />
+          <Route
+            path="/banks/:id"
+            element={
+              <ProtectedRoute
+                element={<BankDetail />}
+                permission={PERMISSIONS.GetBanks}
+              />
+            }
           />
         </Routes>
       </Main>

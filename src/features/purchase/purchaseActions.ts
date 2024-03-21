@@ -71,7 +71,7 @@ export const deletePurchase = (id: any) => async (dispatch: AppDispatch) => {
 };
 
 export const updatePurchase =
-  (id: any, data: CreatePurchase) => async (dispatch: AppDispatch) => {
+  (id: any, data: any) => async (dispatch: AppDispatch) => {
     try {
       dispatch(registerPurchaseStart());
       const response = await PurchaseService.updatePurchase(id, data);
@@ -116,21 +116,17 @@ export const getTransitFee =
     }
   };
 
-  export const createSupplierPayment =
-      (data: any) => async (dispatch: AppDispatch) => {
-        try {
-          dispatch(registerPurchaseStart());
-          const response = await PurchaseService.createSupplierPayment(
-            data
-          );
-          if (response.success) {
-            dispatch(registerPurchaseSuccess(response.data));
-          } else {
-            dispatch(
-              registerPurchaseFailure(response.error || "Unknown error")
-            );
-          }
-        } catch (error) {
-          dispatch(registerPurchaseFailure("Unknown error"));
-        }
-      };
+export const createSupplierPayment =
+  (data: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(registerPurchaseStart());
+      const response = await PurchaseService.createSupplierPayment(data);
+      if (response.success) {
+        dispatch(registerPurchaseSuccess(response.data));
+      } else {
+        dispatch(registerPurchaseFailure(response.error || "Unknown error"));
+      }
+    } catch (error) {
+      dispatch(registerPurchaseFailure("Unknown error"));
+    }
+  };
