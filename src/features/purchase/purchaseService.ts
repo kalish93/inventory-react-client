@@ -135,6 +135,29 @@ export const PurchaseService = {
         }
       },
 
+      createTransportCost: async (transportInfo: any) => {
+        try{
+            const response = await handleRequest(`${PURCHASES_URL}/transport-payment`, {
+                method: "POST",
+                body: JSON.stringify(transportInfo),
+            });
+
+            if(!response.ok){
+                let errorMessage = `Bad Request: ${response.statusText}`;
+                const data = await response.json();
+                errorMessage = data.error || errorMessage;
+                return { success: false, error: errorMessage };
+            }
+
+            const data = await response.json();
+            return { success: true, data };
+
+        }catch(error) {
+            console.error("Error in createTransportCost service:", error);
+            return { success: false, error: "Unexpected error occurred" };
+        }
+    },
+
       getEslCustomCosts: async (page = 1, pageSize = 10) => {
         try {
           const response = await handleRequest(`${ESL_URL}?page=${page}&pageSize=${pageSize}`, {
