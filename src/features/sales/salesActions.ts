@@ -12,6 +12,11 @@ import {
   registerSaleStart,
   deleteSaleSuccess,
   registerSaleSuccess,
+  saleStart,
+  updatesaleSuccess,
+  saleFailure,
+  deleteSaleDetailSuccess,
+  createSaleDetailSuccess,
 } from "./salseSlice";
 
 export const getSales =
@@ -57,5 +62,59 @@ export const deleteSale = (id: any) => async (dispatch: AppDispatch) => {
     dispatch(deleteSaleSuccess(response.data));
   } catch (error) {
     dispatch(registerSaleFailure(error));
+  }
+};
+
+export const UpdateSale = (id: any, data: any) => async (dispatch: AppDispatch) => {
+  try {
+    dispatch(saleStart());
+    const response = await SalesService.updateSale(id,data);
+    if (response.success) {
+      dispatch(updatesaleSuccess(response.data));
+    } else {
+      dispatch(saleFailure(response.error || "Unknown error"));
+    }
+  } catch (error) {
+    dispatch(saleFailure("Unknown error"));
+  }
+};
+
+export const updateSaleDetail = (data: any) => async (dispatch: AppDispatch) => {
+  try {
+    dispatch(saleStart());
+    const response = await SalesService.updateSaleDetail(data);
+    if (response.success) {
+      dispatch(updatesaleSuccess(response.data));
+    } else {
+      dispatch(saleFailure(response.error || "Unknown error"));
+    }
+  } catch (error) {
+    dispatch(saleFailure("Unknown error"));
+  }
+};
+export const deleteSaleDetail = (id: any) => async (dispatch: AppDispatch) => {
+  try {
+    dispatch(saleStart());
+    const response = await SalesService.deleteSaleDetail(id);
+    if (response.success) {
+      dispatch(deleteSaleDetailSuccess(response.data));
+    } else {
+      dispatch(saleFailure(response.error || "Unknown error"));
+    }
+  } catch (error) {
+    dispatch(saleFailure("Unknown error"));
+  }
+};
+export const createSaleDetail = (data: any) => async (dispatch: AppDispatch) => {
+  try {
+    dispatch(saleStart());
+    const response = await SalesService.createSaleDetail(data);
+    if (response.success) {
+      dispatch(createSaleDetailSuccess(response.data));
+    } else {
+      dispatch(saleFailure(response.error || "Unknown error"));
+    }
+  } catch (error) {
+    dispatch(saleFailure("Unknown error"));
   }
 };

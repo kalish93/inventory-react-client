@@ -321,7 +321,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
         </Typography>
         <TextField
           name="number"
-          label="Purchase Number"
+          label="Purchase/Waybill Number"
           variant="outlined"
           type="number"
           fullWidth
