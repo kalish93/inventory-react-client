@@ -76,7 +76,7 @@ export const updatePurchase =
       dispatch(registerPurchaseStart());
       const response = await PurchaseService.updatePurchase(id, data);
       if (response.success) {
-        dispatch(registerPurchaseSuccess(response.data));
+        dispatch(updatePurchaseSuccess(response.data));
       } else {
         dispatch(registerPurchaseFailure(response.error || "Unknown error"));
       }

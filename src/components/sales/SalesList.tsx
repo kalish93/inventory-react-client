@@ -26,6 +26,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ConfirmationModal from "../common/confirmationModal";
 import { hasPermission } from "../../utils/checkPermission";
 import { PERMISSIONS } from "../../core/permissions";
+import UpdateSaleForm from "./UpdateSaleForm";
 
 
 const SalesList = () => {
@@ -43,6 +44,7 @@ const SalesList = () => {
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
   const { isError, error, loading } = useSelector(selectSale);
   const [selectedSale, setSelectedSale] = useState(null);
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
   const openConfirmationModal = () => {
     setConfirmationModalOpen(true);
@@ -58,7 +60,7 @@ const SalesList = () => {
   };
 
   const handleUpdateSale = () => {
-    handleOpenModal();
+    handleOpenUpdateModal();
     handleMenuClose();
   };
 
@@ -117,6 +119,14 @@ const SalesList = () => {
     setOpenModal(false);
   };
 
+  const handleCloseUpdateModal = () => {
+    setOpenUpdateModal(false);
+  };
+
+  const handleOpenUpdateModal = () => {
+    setOpenUpdateModal(true);
+  };
+
   return (
     <div>
       {hasPermission(PERMISSIONS.CreateSale) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
@@ -153,7 +163,7 @@ const SalesList = () => {
                 <TableCell>
                   {dayjs(sale.invoiceDate).format("YYYY-MM-DD")}
                 </TableCell>
-                <TableCell>{sale.customer.firstName}</TableCell>
+                <TableCell>{sale.customer.firstName + " " + sale.customer.lastName}</TableCell>
                 <TableCell>
                   <IconButton
                     aria-label="Actions"
@@ -207,6 +217,7 @@ const SalesList = () => {
         </Table>
       </TableContainer>}
       <SaleForm open={openModal} handleClose={handleCloseModal} />
+      <UpdateSaleForm open={openUpdateModal} handleClose={handleCloseUpdateModal} selectedSale={selectedSale} />
       <ConfirmationModal
         open={confirmationModalOpen}
         onClose={closeConfirmationModal}

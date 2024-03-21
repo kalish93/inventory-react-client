@@ -7,6 +7,7 @@ interface SalesState {
   error: any | null;
   sale: any;
   isError: boolean;
+  successMessage: any;
 }
 
 const initialState: SalesState = {
@@ -21,6 +22,7 @@ const initialState: SalesState = {
   error: null,
   sale: null,
   isError: false,
+  successMessage: null
 };
 
 const salesSlice = createSlice({
@@ -85,7 +87,63 @@ const salesSlice = createSlice({
           currentPage: state.sales?.currentPage || 1,
           totalPages: state.sales?.totalPages || 1,
         };
-      }
+      },
+
+      saleStart: (state) => {
+        state.loading = true;
+        state.error = null;
+        state.isError = false;
+      },
+
+      updatesaleSuccess: (state, action) =>{
+        const updatedSale = action.payload;
+        state.sales = {
+          items:
+            state.sales?.items?.map((sale) =>
+            sale.id === updatedSale.id ? updatedSale : sale
+            ) ?? [],
+          totalCount: state.sales?.totalCount || 0,
+          pageSize: state.sales?.pageSize || 10,
+          currentPage: state.sales?.currentPage || 1,
+          totalPages: state.sales?.totalPages || 1,
+        };
+        state.loading = false;
+      },
+
+
+      updateSaleDetailSuccess: (state, action) => {
+        const updatedSaleDetail = action.payload;
+        state.sale.saleDetails = state.sale?.saleDetails?.map((product: any) =>
+        product.id === updatedSaleDetail.id ? updatedSaleDetail : product
+            ) ?? [];
+        
+        state.loading = false;
+        state.successMessage = "Sale detail updated successfully.";
+      },
+
+      deleteSaleDetailSuccess: (state, action) => {
+        const saleDetailToDelete = action.payload;
+
+        state.sale.saleDetails = state.sale?.saleDetails?.filter(
+          (product: any) => product.id !== saleDetailToDelete.id
+        ) ?? [];
+        state.loading = false;        
+      },
+
+      createSaleDetailSuccess: (state, action) => {
+        const product = action.payload;
+
+        state.sale.saleDetails = [product, ...state.sale?.saleDetails]
+        state.loading = false;   
+        state.successMessage = "Sale detail created successfully";
+      },
+
+
+      saleFailure: (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.isError = true;
+      },
   },
 });
 
@@ -99,7 +157,13 @@ export const {
   getSaleByIdStart,
   getSaleByIdSuccess,
   getSaleByIdFailure,
-  deleteSaleSuccess
+  deleteSaleSuccess,
+  saleStart,
+  updatesaleSuccess,
+  saleFailure,
+  updateSaleDetailSuccess,
+  deleteSaleDetailSuccess,
+  createSaleDetailSuccess
 } = salesSlice.actions;
 
 export const selectSale = (state: { sale: SalesState }) => state.sale;

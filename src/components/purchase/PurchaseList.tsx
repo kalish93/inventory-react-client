@@ -200,7 +200,7 @@ const PurchaseList = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Purchase Number</TableCell>
+              <TableCell>Purchase /Waybill Number</TableCell>
               <TableCell>Purchase Date</TableCell>
               <TableCell>Track Number</TableCell>
               <TableCell>Exchange Rate</TableCell>
