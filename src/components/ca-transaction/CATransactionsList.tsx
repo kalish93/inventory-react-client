@@ -244,7 +244,7 @@ const CATransactionsList = () => {
               <TableRow>
                 <TableCell>Transaction Date</TableCell>
                 <TableCell>Transaction Type</TableCell>
-                <TableCell>Pruchase/Invoice Num</TableCell>
+                <TableCell>Purchase/Invoice Num</TableCell>
                 <TableCell>Transaction Remark</TableCell>
                 <TableCell>Debit</TableCell>
                 <TableCell>Credit</TableCell>
@@ -274,7 +274,7 @@ const CATransactionsList = () => {
                     <TableCell>{ca.credit}</TableCell>
                     <TableCell>
                       {ca.productPurchase
-                        ? ca.productPPurchase.product.name
+                        ? ca.productPurchase.product.name
                         : null}
                     </TableCell>
                     <TableCell>
