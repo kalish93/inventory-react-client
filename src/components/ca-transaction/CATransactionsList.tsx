@@ -31,6 +31,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import CustomerPaymentForm from "./CustomerPaymentForm";
 import ExpensesPaymentForm from "./ExpensesPaymentForm";
 import TransportExpensePayment from "./TransportExpensePayment";
+import CustomTaxPayment from "./CustomTaxPayment";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -319,6 +320,11 @@ const CATransactionsList = () => {
       <TransportExpensePayment
         open={openModal[4]}
         handleClose={() => handleCloseModal(4)}
+      />
+
+      <CustomTaxPayment
+        open={openModal[5]}
+        handleClose={() => handleCloseModal(5)}
       />
 
       <JournalEntryForm
