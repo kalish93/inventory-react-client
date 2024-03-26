@@ -28,6 +28,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose, selectedPr
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const { isError, error, loading, successMessage, productCategories } = useSelector(selectProduct);
 
   const handleCloseSnackbar = () => {
@@ -75,6 +76,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose, selectedPr
       }
       setSubmitting(false);
       handleClose();
+      setIsFormSubmitted(true);
     },
   });
 
@@ -92,7 +94,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose, selectedPr
   }, [selectedProduct]);
 
   useEffect(() => {
-    if (successMessage) {
+    if (successMessage && isFormSubmitted) {
       const severity = isError ? 'error' : 'success';
       const message = isError ? (error || 'Unknown error') : successMessage;
       formik.resetForm();
@@ -100,7 +102,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose, selectedPr
       handleClose();
       showSnackbar(message, severity);
     }
-  }, [error, isError, loading, successMessage]);
+    setIsFormSubmitted(false);
+  }, [error, isError, loading, successMessage, isFormSubmitted]);
   
   const handleCancel = () => {
     handleClose();

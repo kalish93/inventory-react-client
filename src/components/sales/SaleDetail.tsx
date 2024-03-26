@@ -172,7 +172,7 @@ const SaleDetail = () => {
                 <TableCell>{item.saleQuantity}</TableCell>
                 <TableCell>{item.saleUnitPrice}</TableCell>
                 <TableCell>{item.totalSales}</TableCell>
-                <TableCell>{item.unitCostOfGoods}</TableCell>
+                <TableCell>{item.unitCostOfGoods.toFixed(2)}</TableCell>
                 <TableCell>{item.declaration.number}</TableCell>
                 <TableCell>{item.purchase.number}</TableCell>
                 {/* <TableCell>
