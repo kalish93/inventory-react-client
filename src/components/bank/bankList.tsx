@@ -167,9 +167,11 @@ const BanksList = () => {
                     <TableCell>
                       <IconButton
                         aria-label="Actions"
-                        onClick={(event) =>
-                          handleMenuOpen(event, bank.id, bank)
-                        }
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          event.preventDefault();
+                          handleMenuOpen(event, bank.id, bank);
+                        }}
                         style={{ margin: 0, padding: 0 }}
                       >
                         <MoreVertIcon />
@@ -190,10 +192,24 @@ const BanksList = () => {
                         }}
                       >
                         {hasPermission(PERMISSIONS.UpdateBank) && (
-                          <MenuItem onClick={handleUpdateBank}>Update</MenuItem>
+                          <MenuItem
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              event.preventDefault();
+                              handleUpdateBank();
+                            }}
+                          >
+                            Update
+                          </MenuItem>
                         )}
                         {hasPermission(PERMISSIONS.DeleteBank) && (
-                          <MenuItem onClick={openConfirmationModal}>
+                          <MenuItem
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              event.preventDefault();
+                              openConfirmationModal();
+                            }}
+                          >
                             Delete
                           </MenuItem>
                         )}

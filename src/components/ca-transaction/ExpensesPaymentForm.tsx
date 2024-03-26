@@ -128,7 +128,6 @@ const ExpensesPaymentForm: React.FC<ProductFormProps> = ({
         chartofAccountId: values.chartofAccountId2,
       };
 
-      console.log(formDataToSend1, formDataToSend2, formDataToSend4);
 
       Promise.all([
         dispatch(createCATransaction(formDataToSend1)),
