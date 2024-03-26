@@ -274,7 +274,7 @@ const CATransactionsList = () => {
                     <TableCell>{ca.debit}</TableCell>
                     <TableCell>{ca.credit}</TableCell>
                     <TableCell>
-                      {ca.productPurchase
+                      {ca.productPurchase && ca.productPurchase.product
                         ? ca.productPurchase.product.name
                         : null}
                     </TableCell>

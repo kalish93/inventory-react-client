@@ -156,9 +156,31 @@ const purchaseSlice = createSlice({
       state.eslCosts = action.payload;
       state.loading = false;
     },
+
+    createEslCustomCostSuccess: (state, action) => {
+      const newEslCost = action.payload;
+      state.eslCosts = {
+        items: [newEslCost, ...(state.eslCosts?.items || [])],
+        totalCount: (state.eslCosts?.totalCount || 0) + 1,
+        pageSize: state.eslCosts?.pageSize || 10,
+        currentPage: state.eslCosts?.currentPage || 1,
+        totalPages: state.eslCosts?.totalPages || 1,
+      };
+    },
     getTransitFees: (state, action) => {
       state.transitFees = action.payload;
       state.loading = false;
+    },
+
+    createTransitFeeSuccess: (state, action) => {
+      const newTransitFee = action.payload;
+      state.transitFees = {
+        items: [newTransitFee, ...(state.transitFees?.items || [])],
+        totalCount: (state.transitFees?.totalCount || 0) + 1,
+        pageSize: state.transitFees?.pageSize || 10,
+        currentPage: state.transitFees?.currentPage || 1,
+        totalPages: state.transitFees?.totalPages || 1,
+      };
     },
     getPurchaseCostsFailure: (state, action) => {
       state.loading = false;
@@ -185,6 +207,8 @@ export const {
   getTransportCosts,
   updatePurchaseSuccess,
   registerTransportCostSuccess,
+  createEslCustomCostSuccess,
+  createTransitFeeSuccess,
 } = purchaseSlice.actions;
 
 export const selectPurchase = (state: { purchase: PurchaseState }) =>
