@@ -136,7 +136,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
       };
 
       const formDataToSend2 = {
-        chartofAccountId: importTransportCost.id,
+        chartofAccountId: accountsPayable.id,
         date: values.date,
         remark: values.transactionRemark,
         credit: null,
@@ -159,7 +159,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
         payment: values.amount,
         deposit: null,
         type: "Supplier Payment",
-        chartofAccountId: importTransportCost.id,
+        chartofAccountId: accountsPayable.id,
       };
 
       console.log(formDataToSend1, formDataToSend2, formDataToSend4);

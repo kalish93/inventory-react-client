@@ -19,6 +19,8 @@ import {
   getTransitFees,
   updatePurchaseSuccess,
   registerTransportCostSuccess,
+  createEslCustomCostSuccess,
+  createTransitFeeSuccess,
 } from "./purchaseSlice";
 
 export const getPurchases =
@@ -112,7 +114,7 @@ export const createTransportCost =
   };
 
 export const getEslCosts =
-  (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
+  (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
       dispatch(getPurchaseCostsStart());
       const response = await PurchaseService.getEslCustomCosts(page, pageSize);
@@ -121,6 +123,20 @@ export const getEslCosts =
       dispatch(getPurchaseCostsFailure(error));
     }
   };
+
+export const createEslCost = (data: any) => async (dispatch: AppDispatch) => {
+  try {
+    dispatch(registerPurchaseStart());
+    const response = await PurchaseService.createEslCustomCost(data);
+    if (response.success) {
+      dispatch(createEslCustomCostSuccess(response.data));
+    } else {
+      dispatch(registerPurchaseFailure(response.error || "Unknown error"));
+    }
+  } catch (error) {
+    dispatch(registerPurchaseFailure("Unknown error"));
+  }
+};
 export const getTransitFee =
   (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
     try {
@@ -129,6 +145,21 @@ export const getTransitFee =
       dispatch(getTransitFees(response));
     } catch (error) {
       dispatch(getPurchaseCostsFailure(error));
+    }
+  };
+
+  export const createTransitFee =
+  (data: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(registerPurchaseStart());
+      const response = await PurchaseService.createTransitFee(data);
+      if (response.success) {
+        dispatch(createTransitFeeSuccess(response.data));
+      } else {
+        dispatch(registerPurchaseFailure(response.error || "Unknown error"));
+      }
+    } catch (error) {
+      dispatch(registerPurchaseFailure("Unknown error"));
     }
   };
 

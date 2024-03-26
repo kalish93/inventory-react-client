@@ -118,3 +118,17 @@ export const createSaleDetail = (data: any) => async (dispatch: AppDispatch) => 
     dispatch(saleFailure("Unknown error"));
   }
 };
+
+export const createCustomerPayment = (data: any) => async (dispatch: AppDispatch) => {
+  try {
+    dispatch(saleStart());
+    const response = await SalesService.createCustomerPayment(data);
+    if (response.success) {
+      dispatch(registerSaleSuccess(response.data));
+    } else {
+      dispatch(registerSaleFailure(response.error || "Unknown error"));
+    }
+  } catch (error) {
+    dispatch(saleFailure("Unknown error"));
+  }
+}

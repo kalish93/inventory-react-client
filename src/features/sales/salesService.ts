@@ -1,4 +1,4 @@
-import { SALES_URL, SALE_DETAIL_URL } from "../../core/api-routes";
+import { CATRANSACTIONS_URL, SALES_URL, SALE_DETAIL_URL } from "../../core/api-routes";
 import { CreateSales } from "../../models/sales";
 import { handleRequest } from "../../utils/apiService";
 
@@ -185,6 +185,30 @@ export const SalesService = {
         return { success: false, error: "Unexpected error occurred" };
       }
       },
+
+      createCustomerPayment: async (payment: any) => {
+        try{
+          const response = await handleRequest(`${CATRANSACTIONS_URL}/customer-payment`, {
+            method: "POST",
+            body: JSON.stringify(payment),
+          });
+    
+        if (!response.ok) {
+          let errorMessage = `Bad Request: ${response.statusText}`;
+    
+            const data = await response.json();
+            errorMessage = data.error || errorMessage;
+    
+          return { success: false, error: errorMessage };
+        }
+    
+        const data = await response.json();
+        return { success: true, data };
+      } catch (error) {
+        console.error("Error in create customer payment service:", error);
+        return { success: false, error: "Unexpected error occurred" };
+      }
+      }
     
 
 };

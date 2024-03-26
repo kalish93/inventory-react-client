@@ -130,7 +130,11 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
         chartofAccountId: accountReceivable.id,
       };
 
-      console.log(formDataToSend1, formDataToSend2, formDataToSend4)
+      const formDataToSend5 = {
+        date: values.date,
+        paidAmount: values.amount,
+        customerId: values.chartofAccountId2,
+      };
 
       Promise.all([
         dispatch(createCATransaction(formDataToSend1)),
