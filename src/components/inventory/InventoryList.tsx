@@ -74,7 +74,7 @@ const InventoryList = () => {
                   <TableRow key={inventory.id}>
                     <TableCell>
                       {inventory.sale
-                        ? inventory.saleDetail.product.name
+                        ? inventory.saleDetail?.product?.name
                         : inventory.productPurchase.product.name}
                     </TableCell>
                     <TableCell>

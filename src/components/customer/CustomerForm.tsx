@@ -118,6 +118,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose, selected
 
       setIsFormSubmitted(true);
       handleClose();
+      handleResetForm();
     }
   };
 
@@ -172,7 +173,28 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ open, handleClose, selected
   const handleCancel = () => {
     resetErrors();
     handleClose();
+    handleResetForm();
   };
+
+
+  const handleResetForm = () =>{
+    setFormData({
+      id: undefined,
+      firstName: '',
+      lastName: '',
+      tinNumber: '',
+      phone: '',
+      address: '',
+    });
+
+    setErrors({
+      firstName: '',
+      lastName: '',
+      tinNumber: '',
+      phone: '',
+      address: '',
+    });
+  } 
 
   const isSubmitDisabled = Object.entries(formData).some(([key, value]) => {
     if (key === 'id') {

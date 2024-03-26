@@ -231,7 +231,7 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
 
         <Autocomplete
           options={customers}
-          getOptionLabel={(option) => option.firstName}
+          getOptionLabel={(option) => option.firstName + " " + option.lastName}
           value={
             customers.find(
               (d: { id: string }) => d.id === formData.customerId

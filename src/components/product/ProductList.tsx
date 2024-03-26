@@ -84,7 +84,6 @@ const ProductList = () => {
 
   const handleUpdateProduct = () => {
     handleOpenModal();
-    handleMenuClose();
   };
 
   useEffect(() => {
@@ -120,6 +119,7 @@ const ProductList = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
     setSelectedProductId(null);
+    setSelectedProduct(null);
   };
 
   const handleCloseSnackbar = () => {
@@ -151,6 +151,7 @@ const ProductList = () => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+    handleMenuClose();
     setSelectedProductId(null);
     setSelectedProduct(null)
   };
