@@ -6,7 +6,7 @@ interface ReportState {
   isError: boolean;
   successMessage: any;
   customerAgingReport: string | null;
-
+  bankTransactionReport: string | null;
 }
 
 const initialState: ReportState = {
@@ -14,7 +14,8 @@ const initialState: ReportState = {
   error: null,
   isError: false,
   successMessage: null,
-  customerAgingReport: null
+  customerAgingReport: null,
+  bankTransactionReport: null,
 };
 
 const reportSlice = createSlice({
@@ -22,13 +23,17 @@ const reportSlice = createSlice({
   initialState,
   reducers: {
    
-
     generateReportStart: (state) => {
         state.loading = true;
         state.error = null;
       },
       generateCustomerAgingReportSuccess: (state, action) => {
         state.customerAgingReport = action.payload;
+        state.loading = false;
+      },
+
+      generateBankTransactionReportSuccess: (state, action) => {
+        state.bankTransactionReport = action.payload;
         state.loading = false;
       },
       generateReportFailure: (state, action) => {
@@ -41,7 +46,8 @@ const reportSlice = createSlice({
 export const {
     generateCustomerAgingReportSuccess,
     generateReportFailure,
-    generateReportStart
+    generateReportStart,
+    generateBankTransactionReportSuccess
   } = reportSlice.actions;
   
 export const selectReport = (state: { report: ReportState }) => state.report; 

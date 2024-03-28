@@ -5,7 +5,7 @@ import { selectReport } from '../../features/report/reportSlice';
 import { generateCustomerAgingReport } from '../../features/report/reportActions';
 import { Card, Button, TextField } from '@mui/material';
 
-function ReportGenerator() {
+function CustomerAgingReportGenerator() {
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error, customerAgingReport } = useSelector(selectReport);
   const [endDate, setEndDate] = useState('');
@@ -64,4 +64,4 @@ function ReportGenerator() {
   );
 }
 
-export default ReportGenerator;
+export default CustomerAgingReportGenerator;
