@@ -16,6 +16,7 @@ import transactionSlice from '../features/ca-transaction/transactionSlice';
 import dashboardReducer from '../features/dashboard/dashboardSlice';
 import permissionReducer from '../features/permission/permissionSlice';
 import bankReducer from '../features/bank/bankSlice';
+import reportReducer from '../features/report/reportSlice';
 
 const store = configureStore({
   reducer: {
@@ -36,6 +37,7 @@ const store = configureStore({
     dashboard: dashboardReducer,
     permission: permissionReducer,
     bank: bankReducer,
+    report: reportReducer,
   },
 });
 
