@@ -20,39 +20,29 @@ import {
   createBankTransaction,
   getBanks,
 } from "../../features/bank/bankActions";
-import {
-  getPurchases,
-  getTransportCost,
-  createTransportCost,
-  getEslCosts,
-} from "../../features/purchase/purchaseActions";
+
 import { getSuppliers } from "../../features/supplier/supplierActions";
 import {
-  createDeclaration,
-  getDeclarations,
-} from "../../features/declaration/declarationAction";
+  getEslCosts,
+  getPurchases,
+} from "../../features/purchase/purchaseActions";
+import { selectPurchase } from "../../features/purchase/purchaseSlice";
 
 interface ProductFormProps {
   open: boolean;
   handleClose: () => void;
 }
 
-const CustomTaxPayment: React.FC<ProductFormProps> = ({
-  open,
-  handleClose,
-}) => {
+const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
   const dispatch = useDispatch<AppDispatch>();
   const cashOfAccounts = useSelector(
     (state: any) => state.cashOfAccount.cashOfAccounts.items
   );
-  const declarations = useSelector(
-    (state: any) => state.declaration.declarations.items
-  );
 
-  const displayedDeclarations = declarations.filter(
-    (declaration: any) => declaration.paidAmount === null
-  );
+  const transactionState = useSelector(selectTransactions);
+  const purchaseState = useSelector(selectPurchase);
 
+  const { items: eslCosts = [] } = purchaseState.eslCosts;
   const banks = useSelector((state: any) => state.bank.banks.items);
   const suppliers = useSelector((state: any) => state.supplier.suppliers.items);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -60,8 +50,7 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const { isError, error, loading } = useSelector(selectTransactions);
-  const [selectedDeclaration, setSelectedDeclaration] = useState<any>(null);
-  const [amountBefore, setAmountBefore] = useState(0);
+  const [paidforEsls, setPaidforEsls] = useState<any>([]);
   const showSnackbar = (message: string, severity: "success" | "error") => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
@@ -73,25 +62,31 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
   }, [dispatch]);
 
   useEffect(() => {
+    dispatch(getEslCosts());
+  }, [dispatch]);
+
+  useEffect(() => {
     dispatch(getSuppliers());
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(getDeclarations());
+    dispatch(getPurchases());
   }, [dispatch]);
 
   useEffect(() => {
     dispatch(getBanks());
   }, [dispatch]);
 
-
-
   const accountsPayable = cashOfAccounts.find(
     (ca: any) => ca.name === "Accounts Payable (A/P) - ETB"
   );
 
-  const customIncomeTaxSupplier = suppliers.find(
-    (supplier: any) => supplier.name === "CUSTOM INCOME TAX"
+  const eslSupplier = suppliers.find(
+    (supplier: any) => supplier.name === "ESL Warehouse"
+  );
+
+  const unpaidESL = eslCosts.filter(
+    (eslCost) => eslCost.paymentStatus === "Incomplete"
   );
 
   useEffect(() => {
@@ -111,7 +106,6 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
 
   const validationSchema = yup.object({
     chartofAccountId1: yup.string().required("Bank name is required"),
-    chartofAccountId3: yup.string().required("Declaration number is required"),
     date: yup.string().required("Transaction date is required"),
     amount: yup.number().required("Transaction amount is required"),
   });
@@ -119,7 +113,6 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
   const formik = useFormik({
     initialValues: {
       chartofAccountId1: "",
-      chartofAccountId3: "",
       date: "",
       amount: null,
       transactionRemark: "",
@@ -133,7 +126,7 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
         remark: values.transactionRemark,
         credit: values.amount,
         debit: null,
-        supplierId: customIncomeTaxSupplier.id,
+        supplierId: eslSupplier.id,
         type: "Supplier Payment",
       };
 
@@ -143,19 +136,18 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
         remark: values.transactionRemark,
         credit: null,
         debit: values.amount,
-        supplierId: customIncomeTaxSupplier.id,
+        supplierId: eslSupplier.id,
         type: "Supplier Payment",
       };
 
       const formDataToSend3 = {
-        number: selectedDeclaration.number,
-        paidAmount: values.amount,
+        amount: values.amount,
         date: values.date,
-        declarationProducts: [],
+        esls: paidforEsls,
       };
       const formDataToSend4 = {
         bankId: values.chartofAccountId1,
-        payee: customIncomeTaxSupplier.id,
+        payee: eslSupplier.id,
         payment: values.amount,
         deposit: null,
         type: "Supplier Payment",
@@ -167,7 +159,6 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
       Promise.all([
         dispatch(createCATransaction(formDataToSend1)),
         dispatch(createCATransaction(formDataToSend2)),
-        dispatch(createDeclaration(formDataToSend3)),
         dispatch(createBankTransaction(formDataToSend4)),
       ]);
       setIsFormSubmitted(true);
@@ -177,40 +168,29 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
   });
 
   useEffect(() => {
-    const currentDeclaration = declarations.find(
-      (declaration: any) => declaration.id === formik.values.chartofAccountId3
-    );
-    setSelectedDeclaration(currentDeclaration);
+    console.log("esl fees", eslCosts);
+    const updatedPaidforEsls = [];
 
-    const normalDeclaration = declarations.filter(
-      (declaration: any) =>
-        declaration.id === currentDeclaration?.id &&
-        declaration.paidAmount === null
-    );
+    let remainingAmount = formik.values.amount as unknown as number;
+    let i = 0;
+    while (remainingAmount > 0 && i < unpaidESL.length) {
+      const esl = unpaidESL[i];
+      remainingAmount -= esl.cost;
 
-    const paidDeclaration = declarations.filter(
-      (declaration: any) =>
-        declaration.id === currentDeclaration?.id &&
-        declaration.paidAmount !== null
-    );
+      updatedPaidforEsls.push({
+        ...esl,
+        paidAmount:
+          remainingAmount >= 0 ? esl.cost : esl.cost + remainingAmount,
+        paymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
+      });
+      console.log(remainingAmount);
+      i++;
 
-    const totalAmount = normalDeclaration.length !== 0
-      ? normalDeclaration[0].declarationProducts?.reduce(
-          (acc: number, declarationProduct: any) =>
-            acc + declarationProduct.totalIncomeTax,
-          0
-        )
-      : 0;
+      if (remainingAmount <= 0) break; // Exit the loop if remaining amount is <= 0
+    }
 
-    const totalPaid = paidDeclaration.length !== 0
-      ? paidDeclaration[0].reduce(
-          (acc: number, declaration: any) => acc + declaration.paidAmount,
-          0
-        )
-      : 0;
-
-    setAmountBefore(totalAmount - totalPaid);
-  }, [declarations, formik.values.chartofAccountId3]);
+    setPaidforEsls(updatedPaidforEsls);
+  }, [formik.values.amount, dispatch]);
 
   const handleCancel = () => {
     handleClose();
@@ -234,7 +214,7 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 1000,
+            width: 900,
             maxHeight: "80vh",
             overflowY: "auto",
             bgcolor: "background.paper",
@@ -244,7 +224,7 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
         >
           <form onSubmit={formik.handleSubmit}>
             <Typography variant="h6" component="div">
-              Custome Tax Payment Form
+              ESL Warehouse Fees Payment
             </Typography>
             <div
               style={{
@@ -258,7 +238,7 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
                   display: "flex",
                   flexDirection: "column",
                   gap: "1rem",
-                  minWidth: "47%",
+                  minWidth: "33%",
                 }}
               >
                 <Autocomplete
@@ -303,48 +283,20 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
                   variant="outlined"
                   fullWidth
                   disabled
-                  value={customIncomeTaxSupplier?.name}
+                  value={eslSupplier?.name}
                 />
-
-                <Autocomplete
-                  options={displayedDeclarations}
-                  getOptionLabel={(option) => option.number}
-                  value={
-                    declarations.find(
-                      (d: { id: string }) =>
-                        d.id === formik.values.chartofAccountId3
-                    ) || null
-                  }
-                  onChange={(event, newValue) => {
-                    formik.setFieldValue(
-                      "chartofAccountId3",
-                      newValue ? newValue.id : ""
-                    );
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Decalration Number"
-                      variant="outlined"
-                      fullWidth
-                      required
-                      value={formik.values.chartofAccountId3}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.chartofAccountId3 &&
-                        Boolean(formik.errors.chartofAccountId3)
-                      }
-                      onBlur={formik.handleBlur}
-                      helperText={
-                        formik.touched.chartofAccountId3 &&
-                        (formik.errors.chartofAccountId3 as React.ReactNode)
-                      }
-                    />
-                  )}
+                <TextField
+                  name="transactionRemark"
+                  label="Transaction Remark"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  onChange={formik.handleChange}
+                  value={formik.values.transactionRemark}
                 />
               </div>
 
-              <div style={{ maxWidth: "47%" }}>
+              <div style={{ maxWidth: "33%" }}>
                 <TextField
                   name="date"
                   label="Transaction Date"
@@ -379,22 +331,20 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
                   }
                   required
                 />
-                <TextField
-                  name="transactionRemark"
-                  label="Transaction Remark"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  onChange={formik.handleChange}
-                  value={formik.values.transactionRemark}
-                />
-                <Typography variant="subtitle1" component="div">
-                  Balance Before Payment: {amountBefore}
-                </Typography>
-                <Typography variant="subtitle1" component="div">
-                  Balance After Payment:{" "}
-                  {amountBefore - Number(formik.values.amount)}
-                </Typography>
+              </div>
+
+              <div>
+                {paidforEsls.length > 0 &&
+                  paidforEsls.map((esl: any) => (
+                    <div>
+                      <Typography variant="subtitle1" component="div">
+                        Purchase Num:{esl.purchase.number}
+                      </Typography>
+                      <Typography variant="subtitle1" component="div">
+                        Track Num:{esl.purchase.truckNumber}
+                      </Typography>
+                    </div>
+                  ))}
               </div>
             </div>
 
@@ -435,4 +385,4 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
   );
 };
 
-export default CustomTaxPayment;
+export default ESLPayment;

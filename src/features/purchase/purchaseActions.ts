@@ -138,7 +138,7 @@ export const createEslCost = (data: any) => async (dispatch: AppDispatch) => {
   }
 };
 export const getTransitFee =
-  (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
+  (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
       dispatch(getPurchaseCostsStart());
       const response = await PurchaseService.getTransitFees(page, pageSize);
