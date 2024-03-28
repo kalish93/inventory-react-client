@@ -3,7 +3,7 @@ import Expenses from "./Expenses";
 import BankPositions from "./BankPostions";
 import { hasPermission } from "../../utils/checkPermission";
 import { PERMISSIONS } from "../../core/permissions";
-import ReportGenerator from "../report/customerAgingReport";
+import Reports from "../report/Reports";
 
 
 const DashboardHome = () =>{
@@ -11,7 +11,7 @@ const DashboardHome = () =>{
         <div style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'20px'}}>
             {hasPermission(PERMISSIONS.GetAllExpenses) && <Expenses/>}
             {/* {hasPermission(PERMISSIONS.GetAllBanks) && <BankPositions/>} */}
-            <ReportGenerator/>
+            <Reports/>
         </div>
     )
 }
