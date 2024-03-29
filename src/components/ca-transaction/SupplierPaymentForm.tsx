@@ -207,52 +207,24 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
     while (remainingAmount > 0 && i < unpaidPurchases.length) {
       const purchase = unpaidPurchases[i];
       console.log("purchase", purchase);
-      let updatedProductPurchases = [];
       let totalAmount = 0;
-      let incompletePayment = false;
       for (let productPurchase of purchase.products) {
-        remainingAmount -=
+        totalAmount +=
           productPurchase.purchaseUnitPriceUSD *
           productPurchase.purchaseQuantity;
-
-        const paidUSD =
-          remainingAmount >= 0
-            ? productPurchase.purchaseUnitPriceUSD *
-              productPurchase.purchaseQuantity
-            : productPurchase.purchaseUnitPriceUSD *
-                productPurchase.purchaseQuantity +
-              remainingAmount;
-        totalAmount += paidUSD;
-        const paymentStat =
-          remainingAmount >= 0 ? "Complete" : "Partially Complete";
-        updatedProductPurchases.push({
-          ...productPurchase,
-          paidAmountUSD: paidUSD,
-          paidAmountETB: paidUSD * formik.values.exchangeRate,
-          paymentStatus: paymentStat,
-        });
-        if (paymentStat === "Partially Complete") {
-          incompletePayment = true;
-        }
-        console.log(
-          "totalAmount",
-          totalAmount,
-          "remaing amount",
-          remainingAmount,
-          "updatedProductPurchase",
-          updatedProductPurchases
-        );
-
-        if (remainingAmount <= 0) {
-          break;
-        }
       }
+      //
+      remainingAmount -= totalAmount + purchase.paidAmountUSD;
+      console.log(remainingAmount, totalAmount, purchase.paidAmountUSD);
       updatedPaidforPurchases.push({
         ...purchase,
-        paidAmountUSD: totalAmount,
-        paidAmountETB: totalAmount * formik.values.exchangeRate,
-        paymentStatus: !incompletePayment ? "Complete" : "Partially Complete",
-        products: updatedProductPurchases,
+        paidAmountUSD:
+          remainingAmount >= 0 ? totalAmount : totalAmount + remainingAmount,
+        paidAmountETB:
+          remainingAmount >= 0
+            ? totalAmount * formik.values.exchangeRate
+            : (totalAmount + remainingAmount) * formik.values.exchangeRate,
+        PaymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
       });
       i++;
 
