@@ -67,7 +67,7 @@ const Esl = () => {
                 <TableCell>{item.cost}</TableCell>
                 <TableCell>{item.purchase.truckNumber}</TableCell>
                 <TableCell>{item?.productPurchase?.declaration?.number}</TableCell>
-                <TableCell>{item.unitEslCost}</TableCell>
+                <TableCell>{item.unitEslCost.toFixed(2)}</TableCell>
                 <TableCell>{item.purchase.number}</TableCell>
                 <TableCell>{item.type}</TableCell>
                 <TableCell>{item.paidAmount}</TableCell>
