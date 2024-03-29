@@ -43,6 +43,9 @@ const PurchaseDetail = () => {
       <Typography variant="subtitle1" gutterBottom>
         Truck Number: {purchase.truckNumber}
       </Typography>
+      <Typography variant="subtitle1" gutterBottom>
+        Supplier: {purchase.supplier.name}
+      </Typography>
 
       <TableContainer component={Paper}>
         <Table>

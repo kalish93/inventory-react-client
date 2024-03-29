@@ -41,7 +41,7 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
   );
   const banks = useSelector((state: any) => state.bank.banks.items);
   const customers = useSelector((state: any) => state.customer.customers.items);
-  const sales = useSelector((state: any) => state.sales.sales.items);
+  const sales = useSelector((state: any) => state.sale.sales.items);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);

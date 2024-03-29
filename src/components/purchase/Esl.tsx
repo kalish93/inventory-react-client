@@ -53,6 +53,7 @@ const Esl = () => {
               <TableCell>Esl Custom Cost</TableCell>
               <TableCell>Truck Number</TableCell>
               <TableCell>Declaration Number</TableCell>
+              <TableCell>Unit ESL Cost</TableCell>
               <TableCell>Purchase Number</TableCell>
               <TableCell>Type</TableCell>
               <TableCell>Amount Paid</TableCell>
@@ -66,6 +67,7 @@ const Esl = () => {
                 <TableCell>{item.cost}</TableCell>
                 <TableCell>{item.purchase.truckNumber}</TableCell>
                 <TableCell>{item?.productPurchase?.declaration?.number}</TableCell>
+                <TableCell>{item.unitEslCost}</TableCell>
                 <TableCell>{item.purchase.number}</TableCell>
                 <TableCell>{item.type}</TableCell>
                 <TableCell>{item.paidAmount}</TableCell>

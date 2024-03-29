@@ -58,6 +58,7 @@ const Transit = () => {
               <TableCell>Tranist Fee</TableCell>
               <TableCell>Truck Number</TableCell>
               <TableCell>Declaration Number</TableCell>
+              <TableCell>Unit Transit Cost</TableCell>
               <TableCell>Purchase Number</TableCell>
               <TableCell>Type</TableCell>
               <TableCell>Amount Paid</TableCell>
@@ -72,6 +73,7 @@ const Transit = () => {
               <TableCell>{item.purchase.truckNumber}</TableCell>
               <TableCell>{item?.productPurchase?.declaration?.number}</TableCell>
               <TableCell>{item.purchase.number}</TableCell>
+              <TableCell>{item.unitTransitCost}</TableCell>
               <TableCell>{item.type}</TableCell>
               <TableCell>{item.paidAmount}</TableCell>
               <TableCell>{item.paymentStatus}</TableCell>

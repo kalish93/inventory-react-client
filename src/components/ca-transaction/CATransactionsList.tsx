@@ -257,6 +257,7 @@ const CATransactionsList = () => {
                 <TableCell>CA Full name</TableCell>
                 <TableCell>Exchange Rate</TableCell>
                 <TableCell>USD Amount</TableCell>
+                <TableCell>Account Receivable/Payable details</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -297,6 +298,7 @@ const CATransactionsList = () => {
                     </TableCell>
                     <TableCell>{ca.exchangeRate}</TableCell>
                     <TableCell>{ca.USDAmount}</TableCell>
+                    <TableCell>{ca.accountPayableRecievableDetail}</TableCell>
                   </TableRow>
                 ))}
             </TableBody>

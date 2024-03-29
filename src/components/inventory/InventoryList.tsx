@@ -78,7 +78,7 @@ const InventoryList = () => {
                         : inventory.productPurchase.product.name}
                     </TableCell>
                     <TableCell>
-                      {inventory.purchase ? inventory.purchase.number : ""}
+                      {inventory?.purchase?.number}
                     </TableCell>
                     <TableCell>
                       {inventory.purchase
@@ -86,14 +86,10 @@ const InventoryList = () => {
                         : ""}
                     </TableCell>
                     <TableCell>
-                      {inventory.purchase
-                        ? inventory.productPurchase.purchaseQuantity
-                        : ""}
+                        {inventory?.productPurchase?.purchaseQuantity}
                     </TableCell>
                     <TableCell>
-                      {inventory.purchase
-                        ? inventory.productPurchase.purchaseUnitPrice
-                        : ""}
+                      {inventory?.productPurchase?.purchaseUnitPriceETB }
                     </TableCell>
                     <TableCell>
                       {inventory.sale ? inventory.sale.invoiceNumber : ""}{" "}
