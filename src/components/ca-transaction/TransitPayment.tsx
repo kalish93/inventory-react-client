@@ -93,7 +93,8 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
   );
 
   const unpaidTransits = transitFees.filter(
-    (transit) => transit.paymentStatus === "Incomplete"
+    (transit) => transit.paymentStatus === "Incomplete" ||
+        transit.paymentStatus === "Partially Complete"
   );
 
   useEffect(() => {
@@ -184,7 +185,7 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
     let i = 0;
     while (remainingAmount > 0 && i < unpaidTransits.length) {
       const transit = unpaidTransits[i];
-      remainingAmount -= transit.cost;
+      remainingAmount -= transit.cost - transit.paidAmount;
 
       updatedPaidforTransits.push({
         ...transit,

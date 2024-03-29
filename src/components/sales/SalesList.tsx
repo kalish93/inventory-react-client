@@ -148,6 +148,8 @@ const SalesList = () => {
               <TableCell>Invoice Number</TableCell>
               <TableCell>Invoice Date</TableCell>
               <TableCell>Customer Name</TableCell>
+              <TableCell>Paid Amount</TableCell>
+              <TableCell>Payment Status</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -163,7 +165,9 @@ const SalesList = () => {
                 <TableCell>
                   {dayjs(sale.invoiceDate).format("YYYY-MM-DD")}
                 </TableCell>
-                <TableCell>{sale.customer.firstName + " " + sale.customer.lastName}</TableCell>
+                <TableCell>{sale.customer?.firstName + " " + sale.customer?.lastName}</TableCell>
+                <TableCell>{sale.paidAmount}</TableCell>
+                <TableCell>{sale.paymentStatus}</TableCell>
                 <TableCell>
                   <IconButton
                     aria-label="Actions"

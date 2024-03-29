@@ -93,7 +93,8 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
   );
 
   const unpaidTransports = transports.filter(
-    (transport: any) => transport.paymentStatus === "Incomplete"
+    (transport: any) => transport.paymentStatus === "Incomplete" ||
+      transport.paymentStatus === "Partially Complete"
   );
 
   const paidTransports = transports.filter(
@@ -215,7 +216,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
     console.log(currentUnpaidTransports)
     while (remainingAmount > 0 && i < currentUnpaidTransports.length) {
       const transport = currentUnpaidTransports[i];
-      remainingAmount -= transport.cost;
+      remainingAmount -= transport.cost - transport.paidAmount;
 
       updatedPaidforTransports.push({
         ...transport,

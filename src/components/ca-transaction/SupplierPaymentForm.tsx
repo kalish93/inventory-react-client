@@ -214,7 +214,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
           productPurchase.purchaseQuantity;
       }
       //
-      remainingAmount -= totalAmount + purchase.paidAmountUSD;
+      remainingAmount -= totalAmount - purchase.paidAmountUSD;
       console.log(remainingAmount, totalAmount, purchase.paidAmountUSD);
       updatedPaidforPurchases.push({
         ...purchase,

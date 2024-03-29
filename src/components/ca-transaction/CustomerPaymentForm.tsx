@@ -162,24 +162,29 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
 
   useEffect(() => {
     const updatedPaidforSales = [];
-    console.log(unpaidSales);
+    const customerUnpaidSales = unpaidSales.filter(
+      (sale: any) => sale.customer.id === formik.values.chartofAccountId2
+    );
+    console.log(unpaidSales, customerUnpaidSales);
     let remainingAmount = formik.values.amount as unknown as number;
     let i = 0;
-    while (remainingAmount > 0 && i < unpaidSales.length) {
+    while (remainingAmount > 0 && i < customerUnpaidSales.length) {
       const sale = unpaidSales[i];
       console.log("sale", sale);
       let totalAmount = 0;
-      for (let productsale of sale.products) {
+      for (let productsale of sale.sales) {
         totalAmount += productsale.totalSales;
       }
       //
-      remainingAmount -= totalAmount + sale.paidAmount;
-      console.log(remainingAmount, totalAmount, sale.paidAmountUSD);
+      console.log(remainingAmount, totalAmount, sale.paidAmount);
+
+      remainingAmount -= totalAmount - sale.paidAmount;
+      console.log(remainingAmount)
       updatedPaidforSales.push({
         ...sale,
         paidAmount:
           remainingAmount >= 0 ? totalAmount : totalAmount + remainingAmount,
-        PaymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
+        paymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
       });
       i++;
 
@@ -188,7 +193,7 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
 
     setPaidforSales(updatedPaidforSales);
     console.log("paidforSales", paidforSales);
-  }, [formik.values.amount, dispatch]);
+  }, [formik.values.amount, formik.values.chartofAccountId2, dispatch]);
 
   const handleCancel = () => {
     handleClose();
