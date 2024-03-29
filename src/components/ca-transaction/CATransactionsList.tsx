@@ -32,6 +32,8 @@ import CustomerPaymentForm from "./CustomerPaymentForm";
 import ExpensesPaymentForm from "./ExpensesPaymentForm";
 import TransportExpensePayment from "./TransportExpensePayment";
 import CustomTaxPayment from "./CustomTaxPayment";
+import TransitPayment from "./TransitPayment";
+import ESLPayment from "./ESLPayment";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -326,6 +328,13 @@ const CATransactionsList = () => {
         open={openModal[5]}
         handleClose={() => handleCloseModal(5)}
       />
+
+      <TransitPayment
+        open={openModal[6]}
+        handleClose={() => handleCloseModal(6)}
+      />
+
+      <ESLPayment open={openModal[7]} handleClose={() => handleCloseModal(7)} />
 
       <JournalEntryForm
         open={openModal[8]}

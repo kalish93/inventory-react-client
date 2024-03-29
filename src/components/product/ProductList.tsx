@@ -91,7 +91,7 @@ const ProductList = () => {
       if (error) {
         showSnackbar(error, "error");
       } else {
-        showSnackbar("Category deleted successfully", "success");
+        showSnackbar("Product deleted successfully", "success");
       }
       setDeleteSubmitted(false);
     }

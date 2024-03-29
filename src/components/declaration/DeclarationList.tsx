@@ -157,6 +157,7 @@ const DeclarationList = () => {
             <TableRow>
               <TableCell>Declaration Number</TableCell>
               <TableCell>Declaration Date</TableCell>
+              <TableCell>Paid Amount</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -165,6 +166,7 @@ const DeclarationList = () => {
               <TableRow key={declaration.id} component={Link} to={`/declarations/${declaration.id}`} style={{ textDecoration: 'none' }}>
                 <TableCell>{declaration.number }</TableCell>
                 <TableCell>{dayjs(declaration.date).format("YYYY-MM-DD")}</TableCell>
+                <TableCell>{declaration.paidAmount}</TableCell>
                 <TableCell>
                 <IconButton
                     aria-label="Actions"

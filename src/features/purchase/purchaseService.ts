@@ -212,6 +212,32 @@ export const PurchaseService = {
       throw error;
     }
   },
+
+  createESLPayment: async (eslPaymentData: any) => {
+    try {
+      const response = await handleRequest(
+        `${CATRANSACTIONS_URL}/esl-payment`,
+        {
+          method: "POST",
+          body: JSON.stringify(eslPaymentData),
+        }
+      );
+
+      if (!response.ok) {
+        let errorMessage = `Bad Request: ${response.statusText}`;
+        const data = await response.json();
+        errorMessage = data.error || errorMessage;
+        return { success: false, error: errorMessage };
+      }
+
+      const data = await response.json();
+      return { success: true, data };
+    } catch (error) {
+      console.error("Error in createESLPayment service:", error);
+      return { success: false, error: "Unexpected error occurred" };
+    }
+  },
+
   getTransitFees: async (page = 1, pageSize = 10) => {
     try {
       const response = await handleRequest(

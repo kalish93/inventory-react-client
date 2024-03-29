@@ -7,6 +7,8 @@ import {
   createTransactionFailure,
   createTransactionStart,
   createTransactionSuccess,
+  createTransitPaymentSuccess,
+  getTransitPaymentsSuccess,
 } from "./transactionSlice";
 
 export const getCATransactions =
@@ -30,6 +32,21 @@ export const createCATransaction =
       const response = await CATransactionService.registerCATransactions(data);
       if (response.success) {
         dispatch(createTransactionSuccess(response.data));
+      } else {
+        dispatch(createTransactionFailure(response.error || "Unknown error"));
+      }
+    } catch (error) {
+      dispatch(createTransactionFailure("Unknown error"));
+    }
+  };
+
+export const createTransitPayment =
+  (data: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(createTransactionStart());
+      const response = await CATransactionService.createTransitPayments(data);
+      if (response.success) {
+        dispatch(createTransitPaymentSuccess(response.data));
       } else {
         dispatch(createTransactionFailure(response.error || "Unknown error"));
       }

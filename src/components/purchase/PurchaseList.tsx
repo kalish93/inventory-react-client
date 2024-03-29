@@ -205,6 +205,9 @@ const PurchaseList = () => {
               <TableCell>Track Number</TableCell>
               <TableCell>Exchange Rate</TableCell>
               <TableCell>Supplier Name</TableCell>
+              <TableCell>Paid Amount ETB</TableCell>
+              <TableCell>Paid Amount USD</TableCell>
+              <TableCell>Payment Status</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -222,7 +225,10 @@ const PurchaseList = () => {
                 </TableCell>
                 <TableCell>{purchase.truckNumber}</TableCell>
                 <TableCell>{purchase.exchangeRate}</TableCell>
-                <TableCell>{purchase.supplier.name}</TableCell>
+                <TableCell>{purchase.supplier?.name}</TableCell>
+                <TableCell>{purchase.paidAmountETB}</TableCell>
+                <TableCell>{purchase.paidAmountUSD}</TableCell>
+                <TableCell>{purchase.paymentStatus}</TableCell>
                 <TableCell>
                   <IconButton
                     aria-label="Actions"

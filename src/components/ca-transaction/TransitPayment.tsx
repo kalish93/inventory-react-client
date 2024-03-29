@@ -12,47 +12,52 @@ import {
 } from "@mui/material";
 import { AppDispatch } from "../../app/store";
 import { selectTransactions } from "../../features/ca-transaction/transactionSlice";
-import { createCATransaction } from "../../features/ca-transaction/transactionActions";
 import {
-  createSupplierPayment,
-  getPurchases,
-} from "../../features/purchase/purchaseActions";
+  createCATransaction,
+  createTransitPayment,
+} from "../../features/ca-transaction/transactionActions";
 import { getCashOfAccounts } from "../../features/cash-of-account/cashOfAccountActions";
-import { getSuppliers } from "../../features/supplier/supplierActions";
-import { getCustomers } from "../../features/customer/customerActions";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import {
-  createBank,
   createBankTransaction,
   getBanks,
-  updateBank,
 } from "../../features/bank/bankActions";
-import { use } from "echarts";
+
+import { getSuppliers } from "../../features/supplier/supplierActions";
+import {
+  createDeclaration,
+  getDeclarations,
+} from "../../features/declaration/declarationAction";
+import {
+  getPurchases,
+  getTransitFee,
+} from "../../features/purchase/purchaseActions";
+import { selectPurchase } from "../../features/purchase/purchaseSlice";
 
 interface ProductFormProps {
   open: boolean;
   handleClose: () => void;
 }
 
-const SupplierPaymentForm: React.FC<ProductFormProps> = ({
-  open,
-  handleClose,
-}) => {
+const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
   const dispatch = useDispatch<AppDispatch>();
   const cashOfAccounts = useSelector(
     (state: any) => state.cashOfAccount.cashOfAccounts.items
   );
+
+  const transactionState = useSelector(selectTransactions);
+  const purchaseState = useSelector(selectPurchase);
+
+  const { items: transitFees = [] } = purchaseState.transitFees;
   const banks = useSelector((state: any) => state.bank.banks.items);
-  const purchases = useSelector((state: any) => state.purchase.purchases.items);
   const suppliers = useSelector((state: any) => state.supplier.suppliers.items);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const { isError, error, loading } = useSelector(selectTransactions);
-  const [paidforPurchases, setPaidforPurchases] = useState<any>([]);
-
+  const [paidforTransits, setPaidforTransits] = useState<any>([]);
   const showSnackbar = (message: string, severity: "success" | "error") => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
@@ -61,6 +66,10 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
 
   useEffect(() => {
     dispatch(getCashOfAccounts());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getTransitFee());
   }, [dispatch]);
 
   useEffect(() => {
@@ -75,26 +84,16 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
     dispatch(getBanks());
   }, [dispatch]);
 
-  const foringnCurrencySupplier = suppliers.filter(
-    (supplier: any) => supplier.currency === "USD"
-  );
-
-  const accountsPayableUSD = cashOfAccounts.find(
-    (ca: any) => ca.name === "Accounts Payable (A/P) - USD"
-  );
-
   const accountsPayable = cashOfAccounts.find(
     (ca: any) => ca.name === "Accounts Payable (A/P) - ETB"
   );
 
-  const osmaSupplier = suppliers.find(
-    (supplier: any) => supplier.name === "OSMA GROUP FZE"
+  const transitSupplier = suppliers.find(
+    (supplier: any) => supplier.name === "Transit Fees"
   );
 
-  const unpaidPurchases = purchases.filter(
-    (purchase: any) =>
-      purchase.paymentStatus === "Incomplete" ||
-      purchase.paymentStatus === "Partially Complete"
+  const unpaidTransits = transitFees.filter(
+    (transit) => transit.paymentStatus === "Incomplete"
   );
 
   useEffect(() => {
@@ -121,13 +120,10 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
   const formik = useFormik({
     initialValues: {
       chartofAccountId1: "",
-      chartofAccountId2: "",
       date: "",
       amount: null,
       transactionRemark: "",
-      exchangeRate: 0,
       type: "",
-      purchaseId: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -135,57 +131,42 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
         bankId: values.chartofAccountId1,
         date: values.date,
         remark: values.transactionRemark,
-        credit: null,
-        debit: values.exchangeRate
-          ? values.amount! * values.exchangeRate
-          : values.amount,
-        supplierId: values.chartofAccountId2,
-        purchaseId: values.purchaseId,
+        credit: values.amount,
+        debit: null,
+        supplierId: transitSupplier.id,
         type: "Supplier Payment",
       };
 
       const formDataToSend2 = {
-        chartofAccountId: values.exchangeRate
-          ? accountsPayableUSD.id
-          : accountsPayable.id,
+        chartofAccountId: accountsPayable.id,
         date: values.date,
         remark: values.transactionRemark,
-        exchangeRate: values.exchangeRate,
-        credit: values.exchangeRate
-          ? values.amount! * values.exchangeRate
-          : values.amount,
-        debit: null,
-        supplierId: values.chartofAccountId2,
+        credit: null,
+        debit: values.amount,
+        supplierId: transitSupplier.id,
         type: "Supplier Payment",
-        purchaseId: values.purchaseId,
-        USDAmount: values.amount,
       };
 
       const formDataToSend3 = {
+        amount: values.amount,
         date: values.date,
-        purchases: paidforPurchases,
+        transits: paidforTransits,
       };
-
       const formDataToSend4 = {
         bankId: values.chartofAccountId1,
-        payee: values.chartofAccountId2,
-        foreignCurrency: values.exchangeRate ? -values.amount! : null,
-        payment: values.exchangeRate
-          ? values.amount! * values.exchangeRate
-          : values.amount,
+        payee: transitSupplier.id,
+        payment: values.amount,
         deposit: null,
         type: "Supplier Payment",
-        exchangeRate: values.exchangeRate,
-        chartofAccountId: values.exchangeRate
-          ? accountsPayableUSD.id
-          : accountsPayable.id,
+        chartofAccountId: accountsPayable.id,
       };
 
-      console.log("formDataToSend3", formDataToSend3);
+      console.log(formDataToSend3);
+
       Promise.all([
         dispatch(createCATransaction(formDataToSend1)),
         dispatch(createCATransaction(formDataToSend2)),
-        dispatch(createSupplierPayment(formDataToSend3)),
+        dispatch(createTransitPayment(formDataToSend3)),
         dispatch(createBankTransaction(formDataToSend4)),
       ]);
       setIsFormSubmitted(true);
@@ -194,46 +175,37 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
     },
   });
 
-  const handleCancel = () => {
-    handleClose();
-    formik.resetForm();
-  };
-
   useEffect(() => {
-    const updatedPaidforPurchases = [];
-    console.log(unpaidPurchases);
+    console.log("transit fees", transitFees);
+    const updatedPaidforTransits = [];
+
     let remainingAmount = formik.values.amount as unknown as number;
+    console.log(remainingAmount, "remaining amount");
     let i = 0;
-    while (remainingAmount > 0 && i < unpaidPurchases.length) {
-      const purchase = unpaidPurchases[i];
-      console.log("purchase", purchase);
-      let totalAmount = 0;
-      for (let productPurchase of purchase.products) {
-        totalAmount +=
-          productPurchase.purchaseUnitPriceUSD *
-          productPurchase.purchaseQuantity;
-      }
-      //
-      remainingAmount -= totalAmount + purchase.paidAmountUSD;
-      console.log(remainingAmount, totalAmount, purchase.paidAmountUSD);
-      updatedPaidforPurchases.push({
-        ...purchase,
-        paidAmountUSD:
-          remainingAmount >= 0 ? totalAmount : totalAmount + remainingAmount,
-        paidAmountETB:
-          remainingAmount >= 0
-            ? totalAmount * formik.values.exchangeRate
-            : (totalAmount + remainingAmount) * formik.values.exchangeRate,
-        PaymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
+    while (remainingAmount > 0 && i < unpaidTransits.length) {
+      const transit = unpaidTransits[i];
+      remainingAmount -= transit.cost;
+
+      updatedPaidforTransits.push({
+        ...transit,
+        paidAmount:
+          remainingAmount >= 0 ? transit.cost : transit.cost + remainingAmount,
+        paymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
       });
+      console.log(remainingAmount);
       i++;
 
       if (remainingAmount <= 0) break; // Exit the loop if remaining amount is <= 0
     }
 
-    setPaidforPurchases(updatedPaidforPurchases);
-    console.log("paidforPurchases", paidforPurchases);
-  }, [formik.values.amount, formik.values.exchangeRate, dispatch]);
+    setPaidforTransits(updatedPaidforTransits);
+    console.log(paidforTransits);
+  }, [formik.values.amount, dispatch]);
+
+  const handleCancel = () => {
+    handleClose();
+    formik.resetForm();
+  };
 
   return (
     <div>
@@ -262,7 +234,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
         >
           <form onSubmit={formik.handleSubmit}>
             <Typography variant="h6" component="div">
-              Supplier Payment Form
+              Transit Fees Payment Form
             </Typography>
             <div
               style={{
@@ -315,14 +287,17 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                     />
                   )}
                 />
+
                 <TextField
                   label="Supplier"
                   variant="outlined"
                   fullWidth
                   disabled
-                  value={osmaSupplier?.name}
+                  value={transitSupplier?.name}
                 />
+              </div>
 
+              <div style={{ maxWidth: "47%" }}>
                 <TextField
                   name="date"
                   label="Transaction Date"
@@ -340,9 +315,6 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                   }
                   required
                 />
-              </div>
-
-              <div style={{ maxWidth: "47%" }}>
                 <TextField
                   name="amount"
                   label="Amount"
@@ -369,28 +341,17 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                   onChange={formik.handleChange}
                   value={formik.values.transactionRemark}
                 />
-
-                <TextField
-                  name="exchangeRate"
-                  label="Exchange Rate"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  onChange={formik.handleChange}
-                  value={formik.values.exchangeRate}
-                  type="number"
-                  error={
-                    formik.touched.exchangeRate &&
-                    Boolean(formik.errors.exchangeRate)
-                  }
-                  onBlur={formik.handleBlur}
-                  helperText={
-                    formik.touched.exchangeRate &&
-                    (formik.errors.exchangeRate as React.ReactNode)
-                  }
-                  required
-                />
-                <Typography style={{ marginTop: "1rem" }}></Typography>
+                {paidforTransits.length > 0 &&
+                  paidforTransits.map((transit: any) => (
+                    <div>
+                      <Typography variant="subtitle1" component="div">
+                        Purchase Num:{transit.purchase.number}
+                      </Typography>
+                      <Typography variant="subtitle1" component="div">
+                        Track Num:{transit.purchase.truckNumber}
+                      </Typography>
+                    </div>
+                  ))}
               </div>
             </div>
 
@@ -431,4 +392,4 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
   );
 };
 
-export default SupplierPaymentForm;
+export default TransitPayment;

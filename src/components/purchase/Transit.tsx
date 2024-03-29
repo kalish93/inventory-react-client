@@ -14,6 +14,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { getTransitFee, getTransportCost } from "../../features/purchase/purchaseActions";
+import dayjs from "dayjs";
 
 const Transit = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -60,18 +61,20 @@ const Transit = () => {
               <TableCell>Purchase Number</TableCell>
               <TableCell>Type</TableCell>
               <TableCell>Amount Paid</TableCell>
+              <TableCell>Payment Status</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {transit.map((item: any) => (
               <TableRow key={item.id}>
-              <TableCell>{item.date}</TableCell>
+              <TableCell>{dayjs(item.date).format("YYYY-MM-DD")}</TableCell>
               <TableCell>{item.cost}</TableCell>
               <TableCell>{item.purchase.truckNumber}</TableCell>
               <TableCell>{item?.productPurchase?.declaration?.number}</TableCell>
               <TableCell>{item.purchase.number}</TableCell>
               <TableCell>{item.type}</TableCell>
-              <TableCell>{item.amountPaid}</TableCell>
+              <TableCell>{item.paidAmount}</TableCell>
+              <TableCell>{item.paymentStatus}</TableCell>
             </TableRow>
             ))}
           </TableBody>

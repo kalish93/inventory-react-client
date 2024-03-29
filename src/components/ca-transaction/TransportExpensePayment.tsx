@@ -53,6 +53,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
   const { isError, error, loading } = useSelector(selectTransactions);
   const [selectedPurchase, setSelectedPurchase] = useState<any>(null);
   const [amountBefore, setAmountBefore] = useState(0);
+  const [paidforTransports, setPaidforTransports] = useState<any>([]);
   const showSnackbar = (message: string, severity: "success" | "error") => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
@@ -89,6 +90,14 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
 
   const TransporterSupplier = suppliers.find(
     (supplier: any) => supplier.name === "Transporters"
+  );
+
+  const unpaidTransports = transports.filter(
+    (transport: any) => transport.paymentStatus === "Incomplete"
+  );
+
+  const paidTransports = transports.filter(
+    (transport: any) => transport.paymentStatus === ""
   );
 
   useEffect(() => {
@@ -148,9 +157,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
 
       const formDataToSend3 = {
         date: values.date,
-        paidAmount: values.amount,
-        type: "Payment",
-        purchaseId: values.chartofAccountId2,
+        transports: paidforTransports,
       };
 
       const formDataToSend4 = {
@@ -161,8 +168,6 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
         type: "Supplier Payment",
         chartofAccountId: accountsPayable.id,
       };
-
-      console.log(formDataToSend1, formDataToSend2, formDataToSend4);
 
       Promise.all([
         dispatch(createCATransaction(formDataToSend1)),
@@ -182,23 +187,51 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
     );
     setSelectedPurchase(currentPurchase);
 
-    const currentTransport = transports.filter(
+    const currentUnpaidTransports = unpaidTransports.filter(
       (transport: any) =>
         transport.purchase.id === formik.values.chartofAccountId2
     );
 
-    const totalAmount = currentTransport.reduce(
+    const currentPaidTransports = paidTransports.filter(
+      (transport: any) =>
+        transport.purchase.id === formik.values.chartofAccountId2
+    );
+
+    const totalAmount = currentUnpaidTransports.reduce(
       (acc: number, transport: any) => acc + transport.cost,
       0
     );
 
-    const totalPaid = currentTransport.reduce(
+    const totalPaid = currentPaidTransports.reduce(
       (acc: number, transport: any) => acc + transport.paidAmount,
       0
     );
 
     setAmountBefore(totalAmount - totalPaid);
-  }, [formik.values.chartofAccountId2, purchases]);
+
+    let remainingAmount = formik.values.amount as unknown as number;
+    let i = 0;
+    const updatedPaidforTransports = [];
+    console.log(currentUnpaidTransports)
+    while (remainingAmount > 0 && i < currentUnpaidTransports.length) {
+      const transport = currentUnpaidTransports[i];
+      remainingAmount -= transport.cost;
+
+      updatedPaidforTransports.push({
+        ...transport,
+        paidAmount:
+          remainingAmount >= 0
+            ? transport.cost
+            : transport.cost + remainingAmount,
+        paymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
+      });
+      i++;
+
+      if (remainingAmount <= 0) break; // Exit the loop if remaining amount is <= 0
+    }
+
+    setPaidforTransports(updatedPaidforTransports);
+  }, [formik.values.chartofAccountId2, formik.values.amount, dispatch]);
 
   const handleCancel = () => {
     handleClose();

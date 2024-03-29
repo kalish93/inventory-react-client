@@ -77,6 +77,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose, selectedPr
       setSubmitting(false);
       handleClose();
       setIsFormSubmitted(true);
+      formik.resetForm();
     },
   });
 

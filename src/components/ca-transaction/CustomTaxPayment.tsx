@@ -27,7 +27,10 @@ import {
   getEslCosts,
 } from "../../features/purchase/purchaseActions";
 import { getSuppliers } from "../../features/supplier/supplierActions";
-import { getDeclarations } from "../../features/declaration/declarationAction";
+import {
+  createDeclaration,
+  getDeclarations,
+} from "../../features/declaration/declarationAction";
 
 interface ProductFormProps {
   open: boolean;
@@ -46,7 +49,10 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
     (state: any) => state.declaration.declarations.items
   );
 
-  const customs = useSelector((state: any) => state.purchase.eslCosts.items);
+  const displayedDeclarations = declarations.filter(
+    (declaration: any) => declaration.paidAmount === null
+  );
+
   const banks = useSelector((state: any) => state.bank.banks.items);
   const suppliers = useSelector((state: any) => state.supplier.suppliers.items);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -75,17 +81,10 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(getEslCosts());
-  }, [dispatch]);
-
-  useEffect(() => {
     dispatch(getBanks());
   }, [dispatch]);
 
-  
-  const importTransportCost = cashOfAccounts.find(
-    (ca: any) => ca.name === "Import Transport Cost"
-  );
+
 
   const accountsPayable = cashOfAccounts.find(
     (ca: any) => ca.name === "Accounts Payable (A/P) - ETB"
@@ -94,7 +93,6 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
   const customIncomeTaxSupplier = suppliers.find(
     (supplier: any) => supplier.name === "CUSTOM INCOME TAX"
   );
-
 
   useEffect(() => {
     if (isFormSubmitted && !loading) {
@@ -121,9 +119,6 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
   const formik = useFormik({
     initialValues: {
       chartofAccountId1: "",
-      chartofAccountId2:suppliers.find(
-        (supplier: any) => supplier.name === "CUSTOM INCOME TAX"
-      ),
       chartofAccountId3: "",
       date: "",
       amount: null,
@@ -132,7 +127,6 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-
       const formDataToSend1 = {
         bankId: values.chartofAccountId1,
         date: values.date,
@@ -153,6 +147,12 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
         type: "Supplier Payment",
       };
 
+      const formDataToSend3 = {
+        number: selectedDeclaration.number,
+        paidAmount: values.amount,
+        date: values.date,
+        declarationProducts: [],
+      };
       const formDataToSend4 = {
         bankId: values.chartofAccountId1,
         payee: customIncomeTaxSupplier.id,
@@ -162,11 +162,12 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
         chartofAccountId: accountsPayable.id,
       };
 
-      console.log(formDataToSend1, formDataToSend2, formDataToSend4);
+      console.log(formDataToSend3);
 
       Promise.all([
         dispatch(createCATransaction(formDataToSend1)),
         dispatch(createCATransaction(formDataToSend2)),
+        dispatch(createDeclaration(formDataToSend3)),
         dispatch(createBankTransaction(formDataToSend4)),
       ]);
       setIsFormSubmitted(true);
@@ -177,25 +178,36 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
 
   useEffect(() => {
     const currentDeclaration = declarations.find(
-      (declaration: any) => declaration.id === formik.values.chartofAccountId2
+      (declaration: any) => declaration.id === formik.values.chartofAccountId3
     );
     setSelectedDeclaration(currentDeclaration);
 
-    const currentCustoms = customs.filter(
-      (custom: any) =>
-        custom.productPurchase.declaration.id ===
-        formik.values.chartofAccountId3
+    const normalDeclaration = declarations.filter(
+      (declaration: any) =>
+        declaration.id === currentDeclaration?.id &&
+        declaration.paidAmount === null
     );
 
-    const totalAmount = currentCustoms.reduce(
-      (acc: number, custom: any) => acc + custom.cost,
-      0
+    const paidDeclaration = declarations.filter(
+      (declaration: any) =>
+        declaration.id === currentDeclaration?.id &&
+        declaration.paidAmount !== null
     );
 
-    const totalPaid = currentCustoms.reduce(
-      (acc: number, custom: any) => acc + custom.paidAmount,
-      0
-    );
+    const totalAmount = normalDeclaration.length !== 0
+      ? normalDeclaration[0].declarationProducts?.reduce(
+          (acc: number, declarationProduct: any) =>
+            acc + declarationProduct.totalIncomeTax,
+          0
+        )
+      : 0;
+
+    const totalPaid = paidDeclaration.length !== 0
+      ? paidDeclaration[0].reduce(
+          (acc: number, declaration: any) => acc + declaration.paidAmount,
+          0
+        )
+      : 0;
 
     setAmountBefore(totalAmount - totalPaid);
   }, [declarations, formik.values.chartofAccountId3]);
@@ -291,20 +303,11 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
                   variant="outlined"
                   fullWidth
                   disabled
-                  value={formik.values.chartofAccountId2?.name}
-                  error={
-                    formik.touched.chartofAccountId2 &&
-                    Boolean(formik.errors.chartofAccountId2)
-                  }
-                  onBlur={formik.handleBlur}
-                  helperText={
-                    formik.touched.chartofAccountId2 &&
-                    (formik.errors.chartofAccountId2 as React.ReactNode)
-                  }
+                  value={customIncomeTaxSupplier?.name}
                 />
 
                 <Autocomplete
-                  options={declarations}
+                  options={displayedDeclarations}
                   getOptionLabel={(option) => option.number}
                   value={
                     declarations.find(

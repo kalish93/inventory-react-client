@@ -20,7 +20,7 @@ import {
 } from "./salseSlice";
 
 export const getSales =
-  (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
+  (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
       dispatch(getSalesStart());
       const response = await SalesService.getSales(page, pageSize);

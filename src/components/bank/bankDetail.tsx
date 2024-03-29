@@ -46,6 +46,7 @@ const BankDetail = () => {
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell>Date</TableCell>
               <TableCell>Payee</TableCell>
               <TableCell>Foreign Currency</TableCell>
               <TableCell>Payment</TableCell>
@@ -59,6 +60,7 @@ const BankDetail = () => {
           <TableBody>
             {bank.bankTransactions.map((item: any) => (
               <TableRow key={item.id}>
+                <TableCell>{dayjs(item.date).format("YYYY-MM-DD")}</TableCell>
                 <TableCell>{item.payee}</TableCell>
                 <TableCell>{item.foreignCurrency}</TableCell>
                 <TableCell>{item.payment}</TableCell>

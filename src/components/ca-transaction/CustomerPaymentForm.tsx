@@ -21,6 +21,10 @@ import {
   createBankTransaction,
   getBanks,
 } from "../../features/bank/bankActions";
+import {
+  createCustomerPayment,
+  getSales,
+} from "../../features/sales/salesActions";
 
 interface ProductFormProps {
   open: boolean;
@@ -37,13 +41,13 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
   );
   const banks = useSelector((state: any) => state.bank.banks.items);
   const customers = useSelector((state: any) => state.customer.customers.items);
-
+  const sales = useSelector((state: any) => state.sales.sales.items);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const { isError, error, loading } = useSelector(selectTransactions);
-
+  const [paidforSales, setPaidforSales] = useState<any>([]);
   const showSnackbar = (message: string, severity: "success" | "error") => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
@@ -55,6 +59,9 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
   }, [dispatch]);
 
   useEffect(() => {
+    dispatch(getSales());
+  }, [dispatch]);
+  useEffect(() => {
     dispatch(getCustomers());
   }, [dispatch]);
 
@@ -64,6 +71,12 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
 
   const accountReceivable = cashOfAccounts.find(
     (ca: any) => ca.name === "Accounts Receivable (A/R)"
+  );
+
+  const unpaidSales = sales.filter(
+    (sale: any) =>
+      sale.paymentStatus === "Incomplete" ||
+      sale.paymentStatus === "Partially Complete"
   );
 
   useEffect(() => {
@@ -132,13 +145,13 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
 
       const formDataToSend5 = {
         date: values.date,
-        paidAmount: values.amount,
-        customerId: values.chartofAccountId2,
+        sales: paidforSales,
       };
 
       Promise.all([
         dispatch(createCATransaction(formDataToSend1)),
         dispatch(createCATransaction(formDataToSend2)),
+        dispatch(createCustomerPayment(formDataToSend5)),
         dispatch(createBankTransaction(formDataToSend4)),
       ]);
       setIsFormSubmitted(true);
@@ -146,6 +159,36 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
       formik.resetForm();
     },
   });
+
+  useEffect(() => {
+    const updatedPaidforSales = [];
+    console.log(unpaidSales);
+    let remainingAmount = formik.values.amount as unknown as number;
+    let i = 0;
+    while (remainingAmount > 0 && i < unpaidSales.length) {
+      const sale = unpaidSales[i];
+      console.log("sale", sale);
+      let totalAmount = 0;
+      for (let productsale of sale.products) {
+        totalAmount += productsale.totalSales;
+      }
+      //
+      remainingAmount -= totalAmount + sale.paidAmount;
+      console.log(remainingAmount, totalAmount, sale.paidAmountUSD);
+      updatedPaidforSales.push({
+        ...sale,
+        paidAmount:
+          remainingAmount >= 0 ? totalAmount : totalAmount + remainingAmount,
+        PaymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
+      });
+      i++;
+
+      if (remainingAmount <= 0) break; // Exit the loop if remaining amount is <= 0
+    }
+
+    setPaidforSales(updatedPaidforSales);
+    console.log("paidforSales", paidforSales);
+  }, [formik.values.amount, dispatch]);
 
   const handleCancel = () => {
     handleClose();

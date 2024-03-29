@@ -339,7 +339,7 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
 
               <TextField
                 name={`totalIncomeTax-${index}`}
-                label="Custom Tax"
+                label="Income Tax"
                 variant="outlined"
                 fullWidth
                 margin="normal"
@@ -382,7 +382,7 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
                   <div key={index}>
                     <Typography variant="body1" component="div">
                       Product Name: {productName},Declaration Quantity:{" "}
-                      {product.declarationQuantity},Total Custom Tax:{" "}
+                      {product.declarationQuantity},Total Income Tax:{" "}
                       {product.totalIncomeTax}
                     </Typography>
                     <IconButton
