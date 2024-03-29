@@ -40,7 +40,6 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
     (state: any) => state.cashOfAccount.cashOfAccounts.items
   );
 
-  const transactionState = useSelector(selectTransactions);
   const purchaseState = useSelector(selectPurchase);
 
   const { items: eslCosts = [] } = purchaseState.eslCosts;
@@ -87,7 +86,8 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
   );
 
   const unpaidESL = eslCosts.filter(
-    (eslCost) => eslCost.paymentStatus === "Incomplete"
+    (eslCost) => eslCost.paymentStatus === "Incomplete" ||
+      eslCost.paymentStatus === "Partially Complete"
   );
 
   useEffect(() => {
@@ -174,7 +174,7 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
     let i = 0;
     while (remainingAmount > 0 && i < unpaidESL.length) {
       const esl = unpaidESL[i];
-      remainingAmount -= esl.cost;
+      remainingAmount -= esl.cost - esl.paidAmount;
 
       updatedPaidforEsls.push({
         ...esl,
