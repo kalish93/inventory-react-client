@@ -134,6 +134,7 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
       credit: 0,
       debit: 0,
       transactionRemark: "",
+      accountPayableRecievableDetail: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -144,6 +145,7 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
         credit: null,
         transactionRemark: values.transactionRemark,
         type: "Journal Entry",
+        accountPayableRecievableDetail: values.accountPayableRecievableDetail,
       };
       const formDataToSend2 = {
         chartofAccountId: values.chartofAccountId2,
@@ -152,6 +154,7 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
         credit: values.credit,
         transactionRemark: values.transactionRemark,
         type: "Journal Entry",
+        accountPayableRecievableDetail: values.accountPayableRecievableDetail,
       };
       const formDataToSend3 = {
         bankId: values.chartofAccountId1,
@@ -196,7 +199,7 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 500,
+            width: 1000,
             maxHeight: "80vh",
             overflowY: "auto",
             bgcolor: "background.paper",
@@ -208,6 +211,17 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Journal Entry Form
             </Typography>
+            <div style={{display: "flex",
+                justifyContent: "space-between",
+                marginTop: "20px",
+                gap:'1rem'
+                }}>
+            <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              minWidth: "47%",
+            }}>
             <TextField
               name="journalEntryNumber"
               label="Journal Entry Number"
@@ -227,6 +241,7 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
                 (!formik.values.journalEntryNumber as React.ReactNode)
               }
             />
+
             <Typography
               style={{ marginTop: "10px", marginBottom: "10px" }}
             ></Typography>
@@ -335,7 +350,26 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
                 </Select>
               </FormControl>
             </div>
-
+            <TextField
+              name="transactionRemark"
+              label="Transaction Remark"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              onChange={formik.handleChange}
+              value={formik.values.transactionRemark}
+              error={
+                formik.touched.transactionRemark &&
+                !formik.values.transactionRemark
+              }
+              onBlur={formik.handleBlur}
+              helperText={
+                formik.touched.transactionRemark &&
+                (!formik.values.transactionRemark as React.ReactNode)
+              }
+            />
+            </div>
+            <div>
             <TextField
               name="date"
               label="Transaction Date"
@@ -352,7 +386,6 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
               }
               required
             />
-
             <TextField
               name="debit"
               label="Debit"
@@ -386,24 +419,18 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
                 (!formik.values.credit as React.ReactNode)
               }
             />
+
             <TextField
-              name="transactionRemark"
-              label="Transaction Remark"
+              name="accountPayableRecievableDetail"
+              label="Account Receivable/Payable details"
               variant="outlined"
               fullWidth
               margin="normal"
               onChange={formik.handleChange}
-              value={formik.values.transactionRemark}
-              error={
-                formik.touched.transactionRemark &&
-                !formik.values.transactionRemark
-              }
-              onBlur={formik.handleBlur}
-              helperText={
-                formik.touched.transactionRemark &&
-                (!formik.values.transactionRemark as React.ReactNode)
-              }
+              value={formik.values.accountPayableRecievableDetail}
             />
+            </div>
+            </div>
             <Button
               variant="contained"
               color="primary"
