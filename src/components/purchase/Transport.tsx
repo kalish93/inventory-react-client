@@ -62,6 +62,7 @@ const Transport = () => {
               <TableCell>Purchase Number</TableCell>
               <TableCell>Type</TableCell>
               <TableCell>Amount Paid</TableCell>
+              <TableCell>Payment Status</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -71,9 +72,10 @@ const Transport = () => {
                 <TableCell>{item.cost}</TableCell>
                 <TableCell>{item.purchase?.truckNumber}</TableCell>
                 <TableCell>{item?.productPurchase?.declaration?.number}</TableCell>
-                <TableCell>{item.purchase.number}</TableCell>
+                <TableCell>{item.purchase?.number}</TableCell>
                 <TableCell>{item.type}</TableCell>
                 <TableCell>{item.paidAmount}</TableCell>
+                <TableCell>{item.paymentStatus}</TableCell>
               </TableRow>
             ))}
           </TableBody>

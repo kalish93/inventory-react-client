@@ -23,6 +23,7 @@ import {
 
 import { getSuppliers } from "../../features/supplier/supplierActions";
 import {
+  createESLPayment,
   getEslCosts,
   getPurchases,
 } from "../../features/purchase/purchaseActions";
@@ -141,7 +142,6 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
       };
 
       const formDataToSend3 = {
-        amount: values.amount,
         date: values.date,
         esls: paidforEsls,
       };
@@ -154,11 +154,11 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
         chartofAccountId: accountsPayable.id,
       };
 
-      console.log(formDataToSend3);
 
       Promise.all([
         dispatch(createCATransaction(formDataToSend1)),
         dispatch(createCATransaction(formDataToSend2)),
+        dispatch(createESLPayment(formDataToSend3)),
         dispatch(createBankTransaction(formDataToSend4)),
       ]);
       setIsFormSubmitted(true);
@@ -168,7 +168,6 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
   });
 
   useEffect(() => {
-    console.log("esl fees", eslCosts);
     const updatedPaidforEsls = [];
 
     let remainingAmount = formik.values.amount as unknown as number;
@@ -188,7 +187,7 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
 
       if (remainingAmount <= 0) break; // Exit the loop if remaining amount is <= 0
     }
-
+    console.log(updatedPaidforEsls);
     setPaidforEsls(updatedPaidforEsls);
   }, [formik.values.amount, dispatch]);
 

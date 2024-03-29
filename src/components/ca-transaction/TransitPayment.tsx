@@ -15,7 +15,6 @@ import { selectTransactions } from "../../features/ca-transaction/transactionSli
 import {
   createCATransaction,
   createTransitPayment,
-  getTransitPayments,
 } from "../../features/ca-transaction/transactionActions";
 import { getCashOfAccounts } from "../../features/cash-of-account/cashOfAccountActions";
 import { useFormik } from "formik";
@@ -50,7 +49,6 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
   const transactionState = useSelector(selectTransactions);
   const purchaseState = useSelector(selectPurchase);
 
-  const { items: transitPayments = [] } = transactionState.transitPayments;
   const { items: transitFees = [] } = purchaseState.transitFees;
   const banks = useSelector((state: any) => state.bank.banks.items);
   const suppliers = useSelector((state: any) => state.supplier.suppliers.items);
@@ -72,10 +70,6 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
 
   useEffect(() => {
     dispatch(getTransitFee());
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(getTransitPayments());
   }, [dispatch]);
 
   useEffect(() => {
@@ -183,7 +177,6 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
 
   useEffect(() => {
     console.log("transit fees", transitFees);
-    console.log("transit payments", transitPayments);
     const updatedPaidforTransits = [];
 
     let remainingAmount = formik.values.amount as unknown as number;

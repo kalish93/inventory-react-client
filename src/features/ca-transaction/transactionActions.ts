@@ -55,16 +55,3 @@ export const createTransitPayment =
     }
   };
 
-export const getTransitPayments =
-  (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
-    try {
-      dispatch(getTransactionsStart());
-      const response = await CATransactionService.getTransitPayments(
-        page,
-        pageSize
-      );
-      dispatch(getTransitPaymentsSuccess(response));
-    } catch (error) {
-      dispatch(getTransactionsFailure(error));
-    }
-  };

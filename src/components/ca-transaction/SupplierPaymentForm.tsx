@@ -22,7 +22,13 @@ import { getSuppliers } from "../../features/supplier/supplierActions";
 import { getCustomers } from "../../features/customer/customerActions";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { createBank, createBankTransaction, getBanks, updateBank } from "../../features/bank/bankActions";
+import {
+  createBank,
+  createBankTransaction,
+  getBanks,
+  updateBank,
+} from "../../features/bank/bankActions";
+import { use } from "echarts";
 
 interface ProductFormProps {
   open: boolean;
@@ -45,6 +51,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const { isError, error, loading } = useSelector(selectTransactions);
+  const [paidforPurchases, setPaidforPurchases] = useState<any>([]);
 
   const showSnackbar = (message: string, severity: "success" | "error") => {
     setSnackbarMessage(message);
@@ -80,6 +87,16 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
     (ca: any) => ca.name === "Accounts Payable (A/P) - ETB"
   );
 
+  const osmaSupplier = suppliers.find(
+    (supplier: any) => supplier.name === "OSMA GROUP FZE"
+  );
+
+  const unpaidPurchases = purchases.filter(
+    (purchase: any) =>
+      purchase.paymentStatus === "Incomplete" ||
+      purchase.paymentStatus === "Partially Complete"
+  );
+
   useEffect(() => {
     if (isFormSubmitted && !loading) {
       if (isError) {
@@ -97,7 +114,6 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
 
   const validationSchema = yup.object({
     chartofAccountId1: yup.string().required("Bank name is required"),
-    chartofAccountId2: yup.string().required("Expense name is required"),
     date: yup.string().required("Transaction date is required"),
     amount: yup.number().required("Transaction amount is required"),
   });
@@ -109,7 +125,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
       date: "",
       amount: null,
       transactionRemark: "",
-      exchangeRate: undefined,
+      exchangeRate: 0,
       type: "",
       purchaseId: "",
     },
@@ -147,13 +163,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
 
       const formDataToSend3 = {
         date: values.date,
-        number: values.purchaseId,
-        supplierId: values.chartofAccountId2,
-        exchangeRate: values.exchangeRate,
-        paidAmountUSD: values.exchangeRate ? values.amount : null,
-        padiAmountETB: values.exchangeRate
-          ? values.amount! * values.exchangeRate
-          : values.amount,
+        purchases: paidforPurchases,
       };
 
       const formDataToSend4 = {
@@ -161,21 +171,22 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
         payee: values.chartofAccountId2,
         foreignCurrency: values.exchangeRate ? -values.amount! : null,
         payment: values.exchangeRate
-        ? values.amount! * values.exchangeRate
-        : values.amount,
+          ? values.amount! * values.exchangeRate
+          : values.amount,
         deposit: null,
         type: "Supplier Payment",
         exchangeRate: values.exchangeRate,
         chartofAccountId: values.exchangeRate
-        ? accountsPayableUSD.id
-        : accountsPayable.id,
-      }
+          ? accountsPayableUSD.id
+          : accountsPayable.id,
+      };
 
+      console.log("formDataToSend3", formDataToSend3);
       Promise.all([
         dispatch(createCATransaction(formDataToSend1)),
         dispatch(createCATransaction(formDataToSend2)),
         dispatch(createSupplierPayment(formDataToSend3)),
-        dispatch(createBankTransaction(formDataToSend4))
+        dispatch(createBankTransaction(formDataToSend4)),
       ]);
       setIsFormSubmitted(true);
       handleClose();
@@ -187,6 +198,70 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
     handleClose();
     formik.resetForm();
   };
+
+  useEffect(() => {
+    const updatedPaidforPurchases = [];
+    console.log(unpaidPurchases);
+    let remainingAmount = formik.values.amount as unknown as number;
+    let i = 0;
+    while (remainingAmount > 0 && i < unpaidPurchases.length) {
+      const purchase = unpaidPurchases[i];
+      console.log("purchase", purchase);
+      let updatedProductPurchases = [];
+      let totalAmount = 0;
+      let incompletePayment = false;
+      for (let productPurchase of purchase.products) {
+        remainingAmount -=
+          productPurchase.purchaseUnitPriceUSD *
+          productPurchase.purchaseQuantity;
+
+        const paidUSD =
+          remainingAmount >= 0
+            ? productPurchase.purchaseUnitPriceUSD *
+              productPurchase.purchaseQuantity
+            : productPurchase.purchaseUnitPriceUSD *
+                productPurchase.purchaseQuantity +
+              remainingAmount;
+        totalAmount += paidUSD;
+        const paymentStat =
+          remainingAmount >= 0 ? "Complete" : "Partially Complete";
+        updatedProductPurchases.push({
+          ...productPurchase,
+          paidAmountUSD: paidUSD,
+          paidAmountETB: paidUSD * formik.values.exchangeRate,
+          paymentStatus: paymentStat,
+        });
+        if (paymentStat === "Partially Complete") {
+          incompletePayment = true;
+        }
+        console.log(
+          "totalAmount",
+          totalAmount,
+          "remaing amount",
+          remainingAmount,
+          "updatedProductPurchase",
+          updatedProductPurchases
+        );
+
+        if (remainingAmount <= 0) {
+          break;
+        }
+      }
+      updatedPaidforPurchases.push({
+        ...purchase,
+        paidAmountUSD: totalAmount,
+        paidAmountETB: totalAmount * formik.values.exchangeRate,
+        paymentStatus: !incompletePayment ? "Complete" : "Partially Complete",
+        products: updatedProductPurchases,
+      });
+      i++;
+
+      if (remainingAmount <= 0) break; // Exit the loop if remaining amount is <= 0
+    }
+
+    setPaidforPurchases(updatedPaidforPurchases);
+    console.log("paidforPurchases", paidforPurchases);
+  }, [formik.values.amount, formik.values.exchangeRate, dispatch]);
 
   return (
     <div>
@@ -268,43 +343,14 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                     />
                   )}
                 />
-
-                <Autocomplete
-                  options={suppliers}
-                  getOptionLabel={(option) => option.name}
-                  value={
-                    suppliers.find(
-                      (d: { id: string }) =>
-                        d.id === formik.values.chartofAccountId2
-                    ) || null
-                  }
-                  onChange={(event, newValue) => {
-                    formik.setFieldValue(
-                      "chartofAccountId2",
-                      newValue ? newValue.id : ""
-                    );
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Supplier Name"
-                      variant="outlined"
-                      fullWidth
-                      required
-                      value={formik.values.chartofAccountId2}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.chartofAccountId2 &&
-                        Boolean(formik.errors.chartofAccountId2)
-                      }
-                      onBlur={formik.handleBlur}
-                      helperText={
-                        formik.touched.chartofAccountId2 &&
-                        (formik.errors.chartofAccountId2 as React.ReactNode)
-                      }
-                    />
-                  )}
+                <TextField
+                  label="Supplier"
+                  variant="outlined"
+                  fullWidth
+                  disabled
+                  value={osmaSupplier?.name}
                 />
+
                 <TextField
                   name="date"
                   label="Transaction Date"
@@ -352,74 +398,27 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                   value={formik.values.transactionRemark}
                 />
 
-                {
-                  //check if the supplier is in foreign currency by checking chartofAccountId2 in the foreignCurrencySupplier list
-
-                  foringnCurrencySupplier.find(
-                    (supplier: any) =>
-                      supplier.id === formik.values.chartofAccountId2
-                  ) ? (
-                    <>
-                      <TextField
-                        name="exchangeRate"
-                        label="Exchange Rate"
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        onChange={formik.handleChange}
-                        value={formik.values.exchangeRate}
-                        type="number"
-                        error={
-                          formik.touched.exchangeRate &&
-                          Boolean(formik.errors.exchangeRate)
-                        }
-                        onBlur={formik.handleBlur}
-                        helperText={
-                          formik.touched.exchangeRate &&
-                          (formik.errors.exchangeRate as React.ReactNode)
-                        }
-                        required
-                      />
-                      <Typography style={{ marginTop: "1rem" }}></Typography>
-                      <Autocomplete
-                        options={purchases}
-                        getOptionLabel={(option) => option.number.toString()}
-                        value={
-                          purchases.find(
-                            (d: { id: string }) =>
-                              d.id === formik.values.purchaseId
-                          ) || null
-                        }
-                        onChange={(event, newValue) => {
-                          formik.setFieldValue(
-                            "purchaseId",
-                            newValue ? newValue.id : ""
-                          );
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Purchase Number"
-                            variant="outlined"
-                            fullWidth
-                            required
-                            value={formik.values.purchaseId}
-                            onChange={formik.handleChange}
-                            error={
-                              formik.touched.purchaseId &&
-                              Boolean(formik.errors.purchaseId)
-                            }
-                            onBlur={formik.handleBlur}
-                            helperText={
-                              formik.touched.purchaseId &&
-                              (formik.errors.purchaseId as React.ReactNode)
-                            }
-                          />
-                        )}
-                      />
-                    </>
-                  ) : null
-                }
+                <TextField
+                  name="exchangeRate"
+                  label="Exchange Rate"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  onChange={formik.handleChange}
+                  value={formik.values.exchangeRate}
+                  type="number"
+                  error={
+                    formik.touched.exchangeRate &&
+                    Boolean(formik.errors.exchangeRate)
+                  }
+                  onBlur={formik.handleBlur}
+                  helperText={
+                    formik.touched.exchangeRate &&
+                    (formik.errors.exchangeRate as React.ReactNode)
+                  }
+                  required
+                />
+                <Typography style={{ marginTop: "1rem" }}></Typography>
               </div>
             </div>
 

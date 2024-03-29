@@ -137,6 +137,22 @@ export const createEslCost = (data: any) => async (dispatch: AppDispatch) => {
     dispatch(registerPurchaseFailure("Unknown error"));
   }
 };
+
+export const createESLPayment =
+  (eslPaymentData: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(registerPurchaseStart());
+      const response = await PurchaseService.createESLPayment(eslPaymentData);
+      if (response.success) {
+        dispatch(createEslCustomCostSuccess(response.data));
+      } else {
+        dispatch(registerPurchaseFailure(response.error || "Unknown error"));
+      }
+    } catch (error) {
+      dispatch(registerPurchaseFailure("Unknown error"));
+    }
+  };
+
 export const getTransitFee =
   (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
@@ -148,7 +164,7 @@ export const getTransitFee =
     }
   };
 
-  export const createTransitFee =
+export const createTransitFee =
   (data: any) => async (dispatch: AppDispatch) => {
     try {
       dispatch(registerPurchaseStart());

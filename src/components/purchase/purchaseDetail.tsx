@@ -55,6 +55,8 @@ const PurchaseDetail = () => {
               <TableCell>Purchase USD Unit Price</TableCell>
               <TableCell>Purchase Total ETB</TableCell>
               <TableCell>Purchase Unit COGS</TableCell>
+              <TableCell>Paid Amount ETB</TableCell>
+              <TableCell>Payment Status</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -67,6 +69,8 @@ const PurchaseDetail = () => {
                 <TableCell>{item.purchaseUnitPriceUSD}</TableCell>
                 <TableCell>{item.purchaseTotalETB}</TableCell>
                 <TableCell>{item.purchaseUnitCostOfGoods.toFixed(2)}</TableCell>
+                <TableCell>{item.paidAmountETB}</TableCell>
+                <TableCell>{item.paymentStatus}</TableCell>
               </TableRow>
             ))}
           </TableBody>

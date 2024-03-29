@@ -71,24 +71,5 @@ export const CATransactionService = {
     }
   },
 
-  getTransitPayments: async (page: number|undefined, pageSize: number|undefined) => {
-    try {
-      const url =
-        page && pageSize
-          ? `${BASE_URL}/transit-payments?page=${page}&pageSize=${pageSize}`
-          : `${BASE_URL}/transit-payments`;
-      const response = await handleRequest(url, {
-        method: "GET",
-      });
-      if (!response.ok) {
-        throw new Error("Error retrieving Transit Payments");
-      }
 
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error in getTransitPayments service:", error);
-      throw error;
-    }
-  },
 };
