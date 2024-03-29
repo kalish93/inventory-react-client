@@ -65,53 +65,53 @@ const InventoryList = () => {
               <TableCell>Sale Quantity</TableCell>
               <TableCell>Sale Unit Price</TableCell>
               <TableCell>Balance Quantity</TableCell>
+              <TableCell>COGS</TableCell>
+              <TableCell>Declaration Number</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {inventories.map(
-              (inventory: any) => (
-                (
-                  <TableRow key={inventory.id}>
-                    <TableCell>
-                      {inventory.sale
-                        ? inventory.saleDetail?.product?.name
-                        : inventory.productPurchase.product.name}
-                    </TableCell>
-                    <TableCell>
-                      {inventory?.purchase?.number}
-                    </TableCell>
-                    <TableCell>
-                      {inventory.purchase
-                        ? dayjs(inventory.purchase.date).format("YYYY-MM-DD")
-                        : ""}
-                    </TableCell>
-                    <TableCell>
-                        {inventory?.productPurchase?.purchaseQuantity}
-                    </TableCell>
-                    <TableCell>
-                      {inventory?.productPurchase?.purchaseUnitPriceETB }
-                    </TableCell>
-                    <TableCell>
-                      {inventory.sale ? inventory.sale.invoiceNumber : ""}{" "}
-                    </TableCell>
-                    <TableCell>
-                      {inventory.sale
-                        ? dayjs(inventory.sale.invoiceDate).format("YYYY-MM-DD")
-                        : ""}
-                    </TableCell>
-                    <TableCell>
-                      {inventory.sale ? inventory.saleDetail.saleQuantity : ""}
-                    </TableCell>
-                    <TableCell>
-                      {inventory.sale
-                        ? inventory.saleDetail.saleUnitPrice
-                        : ""}
-                    </TableCell>
-                    <TableCell>{inventory.balanceQuantity}</TableCell>
-                  </TableRow>
-                )
-              )
-            )}
+            {inventories.map((inventory: any) => (
+              <TableRow key={inventory.id}>
+                <TableCell>
+                  {inventory.sale
+                    ? inventory.saleDetail?.product?.name
+                    : inventory.productPurchase.product.name}
+                </TableCell>
+                <TableCell>{inventory.purchase?.number}</TableCell>
+                <TableCell>
+                  {dayjs(inventory.purchase?.date).format("YYYY-MM-DD")}
+                </TableCell>
+                <TableCell>
+                  {
+                   inventory.productPurchase?.purchaseQuantity
+                    }
+                </TableCell>
+                <TableCell>
+                  {
+                   inventory.productPurchase?.purchaseUnitPrice
+                    }
+                </TableCell>
+                <TableCell>
+                  {inventory.sale?.invoiceNumber }
+                </TableCell>
+                <TableCell>
+                  {
+                   dayjs(inventory.sale?.invoiceDate).format("YYYY-MM-DD")
+                   }
+                </TableCell>
+                <TableCell>
+                  {inventory.saleDetail?.saleQuantity }
+                </TableCell>
+                <TableCell>
+                  { inventory.saleDetail?.saleUnitPrice}
+                </TableCell>
+                <TableCell>{inventory.balanceQuantity}</TableCell>
+                <TableCell>{inventory.productPurchase?.purchaseUnitCostOfGoods?? inventory.saleDetail?.unitCostOfGoods}</TableCell>
+                <TableCell>
+                  {inventory.productPurchase?.declaration?.number}
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>

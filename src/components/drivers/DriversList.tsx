@@ -145,6 +145,7 @@ const DriversList = () => {
                 <TableCell>Association Phone</TableCell>
                 <TableCell>Owner Name</TableCell>
                 <TableCell>Owner Phone</TableCell>
+                <TableCell>Driver Id</TableCell>
                 <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -159,6 +160,7 @@ const DriversList = () => {
                 <TableCell>{driver.associationPhone}</TableCell>
                 <TableCell>{driver.ownerName}</TableCell>
                 <TableCell>{driver.ownerPhone}</TableCell>  
+                <TableCell>{driver.driverId}</TableCell>
                 <TableCell>
                 <IconButton
                     aria-label="Actions"
