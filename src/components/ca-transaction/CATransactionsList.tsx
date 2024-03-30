@@ -268,7 +268,9 @@ const CATransactionsList = () => {
                     <TableCell>{dayjs(ca.date).format("YYYY-MM-DD")}</TableCell>
                     <TableCell>{ca.type}</TableCell>
                     <TableCell>
-                      {ca.purchase?.number ?? ca.sale?.invoiceNumber ?? ca.number}
+                      {ca.purchase?.number ??
+                        ca.sale?.invoiceNumber ??
+                        ca.number}
                     </TableCell>
                     <TableCell>{ca.remark}</TableCell>
                     <TableCell>{ca.debit?.toLocaleString()}</TableCell>
@@ -278,19 +280,12 @@ const CATransactionsList = () => {
                         ca.saleDetail?.product?.name}
                     </TableCell>
                     <TableCell>
-                      {ca.customer
-                        ? ca.customer.firstName + " " + ca.customer.lastName
-                        : null}
+                      {ca.customer ? ca.customer?.firstName + " " + ca.customer?.lastName: null}
                     </TableCell>
+                    <TableCell>{ca.supplier?.name}</TableCell>
                     <TableCell>
-                      {ca.supplier ? ca.supplier.name : null}
-                    </TableCell>
-                    <TableCell>
-                      {ca.chartofAccount
-                        ? ca.chartofAccount.name
-                        : ca.bankTransaction
-                        ? ca.bankTransaction.bank.name
-                        : null}
+                      {ca.chartofAccount?.name ??
+                        ca.bankTransaction?.bank?.name}
                     </TableCell>
                     <TableCell>{ca.exchangeRate}</TableCell>
                     <TableCell>{ca.USDAmount}</TableCell>
