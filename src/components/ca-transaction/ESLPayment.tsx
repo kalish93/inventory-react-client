@@ -90,6 +90,8 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
       eslCost.paymentStatus === "Partially Complete"
   );
 
+  unpaidESL.reverse();
+
   useEffect(() => {
     if (isFormSubmitted && !loading) {
       if (isError) {
@@ -179,7 +181,7 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
       updatedPaidforEsls.push({
         ...esl,
         paidAmount:
-          remainingAmount >= 0 ? esl.cost : esl.cost + remainingAmount,
+          remainingAmount >= 0 ? esl.cost - Number(esl.paidAmount) : esl.cost - Number(esl.paidAmount) + remainingAmount,
         paymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
       });
       console.log(remainingAmount);

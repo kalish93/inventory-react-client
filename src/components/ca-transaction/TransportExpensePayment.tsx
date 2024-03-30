@@ -101,6 +101,10 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
     (transport: any) => transport.paymentStatus === ""
   );
 
+  const realPurchases = purchases.filter(
+    (purchase: any) => purchase.paymentStatus !== ""
+  );
+
   useEffect(() => {
     if (isFormSubmitted && !loading) {
       if (isError) {
@@ -321,7 +325,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
                 />
 
                 <Autocomplete
-                  options={purchases}
+                  options={realPurchases}
                   getOptionLabel={(option) => option.number.toString()}
                   value={
                     purchases.find(

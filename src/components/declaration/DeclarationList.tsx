@@ -166,7 +166,7 @@ const DeclarationList = () => {
               <TableRow key={declaration.id} component={Link} to={`/declarations/${declaration.id}`} style={{ textDecoration: 'none' }}>
                 <TableCell>{declaration.number }</TableCell>
                 <TableCell>{dayjs(declaration.date).format("YYYY-MM-DD")}</TableCell>
-                <TableCell>{declaration.paidAmount}</TableCell>
+                <TableCell>{declaration.paidAmount !== 0 ? declaration.paidAmount.toLocaleString(): null}</TableCell>
                 <TableCell>
                 <IconButton
                     aria-label="Actions"

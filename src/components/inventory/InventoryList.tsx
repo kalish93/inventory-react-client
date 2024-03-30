@@ -82,33 +82,25 @@ const InventoryList = () => {
                   {dayjs(inventory.purchase?.date).format("YYYY-MM-DD")}
                 </TableCell>
                 <TableCell>
-                  {
-                   inventory.productPurchase?.purchaseQuantity
-                    }
+                  {inventory.productPurchase?.purchaseQuantity}
                 </TableCell>
                 <TableCell>
-                  {
-                   inventory.productPurchase?.purchaseUnitPriceETB
-                    }
+                  {inventory.productPurchase?.purchaseUnitPriceETB}
                 </TableCell>
+                <TableCell>{inventory.sale?.invoiceNumber}</TableCell>
                 <TableCell>
-                  {inventory.sale?.invoiceNumber }
+                  {dayjs(inventory.sale?.invoiceDate).format("YYYY-MM-DD")}
                 </TableCell>
-                <TableCell>
-                  {
-                   dayjs(inventory.sale?.invoiceDate).format("YYYY-MM-DD")
-                   }
-                </TableCell>
-                <TableCell>
-                  {inventory.saleDetail?.saleQuantity }
-                </TableCell>
-                <TableCell>
-                  { inventory.saleDetail?.saleUnitPrice}
-                </TableCell>
+                <TableCell>{inventory.saleDetail?.saleQuantity}</TableCell>
+                <TableCell>{inventory.saleDetail?.saleUnitPrice}</TableCell>
                 <TableCell>{inventory.balanceQuantity}</TableCell>
-                <TableCell>{inventory.productPurchase?.purchaseUnitCostOfGoods?? inventory.saleDetail?.unitCostOfGoods}</TableCell>
                 <TableCell>
-                  {inventory.productPurchase?.declaration?.number}
+                  {inventory.productPurchase?.purchaseUnitCostOfGoods ??
+                    inventory.saleDetail?.unitCostOfGoods}
+                </TableCell>
+                <TableCell>
+                  {inventory.productPurchase?.declaration?.number ??
+                    inventory.saleDetail?.declaration?.number}
                 </TableCell>
               </TableRow>
             ))}

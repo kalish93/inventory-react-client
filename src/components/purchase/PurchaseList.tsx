@@ -37,7 +37,6 @@ import Esl from "./Esl";
 import Transit from "./Transit";
 import UpdatePurchaseForm from "./UpdatePurchaseForm";
 
-
 const TabPanel = (props: {
   [x: string]: any;
   children: any;
@@ -82,7 +81,6 @@ const PurchaseList = () => {
   const [openUpdateForm, setOpenUpdateForm] = useState(false); // State to control opening and closing of update form
   const [deleteSubmitted, setDeleteSubmitted] = useState(false); // State to control opening and closing of update form
 
-
   const handleChange = (event: any, newValue: any) => {
     setValue(newValue);
   };
@@ -101,19 +99,20 @@ const PurchaseList = () => {
   };
 
   const handleUpdatePurchase = () => {
-    
-    setOpenUpdateForm(true); 
+    setOpenUpdateForm(true);
     handleMenuClose();
   };
 
   const handleDeletePurchase = () => {
     handleMenuClose();
     if (selectedPurchaseId !== null) {
-      dispatch(deletePurchase(selectedPurchaseId)).then(() => {
-        setDeleteSubmitted(true);
-      }).catch(() => {
-        setDeleteSubmitted(true);
-      });
+      dispatch(deletePurchase(selectedPurchaseId))
+        .then(() => {
+          setDeleteSubmitted(true);
+        })
+        .catch(() => {
+          setDeleteSubmitted(true);
+        });
     }
   };
 
@@ -173,150 +172,158 @@ const PurchaseList = () => {
 
   return (
     <div>
-        <Tabs
-        value={value}
-        onChange={handleChange}
-        centered
-      >
+      <Tabs value={value} onChange={handleChange} centered>
         <Tab label="Purchases" />
         <Tab label="Transport" />
         <Tab label="ESL custom cost" />
         <Tab label="Transit Fees" />
       </Tabs>
       <TabPanel value={value} index={0}>
-      {hasPermission(PERMISSIONS.CreatePurchase) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
-        Add Purchase
-      </Button>}
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={totalCount || 0}
-        rowsPerPage={rowsPerPage}
-        page={currentPage && currentPage > 0 ? currentPage - 1 : 0}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-      {hasPermission(PERMISSIONS.GetPurchases) && <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Purchase /Waybill Number</TableCell>
-              <TableCell>Purchase Date</TableCell>
-              <TableCell>Track Number</TableCell>
-              <TableCell>Exchange Rate</TableCell>
-              <TableCell>Supplier Name</TableCell>
-              <TableCell>Paid Amount ETB</TableCell>
-              <TableCell>Paid Amount USD</TableCell>
-              <TableCell>Payment Status</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {purchases.map((purchase: any) => (
-              <TableRow
-                key={purchase.id}
-                component={Link}
-                to={`/purchases/${purchase.id}`}
-                style={{ textDecoration: "none" }}
-              >
-                <TableCell>{purchase.number}</TableCell>
-                <TableCell>
-                  {dayjs(purchase.date).format("YYYY-MM-DD")}
-                </TableCell>
-                <TableCell>{purchase.truckNumber}</TableCell>
-                <TableCell>{purchase.exchangeRate}</TableCell>
-                <TableCell>{purchase.supplier?.name}</TableCell>
-                <TableCell>{purchase.paidAmountETB}</TableCell>
-                <TableCell>{purchase.paidAmountUSD}</TableCell>
-                <TableCell>{purchase.paymentStatus}</TableCell>
-                <TableCell>
-                  <IconButton
-                    aria-label="Actions"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      event.preventDefault(); // Prevent default behavior
-                      handleMenuOpen(event, purchase.id, purchase);
-                    }}
-                    style={{ margin: 0, padding: 0 }}
+        {hasPermission(PERMISSIONS.CreatePurchase) && (
+          <Button variant="contained" color="primary" onClick={handleOpenModal}>
+            Add Purchase
+          </Button>
+        )}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={totalCount || 0}
+          rowsPerPage={rowsPerPage}
+          page={currentPage && currentPage > 0 ? currentPage - 1 : 0}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+        {hasPermission(PERMISSIONS.GetPurchases) && (
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Purchase /Waybill Number</TableCell>
+                  <TableCell>Purchase Date</TableCell>
+                  <TableCell>Track Number</TableCell>
+                  <TableCell>Exchange Rate</TableCell>
+                  <TableCell>Supplier Name</TableCell>
+                  <TableCell>Paid Amount ETB</TableCell>
+                  <TableCell>Paid Amount USD</TableCell>
+                  <TableCell>Payment Status</TableCell>
+                  <TableCell>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {purchases.map((purchase: any) => (
+                  <TableRow
+                    key={purchase.id}
+                    component={Link}
+                    to={`/purchases/${purchase.id}`}
+                    style={{ textDecoration: "none" }}
                   >
-                    <MoreVertIcon />
-                  </IconButton>
-                  <Menu
-                    id="actions-menu"
-                    MenuListProps={{
-                      "aria-labelledby": "long-button",
-                    }}
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                    PaperProps={{
-                      style: {
-                        width: "20ch",
-                        boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
-                      },
-                    }}
-                  >
-                    {hasPermission(PERMISSIONS.UpdatePurchase) && <MenuItem
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        event.preventDefault();
-                        handleUpdatePurchase();
-                      }}
-                    >
-                      Update
-                    </MenuItem>}
-                    {hasPermission(PERMISSIONS.DeletePurchase) && <MenuItem
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        event.preventDefault();
-                        openConfirmationModal();
-                      }}
-                    >
-                      Delete
-                    </MenuItem>}
-                  </Menu>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>}
-      <PurchaseForm open={openModal} handleClose={handleCloseModal} />
-      <UpdatePurchaseForm
-  open={openUpdateForm}
-    selectedPurchase={selectedPurchase}
-    handleClose={handleCloseModal}
-  />
-      <ConfirmationModal
-        open={confirmationModalOpen}
-        onClose={closeConfirmationModal}
-        onConfirm={handleConfirmAction}
-        title="Delete Purchase"
-        content="Are you sure you want to delete this Purchase?"
-      />
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
+                    <TableCell>{purchase.number}</TableCell>
+                    <TableCell>
+                      {dayjs(purchase.date).format("YYYY-MM-DD")}
+                    </TableCell>
+                    <TableCell>{purchase.truckNumber}</TableCell>
+                    <TableCell>{purchase.exchangeRate}</TableCell>
+                    <TableCell>{purchase.supplier?.name}</TableCell>
+                    <TableCell>
+                      {purchase.paidAmountETB?.toLocaleString()}
+                    </TableCell>
+                    <TableCell>
+                      {purchase.paidAmountUSD?.toLocaleString()}
+                    </TableCell>
+                    <TableCell>{purchase.paymentStatus}</TableCell>
+                    <TableCell>
+                      <IconButton
+                        aria-label="Actions"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          event.preventDefault(); // Prevent default behavior
+                          handleMenuOpen(event, purchase.id, purchase);
+                        }}
+                        style={{ margin: 0, padding: 0 }}
+                      >
+                        <MoreVertIcon />
+                      </IconButton>
+                      <Menu
+                        id="actions-menu"
+                        MenuListProps={{
+                          "aria-labelledby": "long-button",
+                        }}
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleMenuClose}
+                        PaperProps={{
+                          style: {
+                            width: "20ch",
+                            boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
+                          },
+                        }}
+                      >
+                        {hasPermission(PERMISSIONS.UpdatePurchase) && (
+                          <MenuItem
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              event.preventDefault();
+                              handleUpdatePurchase();
+                            }}
+                          >
+                            Update
+                          </MenuItem>
+                        )}
+                        {hasPermission(PERMISSIONS.DeletePurchase) && (
+                          <MenuItem
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              event.preventDefault();
+                              openConfirmationModal();
+                            }}
+                          >
+                            Delete
+                          </MenuItem>
+                        )}
+                      </Menu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+        <PurchaseForm open={openModal} handleClose={handleCloseModal} />
+        <UpdatePurchaseForm
+          open={openUpdateForm}
+          selectedPurchase={selectedPurchase}
+          handleClose={handleCloseModal}
+        />
+        <ConfirmationModal
+          open={confirmationModalOpen}
+          onClose={closeConfirmationModal}
+          onConfirm={handleConfirmAction}
+          title="Delete Purchase"
+          content="Are you sure you want to delete this Purchase?"
+        />
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
           onClose={handleCloseSnackbar}
-          severity={snackbarSeverity as "success" | "error"}
-          sx={{ width: "100%" }}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity={snackbarSeverity as "success" | "error"}
+            sx={{ width: "100%" }}
+          >
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
       </TabPanel>
       <TabPanel value={value} index={1}>
-          <Transport />
+        <Transport />
       </TabPanel>
       <TabPanel value={value} index={2}>
-          <Esl />
+        <Esl />
       </TabPanel>
       <TabPanel value={value} index={3}>
-          <Transit />
+        <Transit />
       </TabPanel>
     </div>
   );

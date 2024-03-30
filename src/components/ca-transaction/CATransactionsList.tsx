@@ -268,11 +268,7 @@ const CATransactionsList = () => {
                     <TableCell>{dayjs(ca.date).format("YYYY-MM-DD")}</TableCell>
                     <TableCell>{ca.type}</TableCell>
                     <TableCell>
-                      {ca.purchase
-                        ? ca.purchase.number
-                        : ca.sale
-                        ? ca.sale.invoiceNumber
-                        : null}
+                      {ca.purchase?.number ?? ca.sale?.invoiceNumber ?? ca.number}
                     </TableCell>
                     <TableCell>{ca.remark}</TableCell>
                     <TableCell>{ca.debit?.toLocaleString()}</TableCell>

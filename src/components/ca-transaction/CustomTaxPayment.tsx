@@ -50,7 +50,7 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
   );
 
   const displayedDeclarations = declarations.filter(
-    (declaration: any) => declaration.paidAmount === null
+    (declaration: any) => declaration.declarationProducts.length !== 0
   );
 
   const banks = useSelector((state: any) => state.bank.banks.items);
@@ -83,8 +83,6 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
   useEffect(() => {
     dispatch(getBanks());
   }, [dispatch]);
-
-
 
   const accountsPayable = cashOfAccounts.find(
     (ca: any) => ca.name === "Accounts Payable (A/P) - ETB"
@@ -162,7 +160,6 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
         chartofAccountId: accountsPayable.id,
       };
 
-      console.log(formDataToSend3);
 
       Promise.all([
         dispatch(createCATransaction(formDataToSend1)),
@@ -185,29 +182,31 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
     const normalDeclaration = declarations.filter(
       (declaration: any) =>
         declaration.id === currentDeclaration?.id &&
-        declaration.paidAmount === null
+        declaration.paidAmount === 0
     );
 
     const paidDeclaration = declarations.filter(
       (declaration: any) =>
         declaration.id === currentDeclaration?.id &&
-        declaration.paidAmount !== null
+        declaration.paidAmount !== 0
     );
 
-    const totalAmount = normalDeclaration.length !== 0
-      ? normalDeclaration[0].declarationProducts?.reduce(
-          (acc: number, declarationProduct: any) =>
-            acc + declarationProduct.totalIncomeTax,
-          0
-        )
-      : 0;
+    const totalAmount =
+      normalDeclaration.length !== 0
+        ? normalDeclaration[0].declarationProducts?.reduce(
+            (acc: number, declarationProduct: any) =>
+              acc + declarationProduct.totalIncomeTax,
+            0
+          )
+        : 0;
 
-    const totalPaid = paidDeclaration.length !== 0
-      ? paidDeclaration[0].reduce(
-          (acc: number, declaration: any) => acc + declaration.paidAmount,
-          0
-        )
-      : 0;
+    const totalPaid =
+      paidDeclaration.length !== 0
+        ? paidDeclaration[0].reduce(
+            (acc: number, declaration: any) => acc + declaration.paidAmount,
+            0
+          )
+        : 0;
 
     setAmountBefore(totalAmount - totalPaid);
   }, [declarations, formik.values.chartofAccountId3]);

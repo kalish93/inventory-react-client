@@ -69,11 +69,13 @@ const Transport = () => {
           <TableBody>
             {transport.map((item: any) => (
               <TableRow key={item.id}>
-                <TableCell>{dayjs(item.date).format('YYYY-MM-DD')}</TableCell>
+                <TableCell>{dayjs(item.date).format("YYYY-MM-DD")}</TableCell>
                 <TableCell>{item.cost}</TableCell>
                 <TableCell>{item.purchase?.truckNumber}</TableCell>
-                <TableCell>{item?.productPurchase?.declaration?.number}</TableCell>
-                <TableCell>{item.unitTransportCost.toFixed(2)}</TableCell>
+                <TableCell>
+                  {item?.productPurchase?.declaration?.number}
+                </TableCell>
+                <TableCell>{item.unitTransportCost?.toFixed(2)}</TableCell>
                 <TableCell>{item.purchase?.number}</TableCell>
                 <TableCell>{item.type}</TableCell>
                 <TableCell>{item.paidAmount}</TableCell>
