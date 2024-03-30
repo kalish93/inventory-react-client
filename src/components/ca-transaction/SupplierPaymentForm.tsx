@@ -97,6 +97,8 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
       purchase.paymentStatus === "Partially Complete"
   );
 
+  unpaidPurchases.reverse();
+
   useEffect(() => {
     if (isFormSubmitted && !loading) {
       if (isError) {
@@ -214,17 +216,21 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
           productPurchase.purchaseQuantity;
       }
       //
+      console.log(i, remainingAmount, totalAmount, purchase.paidAmountUSD);
       remainingAmount -= totalAmount - Number(purchase.paidAmountUSD);
-      console.log(remainingAmount, totalAmount, purchase.paidAmountUSD);
       updatedPaidforPurchases.push({
         ...purchase,
         paidAmountUSD:
-          remainingAmount >= 0 ? totalAmount : totalAmount + remainingAmount,
+          remainingAmount >= 0
+            ? totalAmount - Number(purchase.paidAmountUSD)
+            : totalAmount - Number(purchase.paidAmountUSD) + remainingAmount,
         paidAmountETB:
           remainingAmount >= 0
-            ? totalAmount * formik.values.exchangeRate
-            : (totalAmount + remainingAmount) * formik.values.exchangeRate,
-        PaymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
+            ? (totalAmount - Number(purchase.paidAmountUSD)) *
+              formik.values.exchangeRate
+            : (totalAmount - Number(purchase.paidAmountUSD) + remainingAmount) *
+              formik.values.exchangeRate,
+        paymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
       });
       i++;
 

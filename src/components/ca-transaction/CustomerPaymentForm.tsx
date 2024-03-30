@@ -79,6 +79,8 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
       sale.paymentStatus === "Partially Complete"
   );
 
+  unpaidSales.reverse();
+
   useEffect(() => {
     if (isFormSubmitted && !loading) {
       if (isError) {
@@ -179,11 +181,12 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
       console.log(remainingAmount, totalAmount, sale.paidAmount);
 
       remainingAmount -= totalAmount - Number(sale.paidAmount);
-      console.log(remainingAmount)
       updatedPaidforSales.push({
         ...sale,
         paidAmount:
-          remainingAmount >= 0 ? totalAmount : totalAmount + remainingAmount,
+          remainingAmount >= 0
+            ? totalAmount - Number(sale.paidAmount)
+            : totalAmount - Number(sale.paidAmount) + remainingAmount,
         paymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
       });
       i++;

@@ -97,6 +97,8 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
         transit.paymentStatus === "Partially Complete"
   );
 
+  unpaidTransits.reverse();
+
   useEffect(() => {
     if (isFormSubmitted && !loading) {
       if (isError) {
@@ -190,7 +192,7 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
       updatedPaidforTransits.push({
         ...transit,
         paidAmount:
-          remainingAmount >= 0 ? transit.cost : transit.cost + remainingAmount,
+          remainingAmount >= 0 ? transit.cost - Number(transit.paidAmount) : transit.cost - Number(transit.paidAmount) + remainingAmount,
         paymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
       });
       console.log(remainingAmount);

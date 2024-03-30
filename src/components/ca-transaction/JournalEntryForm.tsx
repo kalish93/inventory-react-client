@@ -142,6 +142,7 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
         bankId: values.chartofAccountId1,
         date: values.date,
         debit: values.debit,
+        number: values.journalEntryNumber,
         credit: null,
         transactionRemark: values.transactionRemark,
         type: "Journal Entry",
@@ -152,6 +153,7 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
         date: values.date,
         debit: null,
         credit: values.credit,
+        number: values.journalEntryNumber,
         transactionRemark: values.transactionRemark,
         type: "Journal Entry",
         accountPayableRecievableDetail: values.accountPayableRecievableDetail,
@@ -163,7 +165,6 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
         payment: flag ? values.credit : null,
       };
 
-      console.log(formDataToSend1, formDataToSend2, formDataToSend3);
       dispatch(createCATransaction(formDataToSend1));
       dispatch(createCATransaction(formDataToSend2));
       dispatch(createBankTransaction(formDataToSend3));
@@ -211,225 +212,235 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Journal Entry Form
             </Typography>
-            <div style={{display: "flex",
+            <div
+              style={{
+                display: "flex",
                 justifyContent: "space-between",
                 marginTop: "20px",
-                gap:'1rem'
-                }}>
-            <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              minWidth: "47%",
-            }}>
-            <TextField
-              name="journalEntryNumber"
-              label="Journal Entry Number"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              onChange={formik.handleChange}
-              value={formik.values.journalEntryNumber}
-              required
-              error={
-                formik.touched.journalEntryNumber &&
-                !formik.values.journalEntryNumber
-              }
-              onBlur={formik.handleBlur}
-              helperText={
-                formik.touched.journalEntryNumber &&
-                (!formik.values.journalEntryNumber as React.ReactNode)
-              }
-            />
-
-            <Typography
-              style={{ marginTop: "10px", marginBottom: "10px" }}
-            ></Typography>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <Autocomplete
-                style={{ width: "75%" }}
-                options={banks}
-                getOptionLabel={(option) => option.name}
-                value={
-                  banks.find(
-                    (d: { id: string }) =>
-                      d.id === formik.values.chartofAccountId1
-                  ) || null
-                }
-                onChange={(event, newValue) => {
-                  formik.setFieldValue(
-                    "chartofAccountId1",
-                    newValue ? newValue.id : ""
-                  );
+                gap: "1rem",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  minWidth: "47%",
                 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="CA Name"
-                    variant="outlined"
-                    fullWidth
-                    required
-                    value={formik.values.chartofAccountId1}
-                    onChange={formik.handleChange}
-                    error={
-                      formik.touched.chartofAccountId1 &&
-                      !formik.values.chartofAccountId1
-                    }
-                    onBlur={formik.handleBlur}
-                    helperText={
-                      formik.touched.chartofAccountId1 &&
-                      (!formik.values.chartofAccountId1 as React.ReactNode)
-                    }
-                  />
-                )}
-              />
-              <FormControl sx={{ m: 1 }} variant="standard">
-                <Select
-                  labelId="demo-customized-select-label"
-                  id="demo-customized-select"
-                  value={flag ? 2 : 1}
-                  onChange={() => handleChange()}
-                  input={<BootstrapInput />}
-                >
-                  <MenuItem value={1}>Debit</MenuItem>
-                  <MenuItem value={2}>Credit</MenuItem>
-                </Select>
-              </FormControl>
-            </div>
-            <Typography
-              style={{ marginTop: "10px", marginBottom: "10px" }}
-            ></Typography>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <Autocomplete
-                style={{ width: "75%" }}
-                options={cashOfAccounts}
-                getOptionLabel={(option) => option.name}
-                value={
-                  cashOfAccounts.find(
-                    (d: { id: string }) =>
-                      d.id === formik.values.chartofAccountId2
-                  ) || null
-                }
-                onChange={(event, newValue) => {
-                  formik.setFieldValue(
-                    "chartofAccountId2",
-                    newValue ? newValue.id : ""
-                  );
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="CA Name"
-                    variant="outlined"
-                    fullWidth
-                    required
-                    value={formik.values.chartofAccountId2}
-                    onChange={formik.handleChange}
-                    error={
-                      formik.touched.chartofAccountId2 &&
-                      !formik.values.chartofAccountId2
-                    }
-                    onBlur={formik.handleBlur}
-                    helperText={
-                      formik.touched.chartofAccountId2 &&
-                      (!formik.values.chartofAccountId2 as React.ReactNode)
-                    }
-                  />
-                )}
-              />
-              <FormControl sx={{ m: 1 }} variant="standard">
-                <Select
-                  labelId="demo-customized-select-label"
-                  id="demo-customized-select"
-                  value={flag ? 1 : 2}
-                  onChange={() => handleChange()}
-                  input={<BootstrapInput />}
-                >
-                  <MenuItem value={1}>Debit</MenuItem>
-                  <MenuItem value={2}>Credit</MenuItem>
-                </Select>
-              </FormControl>
-            </div>
-            <TextField
-              name="transactionRemark"
-              label="Transaction Remark"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              onChange={formik.handleChange}
-              value={formik.values.transactionRemark}
-              error={
-                formik.touched.transactionRemark &&
-                !formik.values.transactionRemark
-              }
-              onBlur={formik.handleBlur}
-              helperText={
-                formik.touched.transactionRemark &&
-                (!formik.values.transactionRemark as React.ReactNode)
-              }
-            />
-            </div>
-            <div>
-            <TextField
-              name="date"
-              label="Transaction Date"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              type="date"
-              value={dayjs(formik.values.date).format("YYYY-MM-DD")}
-              onChange={formik.handleChange}
-              error={formik.touched.date && !formik.values.date}
-              onBlur={formik.handleBlur}
-              helperText={
-                formik.touched.date && !formik.values.date && "Date is required"
-              }
-              required
-            />
-            <TextField
-              name="debit"
-              label="Debit"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              onChange={formik.handleChange}
-              value={formik.values.debit}
-              required
-              error={formik.touched.debit && !formik.values.debit}
-              onBlur={formik.handleBlur}
-              helperText={
-                formik.touched.debit &&
-                (!formik.values.debit as React.ReactNode)
-              }
-            />
+              >
+                <TextField
+                  name="journalEntryNumber"
+                  label="Journal Entry Number"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  onChange={formik.handleChange}
+                  value={formik.values.journalEntryNumber}
+                  required
+                  error={
+                    formik.touched.journalEntryNumber &&
+                    !formik.values.journalEntryNumber
+                  }
+                  onBlur={formik.handleBlur}
+                  helperText={
+                    formik.touched.journalEntryNumber &&
+                    (!formik.values.journalEntryNumber as React.ReactNode)
+                  }
+                />
 
-            <TextField
-              name="credit"
-              label="Credit"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              onChange={formik.handleChange}
-              required
-              value={formik.values.credit}
-              error={formik.touched.credit && !formik.values.credit}
-              onBlur={formik.handleBlur}
-              helperText={
-                formik.touched.credit &&
-                (!formik.values.credit as React.ReactNode)
-              }
-            />
+                <Typography
+                  style={{ marginTop: "10px", marginBottom: "10px" }}
+                ></Typography>
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <Autocomplete
+                    style={{ width: "75%" }}
+                    options={banks}
+                    getOptionLabel={(option) => option.name}
+                    value={
+                      banks.find(
+                        (d: { id: string }) =>
+                          d.id === formik.values.chartofAccountId1
+                      ) || null
+                    }
+                    onChange={(event, newValue) => {
+                      formik.setFieldValue(
+                        "chartofAccountId1",
+                        newValue ? newValue.id : ""
+                      );
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Bank Name"
+                        variant="outlined"
+                        fullWidth
+                        required
+                        value={formik.values.chartofAccountId1}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.chartofAccountId1 &&
+                          !formik.values.chartofAccountId1
+                        }
+                        onBlur={formik.handleBlur}
+                        helperText={
+                          formik.touched.chartofAccountId1 &&
+                          (!formik.values.chartofAccountId1 as React.ReactNode)
+                        }
+                      />
+                    )}
+                  />
+                  <FormControl sx={{ m: 1 }} variant="standard">
+                    <Select
+                      labelId="demo-customized-select-label"
+                      id="demo-customized-select"
+                      value={flag ? 2 : 1}
+                      onChange={() => handleChange()}
+                      input={<BootstrapInput />}
+                    >
+                      <MenuItem value={1}>Debit</MenuItem>
+                      <MenuItem value={2}>Credit</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+                <Typography
+                  style={{ marginTop: "10px", marginBottom: "10px" }}
+                ></Typography>
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <Autocomplete
+                    style={{ width: "75%" }}
+                    options={cashOfAccounts}
+                    getOptionLabel={(option) => option.name}
+                    value={
+                      cashOfAccounts.find(
+                        (d: { id: string }) =>
+                          d.id === formik.values.chartofAccountId2
+                      ) || null
+                    }
+                    onChange={(event, newValue) => {
+                      formik.setFieldValue(
+                        "chartofAccountId2",
+                        newValue ? newValue.id : ""
+                      );
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="CA Name"
+                        variant="outlined"
+                        fullWidth
+                        required
+                        value={formik.values.chartofAccountId2}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.chartofAccountId2 &&
+                          !formik.values.chartofAccountId2
+                        }
+                        onBlur={formik.handleBlur}
+                        helperText={
+                          formik.touched.chartofAccountId2 &&
+                          (!formik.values.chartofAccountId2 as React.ReactNode)
+                        }
+                      />
+                    )}
+                  />
+                  <FormControl sx={{ m: 1 }} variant="standard">
+                    <Select
+                      labelId="demo-customized-select-label"
+                      id="demo-customized-select"
+                      value={flag ? 1 : 2}
+                      onChange={() => handleChange()}
+                      input={<BootstrapInput />}
+                    >
+                      <MenuItem value={1}>Debit</MenuItem>
+                      <MenuItem value={2}>Credit</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+                <TextField
+                  name="transactionRemark"
+                  label="Transaction Remark"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  onChange={formik.handleChange}
+                  value={formik.values.transactionRemark}
+                  error={
+                    formik.touched.transactionRemark &&
+                    !formik.values.transactionRemark
+                  }
+                  onBlur={formik.handleBlur}
+                  helperText={
+                    formik.touched.transactionRemark &&
+                    (!formik.values.transactionRemark as React.ReactNode)
+                  }
+                />
+              </div>
+              <div>
+                <TextField
+                  name="date"
+                  label="Transaction Date"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  type="date"
+                  value={dayjs(formik.values.date).format("YYYY-MM-DD")}
+                  onChange={formik.handleChange}
+                  error={formik.touched.date && !formik.values.date}
+                  onBlur={formik.handleBlur}
+                  helperText={
+                    formik.touched.date &&
+                    !formik.values.date &&
+                    "Date is required"
+                  }
+                  required
+                />
+                <TextField
+                  name="debit"
+                  label="Debit"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  onChange={formik.handleChange}
+                  value={formik.values.debit}
+                  required
+                  error={formik.touched.debit && !formik.values.debit}
+                  onBlur={formik.handleBlur}
+                  helperText={
+                    formik.touched.debit &&
+                    (!formik.values.debit as React.ReactNode)
+                  }
+                />
 
-            <TextField
-              name="accountPayableRecievableDetail"
-              label="Account Receivable/Payable details"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              onChange={formik.handleChange}
-              value={formik.values.accountPayableRecievableDetail}
-            />
-            </div>
+                <TextField
+                  name="credit"
+                  label="Credit"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  onChange={formik.handleChange}
+                  required
+                  value={formik.values.credit}
+                  error={formik.touched.credit && !formik.values.credit}
+                  onBlur={formik.handleBlur}
+                  helperText={
+                    formik.touched.credit &&
+                    (!formik.values.credit as React.ReactNode)
+                  }
+                />
+
+                <TextField
+                  name="accountPayableRecievableDetail"
+                  label="Account Receivable/Payable details"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  onChange={formik.handleChange}
+                  value={formik.values.accountPayableRecievableDetail}
+                />
+              </div>
             </div>
             <Button
               variant="contained"

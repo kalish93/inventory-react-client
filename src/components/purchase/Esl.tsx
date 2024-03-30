@@ -65,10 +65,12 @@ const Esl = () => {
               <TableRow key={item.id}>
                 <TableCell>{dayjs(item.date).format("YYYY-MM-DD")}</TableCell>
                 <TableCell>{item.cost}</TableCell>
-                <TableCell>{item.purchase.truckNumber}</TableCell>
-                <TableCell>{item?.productPurchase?.declaration?.number}</TableCell>
-                <TableCell>{item.unitEslCost.toFixed(2)}</TableCell>
-                <TableCell>{item.purchase.number}</TableCell>
+                <TableCell>{item.purchase?.truckNumber}</TableCell>
+                <TableCell>
+                  {item?.productPurchase?.declaration?.number}
+                </TableCell>
+                <TableCell>{item.unitEslCost?.toFixed(2)}</TableCell>
+                <TableCell>{item.purchase?.number}</TableCell>
                 <TableCell>{item.type}</TableCell>
                 <TableCell>{item.paidAmount}</TableCell>
                 <TableCell>{item.paymentStatus}</TableCell>
