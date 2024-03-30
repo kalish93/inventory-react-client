@@ -174,7 +174,7 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
     let i = 0;
     while (remainingAmount > 0 && i < unpaidESL.length) {
       const esl = unpaidESL[i];
-      remainingAmount -= esl.cost - esl.paidAmount;
+      remainingAmount -= esl.cost - Number(esl.paidAmount);
 
       updatedPaidforEsls.push({
         ...esl,

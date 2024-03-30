@@ -169,9 +169,9 @@ const SaleDetail = () => {
             {sale.saleDetails.map((item: any) => (
               <TableRow key={item.id}>
                 <TableCell>{item.product.name}</TableCell>
-                <TableCell>{item.saleQuantity}</TableCell>
-                <TableCell>{item.saleUnitPrice}</TableCell>
-                <TableCell>{item.totalSales}</TableCell>
+                <TableCell>{item.saleQuantity.toLocaleString()}</TableCell>
+                <TableCell>{item.saleUnitPrice.toLocaleString()}</TableCell>
+                <TableCell>{item.totalSales.toLocaleString()}</TableCell>
                 <TableCell>{item.unitCostOfGoods.toFixed(2)}</TableCell>
                 <TableCell>{item.declaration.number}</TableCell>
                 <TableCell>{item.purchase.number}</TableCell>

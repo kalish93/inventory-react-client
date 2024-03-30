@@ -551,7 +551,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
 
             <TextField
               name='purchaseUnitPrice'
-              label="Purchase Unit Price"
+              label="Purchase Unit Price (USD)"
               variant="outlined"
               fullWidth
               margin="normal"

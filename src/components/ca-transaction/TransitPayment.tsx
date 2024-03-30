@@ -185,7 +185,7 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
     let i = 0;
     while (remainingAmount > 0 && i < unpaidTransits.length) {
       const transit = unpaidTransits[i];
-      remainingAmount -= transit.cost - transit.paidAmount;
+      remainingAmount -= transit.cost - Number(transit.paidAmount);
 
       updatedPaidforTransits.push({
         ...transit,

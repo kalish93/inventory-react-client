@@ -126,6 +126,7 @@ const CATransactionsList = () => {
     setAnchorEl(null);
   };
 
+  console.log("CATransactions", CATransactions);
   return (
     <div>
       {hasPermission(PERMISSIONS.CreateCaTransaction) && (
@@ -274,12 +275,11 @@ const CATransactionsList = () => {
                         : null}
                     </TableCell>
                     <TableCell>{ca.remark}</TableCell>
-                    <TableCell>{ca.debit}</TableCell>
-                    <TableCell>{ca.credit}</TableCell>
+                    <TableCell>{ca.debit?.toLocaleString()}</TableCell>
+                    <TableCell>{ca.credit?.toLocaleString()}</TableCell>
                     <TableCell>
-                      {ca.productPurchase && ca.productPurchase.product
-                        ? ca.productPurchase.product.name
-                        : null}
+                      {ca.productPurchase?.product?.name ??
+                        ca.saleDetail?.product?.name}
                     </TableCell>
                     <TableCell>
                       {ca.customer
