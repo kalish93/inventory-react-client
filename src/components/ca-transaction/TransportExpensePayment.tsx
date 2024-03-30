@@ -216,7 +216,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
     console.log(currentUnpaidTransports)
     while (remainingAmount > 0 && i < currentUnpaidTransports.length) {
       const transport = currentUnpaidTransports[i];
-      remainingAmount -= transport.cost - transport.paidAmount;
+      remainingAmount -= transport.cost - Number(transport.paidAmount);
 
       updatedPaidforTransports.push({
         ...transport,

@@ -65,10 +65,10 @@ const PurchaseDetail = () => {
               <TableRow key={item.id}>
                 <TableCell>{item.declaration.number}</TableCell>
                 <TableCell>{item.product.name}</TableCell>
-                <TableCell>{item.purchaseQuantity}</TableCell>
-                <TableCell>{item.purchaseUnitPriceETB}</TableCell>
-                <TableCell>{item.purchaseUnitPriceUSD}</TableCell>
-                <TableCell>{item.purchaseTotalETB}</TableCell>
+                <TableCell>{item.purchaseQuantity.toLocaleString()}</TableCell>
+                <TableCell>{item.purchaseUnitPriceETB.toLocaleString()}</TableCell>
+                <TableCell>{item.purchaseUnitPriceUSD.toLocaleString()}</TableCell>
+                <TableCell>{item.purchaseTotalETB.toLocaleString()}</TableCell>
                 <TableCell>{item.purchaseUnitCostOfGoods.toFixed(2)}</TableCell>
               </TableRow>
             ))}
