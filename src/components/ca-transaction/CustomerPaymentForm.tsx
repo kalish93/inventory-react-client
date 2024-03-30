@@ -178,7 +178,7 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
       //
       console.log(remainingAmount, totalAmount, sale.paidAmount);
 
-      remainingAmount -= totalAmount - sale.paidAmount;
+      remainingAmount -= totalAmount - Number(sale.paidAmount);
       console.log(remainingAmount)
       updatedPaidforSales.push({
         ...sale,
