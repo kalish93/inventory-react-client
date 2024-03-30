@@ -162,7 +162,7 @@ const DeclarationDetail = () => {
             {declaration.declarationProducts.map((item: any) => (
               <TableRow key={item.id}>
                 <TableCell>{item.product.name}</TableCell>
-                <TableCell>{item.declarationQuantity}</TableCell>
+                <TableCell>{item.declarationQuantity.toLocaleString()}</TableCell>
                 <TableCell>{item.totalIncomeTax}</TableCell>
                 <TableCell>{item.unitIncomeTax.toFixed(2)}</TableCell>
                 <TableCell>{item.purchasedQuantity}</TableCell>
