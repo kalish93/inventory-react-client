@@ -105,6 +105,9 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
     (purchase: any) => purchase.paymentStatus !== ""
   );
 
+  unpaidTransports.reverse();
+  paidTransports.reverse();
+
   useEffect(() => {
     if (isFormSubmitted && !loading) {
       if (isError) {
