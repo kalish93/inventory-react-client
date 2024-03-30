@@ -59,8 +59,8 @@ const Transport = () => {
               <TableCell>Transport Cost</TableCell>
               <TableCell>Truck Number</TableCell>
               <TableCell>Declaration Number</TableCell>
-              <TableCell>Purchase Number</TableCell>
               <TableCell>Unit Transport Cost</TableCell>
+              <TableCell>Purchase Number</TableCell>
               <TableCell>Type</TableCell>
               <TableCell>Amount Paid</TableCell>
               <TableCell>Payment Status</TableCell>
