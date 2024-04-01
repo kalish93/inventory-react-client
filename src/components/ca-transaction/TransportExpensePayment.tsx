@@ -93,7 +93,8 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
   );
 
   const unpaidTransports = transports.filter(
-    (transport: any) => transport.paymentStatus === "Incomplete" ||
+    (transport: any) =>
+      transport.paymentStatus === "Incomplete" ||
       transport.paymentStatus === "Partially Complete"
   );
 
@@ -150,6 +151,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
         supplierId: TransporterSupplier.id,
         purchaseId: values.chartofAccountId2,
         type: "Supplier Payment",
+        transactionRemark: values.transactionRemark,
       };
 
       const formDataToSend2 = {
@@ -161,6 +163,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
         supplierId: TransporterSupplier.id,
         purchaseId: values.chartofAccountId2,
         type: "Supplier Payment",
+        transactionRemark: values.transactionRemark,
       };
 
       const formDataToSend3 = {
@@ -200,12 +203,17 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
         transport.purchase.id === formik.values.chartofAccountId2
     );
 
+    const currentTransports = transports.filter(
+      (transport: any) =>
+        transport.purchase.id === formik.values.chartofAccountId2
+    );
+
     const currentPaidTransports = paidTransports.filter(
       (transport: any) =>
         transport.purchase.id === formik.values.chartofAccountId2
     );
 
-    const totalAmount = currentUnpaidTransports.reduce(
+    const totalAmount = currentTransports.reduce(
       (acc: number, transport: any) => acc + transport.cost,
       0
     );
@@ -220,7 +228,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
     let remainingAmount = formik.values.amount as unknown as number;
     let i = 0;
     const updatedPaidforTransports = [];
-    console.log(currentUnpaidTransports)
+    console.log(currentUnpaidTransports);
     while (remainingAmount > 0 && i < currentUnpaidTransports.length) {
       const transport = currentUnpaidTransports[i];
       remainingAmount -= transport.cost - Number(transport.paidAmount);
@@ -229,8 +237,8 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
         ...transport,
         paidAmount:
           remainingAmount >= 0
-            ? transport.cost
-            : transport.cost + remainingAmount,
+            ? transport.cost - Number(transport.paidAmount)
+            : transport.cost - Number(transport.paidAmount) + remainingAmount,
         paymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
       });
       i++;
