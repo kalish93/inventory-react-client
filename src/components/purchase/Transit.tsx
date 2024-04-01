@@ -72,7 +72,7 @@ const Transit = () => {
               <TableCell>{item.cost}</TableCell>
               <TableCell>{item.purchase.truckNumber}</TableCell>
               <TableCell>{item?.productPurchase?.declaration?.number}</TableCell>
-              <TableCell>{item.unitTransitCost.toFixed(2)}</TableCell>
+              <TableCell>{item.unitTransitCost?.toFixed(2)}</TableCell>
               <TableCell>{item.purchase.number}</TableCell>
               <TableCell>{item.type}</TableCell>
               <TableCell>{item.paidAmount}</TableCell>
