@@ -17,6 +17,7 @@ import dashboardReducer from '../features/dashboard/dashboardSlice';
 import permissionReducer from '../features/permission/permissionSlice';
 import bankReducer from '../features/bank/bankSlice';
 import reportReducer from '../features/report/reportSlice';
+import provisionReducer from '../features/provision/provisionSlice';
 
 const store = configureStore({
   reducer: {
@@ -38,6 +39,7 @@ const store = configureStore({
     permission: permissionReducer,
     bank: bankReducer,
     report: reportReducer,
+    provision: provisionReducer,
   },
 });
 

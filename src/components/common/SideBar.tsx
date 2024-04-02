@@ -27,7 +27,7 @@ import { Link, useLocation } from "react-router-dom";
 import { hasPermission } from "../../utils/checkPermission";
 import { PERMISSIONS } from "../../core/permissions";
 import logo from '../../assets/logo-1.png'
-
+import FactCheckIcon from '@mui/icons-material/FactCheck';
 
 // const drawerWidth = 240;
 
@@ -295,6 +295,20 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
               <PaidIcon />
             </ListItemIcon>
             <ListItemText primary="Banks" />
+          </ListItem>
+        )}
+        {hasPermission(PERMISSIONS.GetProvisions) && (
+          <ListItem
+            button
+            component={Link}
+            to="/provisions"
+            key="Provisions"
+            selected={isLinkActive("/provisions")}
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <FactCheckIcon />
+            </ListItemIcon>
+            <ListItemText primary="Provisions" />
           </ListItem>
         )}
       </List>
