@@ -87,5 +87,6 @@ export const PERMISSIONS = {
     DeleteDeclarationDetail: "DeleteDeclarationDetail",
     UpdateDeclarationDetail: "UpdateDeclarationDetail",
     CreateDeclarationDetail : "CreateDeclarationDetail",
+    GetProvisions : "GetProvisions",
 };
   

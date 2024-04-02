@@ -25,6 +25,7 @@ import { PERMISSIONS } from "../core/permissions";
 import BanksList from "./bank/bankList";
 import { jwtDecode } from "jwt-decode";
 import BankDetail from "./bank/bankDetail";
+import ProvisionList from "./provision/ProvisionList";
 
 const drawerWidth = 240;
 
@@ -277,6 +278,15 @@ const Home = () => {
             element={
               <ProtectedRoute
                 element={<BankDetail />}
+                permission={PERMISSIONS.GetBanks}
+              />
+            }
+          />
+          <Route
+            path="/provisions"
+            element={
+              <ProtectedRoute
+                element={<ProvisionList />}
                 permission={PERMISSIONS.GetBanks}
               />
             }

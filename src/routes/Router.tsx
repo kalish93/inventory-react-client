@@ -22,6 +22,7 @@ import ChangePassword from "../components/auth/changePassword";
 import PermissionList from "../components/auth/PermissionList";
 import BanksList from "../components/bank/bankList";
 import BankDetail from "../components/bank/bankDetail";
+import ProvisionList from "../components/provision/ProvisionList";
 
 const routes = createBrowserRouter([
   {
@@ -103,6 +104,10 @@ const routes = createBrowserRouter([
       {
         path: "banks/:id",
         element: <BankDetail />,
+      },
+      {
+        path: "provisions",
+        element: <ProvisionList />,
       },
     ],
   },

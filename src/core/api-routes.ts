@@ -29,3 +29,4 @@ export const ESL_URL = `${BASE_URL}/esl`
 export const TRANSIT_FEES_URL = `${BASE_URL}/transit-fees`
 export const DECLARATION_DETAIL_URL = `${BASE_URL}/declaration-detail`
 export const SALE_DETAIL_URL = `${BASE_URL}/sale-detail`
+export const PROVISIONS_URL = `${BASE_URL}/provisions`
