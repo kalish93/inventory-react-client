@@ -95,16 +95,15 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose, selectedPr
   }, [selectedProduct]);
 
   useEffect(() => {
-    if (successMessage && isFormSubmitted) {
-      const severity = isError ? 'error' : 'success';
-      const message = isError ? (error || 'Unknown error') : successMessage;
-      formik.resetForm();
-      formik.setSubmitting(false);
-      handleClose();
-      showSnackbar(message, severity);
+    if (isFormSubmitted && !loading) {
+      if (isError) {
+        showSnackbar(error || "Unknown error", "error");
+      } else {
+        showSnackbar(successMessage as string, "success");
+      }
+      setIsFormSubmitted(false);
     }
-    setIsFormSubmitted(false);
-  }, [error, isError, loading, successMessage, isFormSubmitted]);
+  }, [error, isError, loading, isFormSubmitted, successMessage]);
   
   const handleCancel = () => {
     handleClose();
