@@ -268,19 +268,26 @@ const CATransactionsList = () => {
                     <TableCell>{dayjs(ca.date).format("YYYY-MM-DD")}</TableCell>
                     <TableCell>{ca.type}</TableCell>
                     <TableCell>
-                      {ca.purchase?.number ??
-                        ca.sale?.invoiceNumber ??
-                        ca.number}
+                      {ca.purchase?.number ||
+                        ca.sale?.invoiceNumber ||
+                        (ca.number === 1
+                          ? ca.number
+                          : ca.number === 0
+                          ? "START"
+                          : null)}
                     </TableCell>
                     <TableCell>{ca.remark}</TableCell>
                     <TableCell>{ca.debit?.toLocaleString()}</TableCell>
                     <TableCell>{ca.credit?.toLocaleString()}</TableCell>
                     <TableCell>
                       {ca.productPurchase?.product?.name ??
-                        ca.saleDetail?.product?.name}
+                        ca.saleDetail?.product?.name ??
+                        ca.productDeclaration?.product?.name}
                     </TableCell>
                     <TableCell>
-                      {ca.customer ? ca.customer?.firstName + " " + ca.customer?.lastName: null}
+                      {ca.customer
+                        ? ca.customer?.firstName + " " + ca.customer?.lastName
+                        : null}
                     </TableCell>
                     <TableCell>{ca.supplier?.name}</TableCell>
                     <TableCell>
