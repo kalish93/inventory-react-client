@@ -9,6 +9,7 @@ import {
   Alert,
   Snackbar,
   Autocomplete,
+  Card,
 } from "@mui/material";
 import { AppDispatch } from "../../app/store";
 import { selectTransactions } from "../../features/ca-transaction/transactionSlice";
@@ -24,16 +25,9 @@ import {
   createBankTransaction,
   getBanks,
 } from "../../features/bank/bankActions";
+import { useNavigate } from "react-router-dom";
 
-interface ProductFormProps {
-  open: boolean;
-  handleClose: () => void;
-}
-
-const ExpensesPaymentForm: React.FC<ProductFormProps> = ({
-  open,
-  handleClose,
-}) => {
+const ExpensesPaymentForm = () => {
   const dispatch = useDispatch<AppDispatch>();
   const cashOfAccounts = useSelector(
     (state: any) => state.cashOfAccount.cashOfAccounts.items
@@ -47,6 +41,7 @@ const ExpensesPaymentForm: React.FC<ProductFormProps> = ({
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const { isError, error, loading } = useSelector(selectTransactions);
+  const navigate = useNavigate();
 
   const showSnackbar = (message: string, severity: "success" | "error") => {
     setSnackbarMessage(message);
@@ -135,61 +130,28 @@ const ExpensesPaymentForm: React.FC<ProductFormProps> = ({
         dispatch(createBankTransaction(formDataToSend4)),
       ]);
       setIsFormSubmitted(true);
-      handleClose();
       formik.resetForm();
+      navigate('/ca-transactions')
     },
   });
 
-  const handleCancel = () => {
-    handleClose();
-    formik.resetForm();
-  };
-
   return (
-    <div>
-      <Modal
-        open={open}
-        onClose={(e, reason) => {
-          if (reason === "backdropClick") {
-            return;
-          }
-          handleClose();
-        }}
-      >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 1000,
-            maxHeight: "80vh",
-            overflowY: "auto",
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
+    <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
+        <Card
+          style={{
+            padding: '20px',
+            maxWidth: '600px'
           }}
         >
           <form onSubmit={formik.handleSubmit}>
-            <Typography variant="h6" component="div">
+            <Typography variant="h6" component="div" style={{textAlign:'center', marginBottom:'20px'}}>
               Operation Expenses Payment Form
             </Typography>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginTop: "20px",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1rem",
-                  minWidth: "47%",
-                }}
-              >
+            
                 <Autocomplete
+                style={{
+                  marginBottom:'20px'
+                }}
                   options={banks}
                   getOptionLabel={(option) => option.name}
                   value={
@@ -279,9 +241,9 @@ const ExpensesPaymentForm: React.FC<ProductFormProps> = ({
                   }
                   required
                 />
-              </div>
 
-              <div style={{ maxWidth: "47%" }}>
+
+             
                 <TextField
                   name="amount"
                   label="Amount"
@@ -308,8 +270,6 @@ const ExpensesPaymentForm: React.FC<ProductFormProps> = ({
                   onChange={formik.handleChange}
                   value={formik.values.transactionRemark}
                 />
-              </div>
-            </div>
 
             <Button
               variant="contained"
@@ -319,17 +279,8 @@ const ExpensesPaymentForm: React.FC<ProductFormProps> = ({
             >
               Submit
             </Button>
-            <Button
-              variant="outlined"
-              color="warning"
-              onClick={handleCancel}
-              sx={{ marginLeft: 1 }}
-            >
-              Cancel
-            </Button>
           </form>
-        </Box>
-      </Modal>
+        </Card>
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}

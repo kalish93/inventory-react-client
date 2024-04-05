@@ -4,6 +4,7 @@ import { AppDispatch } from "../../app/store";
 import { selectPurchase } from "../../features/purchase/purchaseSlice";
 
 import {
+  Button,
   Paper,
   Table,
   TableBody,
@@ -15,6 +16,7 @@ import {
 } from "@mui/material";
 import { getTransportCost } from "../../features/purchase/purchaseActions";
 import dayjs from "dayjs";
+import TransportExpensePayment from "../ca-transaction/TransportExpensePayment";
 
 const Transport = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -26,6 +28,7 @@ const Transport = () => {
   } = purchaseState.transportCosts;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     dispatch(getTransportCost(page + 1, rowsPerPage));
@@ -40,8 +43,19 @@ const Transport = () => {
     setPage(0);
   };
 
+  const handleCloseModal = () => {
+    setOpenModal(false)
+  }
+
+  const handleOpenModal = () => {
+    setOpenModal(true)
+  }
+
   return (
     <div>
+      <Button variant="contained" color="primary" onClick={handleOpenModal} style={{marginLeft:'10px'}}>
+       Add Transport Payment
+      </Button>
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
@@ -85,6 +99,10 @@ const Transport = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <TransportExpensePayment
+        open={openModal}
+        handleClose={() => handleCloseModal()}
+      />
     </div>
   );
 };

@@ -30,6 +30,7 @@ import ConfirmationModal from "../common/confirmationModal";
 import { hasPermission } from "../../utils/checkPermission";
 import { PERMISSIONS } from "../../core/permissions";
 import UpdateDeclarationForm from "./UpdateDeclarationForm";
+import CustomTaxPayment from "../ca-transaction/CustomTaxPayment";
 
 const DeclarationList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -52,6 +53,7 @@ const DeclarationList = () => {
   const [selectedDeclaration, setSelectedDeclaration] = useState(null);
   const [isDeleteSubmitted, setIsDeleteSubmitted] = useState(false);
   const [openUpdateForm, setOpenUpdateForm] = useState(false); // State to control opening and closing of update form
+  const [openTransactionForm, setOpenTransactionForm] = useState(false);
 
   const openConfirmationModal = (event: any) => {
     event.preventDefault();
@@ -143,6 +145,14 @@ const DeclarationList = () => {
     setSelectedDeclaration(null);
   };
 
+  const handleOpenTransactionModal = () => {
+    setOpenTransactionForm(true);
+  };
+
+  const handleCloseTransactionModal = () => {
+    setOpenTransactionForm(false);
+  };
+
   return (
     <div>
       {hasPermission(PERMISSIONS.CreateDeclaration) && (
@@ -150,6 +160,9 @@ const DeclarationList = () => {
           Add Declaration
         </Button>
       )}
+      <Button variant="contained" color="primary" onClick={handleOpenTransactionModal} style={{marginLeft:'10px'}}>
+        Add Custom Tax Payment        
+      </Button>
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
@@ -249,6 +262,10 @@ const DeclarationList = () => {
         handleClose={handleCloseModal} // Close the update form
       />
 
+      <CustomTaxPayment
+        open={openTransactionForm}
+        handleClose={() => handleCloseTransactionModal()}
+      />
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}

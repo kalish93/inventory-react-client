@@ -24,6 +24,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ConfirmationModal from '../common/confirmationModal';
 import { hasPermission } from '../../utils/checkPermission';
 import { PERMISSIONS } from '../../core/permissions';
+import SupplierPaymentForm from '../ca-transaction/SupplierPaymentForm';
 
 const SupplierList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -121,6 +122,9 @@ const SupplierList = () => {
       {hasPermission(PERMISSIONS.CreateSupplier) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
        Add Supplier
       </Button>}
+      <Button variant="contained" color="primary" onClick={handleOpenModal} style={{marginLeft:'10px'}}>
+       Add Supplier Payment
+      </Button>
       <TablePagination
          rowsPerPageOptions={[5, 10, 25]}
          component="div"
@@ -179,6 +183,10 @@ const SupplierList = () => {
         </Table>
       </TableContainer>}
       <SupplierForm open={openModal} handleClose={handleCloseModal} selectedSupplier={selectedSupplier}/>
+      <SupplierPaymentForm
+        open={openModal}
+        handleClose={() => handleCloseModal()}
+      />
       <ConfirmationModal
         open={confirmationModalOpen}
         onClose={closeConfirmationModal}

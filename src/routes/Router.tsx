@@ -23,6 +23,7 @@ import PermissionList from "../components/auth/PermissionList";
 import BanksList from "../components/bank/bankList";
 import BankDetail from "../components/bank/bankDetail";
 import ProvisionList from "../components/provision/ProvisionList";
+import ExpensesPaymentForm from "../components/ca-transaction/ExpensesPaymentForm";
 
 const routes = createBrowserRouter([
   {
@@ -108,6 +109,10 @@ const routes = createBrowserRouter([
       {
         path: "provisions",
         element: <ProvisionList />,
+      },
+      {
+        path: "operation-expence-payment",
+        element: <ExpensesPaymentForm />,
       },
     ],
   },

@@ -24,6 +24,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ConfirmationModal from '../common/confirmationModal';
 import { hasPermission } from '../../utils/checkPermission';
 import { PERMISSIONS } from '../../core/permissions';
+import CustomerPaymentForm from '../ca-transaction/CustomerPaymentForm';
 
 const CustomerList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -32,6 +33,7 @@ const CustomerList = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openModal, setOpenModal] = useState(false);
+  const [openPaymentModal, setOpenPaymentModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -79,6 +81,14 @@ const CustomerList = () => {
     setOpenModal(true);
   };
 
+  const handleOpenPaymentModal = () => {
+    setOpenPaymentModal(true);
+  };
+
+  const handleClosePaymentModal = () => {
+    setOpenPaymentModal(false);
+  };
+
   const handleCloseModal = () => {
     setOpenModal(false);
     setSelectedCustomer(null);
@@ -124,6 +134,9 @@ const CustomerList = () => {
       {hasPermission(PERMISSIONS.CreateCustomer) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
        Add Customer
       </Button>}
+      <Button variant="contained" color="primary" onClick={handleOpenPaymentModal} style={{marginLeft:'10px'}}>
+       Add Customer Payment
+      </Button>
       <TablePagination
          rowsPerPageOptions={[5, 10, 25]}
          component="div"
@@ -183,7 +196,11 @@ const CustomerList = () => {
           </TableBody>
         </Table>
       </TableContainer>}
-      <CustomerForm open={openModal} handleClose={handleCloseModal} selectedCustomer={selectedCustomer} />
+      <CustomerForm open={openModal} handleClose={handleCloseModal} selectedCustomer={selectedCustomer}/>
+      <CustomerPaymentForm
+        open={openPaymentModal}
+        handleClose={() => handleClosePaymentModal()}
+      />
       <ConfirmationModal
         open={confirmationModalOpen}
         onClose={closeConfirmationModal}

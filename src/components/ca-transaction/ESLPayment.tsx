@@ -166,6 +166,7 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
+      dispatch(getEslCosts(1,10));
     },
   });
 

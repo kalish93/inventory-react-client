@@ -28,6 +28,7 @@ import { hasPermission } from "../../utils/checkPermission";
 import { PERMISSIONS } from "../../core/permissions";
 import logo from '../../assets/logo-1.png'
 import FactCheckIcon from '@mui/icons-material/FactCheck';
+import PaymentIcon from '@mui/icons-material/Payment';
 
 // const drawerWidth = 240;
 
@@ -264,6 +265,21 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
               <PaidIcon />
             </ListItemIcon>
             <ListItemText primary="CA Transactions" />
+          </ListItem>
+        )}
+
+        {hasPermission(PERMISSIONS.CreateCaTransaction) && (
+          <ListItem
+            button
+            component={Link}
+            to="/operation-expence-payment"
+            key="ExpensesPaymentForm"
+            selected={isLinkActive("/operation-expence-payment")}
+          >
+            <ListItemIcon sx={{ color: "inherit" }}>
+              <PaymentIcon />
+            </ListItemIcon>
+            <ListItemText primary="Add Operation Expenses Payment" />
           </ListItem>
         )}
 

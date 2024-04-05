@@ -175,6 +175,7 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
+      dispatch(getTransitFee(1,10));
     },
   });
 

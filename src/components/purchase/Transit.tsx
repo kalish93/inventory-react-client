@@ -4,6 +4,7 @@ import { AppDispatch } from "../../app/store";
 import { selectPurchase } from "../../features/purchase/purchaseSlice";
 
 import {
+  Button,
   Paper,
   Table,
   TableBody,
@@ -15,6 +16,7 @@ import {
 } from "@mui/material";
 import { getTransitFee, getTransportCost } from "../../features/purchase/purchaseActions";
 import dayjs from "dayjs";
+import TransitPayment from "../ca-transaction/TransitPayment";
 
 const Transit = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -26,6 +28,7 @@ const Transit = () => {
   } = purchaseState.transitFees;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     dispatch(getTransitFee(page + 1, rowsPerPage));
@@ -39,8 +42,19 @@ const Transit = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  const handleCloseModal = () => {
+    setOpenModal(false)
+  }
+
+  const handleOpenModal = () => {
+    setOpenModal(true)
+  }
+
   return (
     <div>
+      <Button variant="contained" color="primary" onClick={handleOpenModal} style={{marginLeft:'10px'}}>
+       Add Transit Payment
+      </Button>
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
@@ -82,6 +96,10 @@ const Transit = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <TransitPayment
+        open={openModal}
+        handleClose={() => handleCloseModal()}
+      />
     </div>
   );
 };

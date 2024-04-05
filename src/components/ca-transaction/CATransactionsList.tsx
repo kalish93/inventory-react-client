@@ -130,96 +130,6 @@ const CATransactionsList = () => {
   return (
     <div>
       {hasPermission(PERMISSIONS.CreateCaTransaction) && (
-        <ButtonGroup
-          style={{ display: "flex", justifyContent: "space-between" }}
-        >
-          <Button
-            id="demo-customized-button"
-            aria-controls={open ? "demo-customized-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-            variant="contained"
-            disableElevation
-            endIcon={<KeyboardArrowDownIcon />}
-            onClick={(event: React.MouseEvent<HTMLElement>) => {
-              setAnchorEl(event.currentTarget);
-            }}
-          >
-            Expense Types
-          </Button>
-
-          <StyledMenu
-            id="demo-customized-menu"
-            MenuListProps={{
-              "aria-labelledby": "demo-customized-button",
-            }}
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-          >
-            <MenuItem
-              onClick={() => {
-                handleClose();
-                handleOpenModal(1);
-              }}
-            >
-              Add Supplier Payment
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                handleClose();
-                handleOpenModal(2);
-              }}
-              disableRipple
-            >
-              Add Customer Payment
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                handleClose();
-                handleOpenModal(3);
-              }}
-              disableRipple
-            >
-              Add Operation Expenses Payment
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                handleClose();
-                handleOpenModal(4);
-              }}
-              disableRipple
-            >
-              Add Transport Payment
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                handleClose();
-                handleOpenModal(5);
-              }}
-              disableRipple
-            >
-              Add Custom Tax Payment
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                handleClose();
-                handleOpenModal(6);
-              }}
-              disableRipple
-            >
-              Add Transit Fees
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                handleClose();
-                handleOpenModal(7);
-              }}
-              disableRipple
-            >
-              Add ESL Warehouse Fees
-            </MenuItem>
-          </StyledMenu>
           <Button
             variant="contained"
             color="primary"
@@ -227,7 +137,6 @@ const CATransactionsList = () => {
           >
             Add Journal Enty
           </Button>
-        </ButtonGroup>
       )}
 
       {hasPermission(PERMISSIONS.GetCaTransactions) && (
@@ -303,39 +212,6 @@ const CATransactionsList = () => {
           </Table>
         </TableContainer>
       )}
-
-      <SupplierPaymentForm
-        open={openModal[1]}
-        handleClose={() => handleCloseModal(1)}
-      />
-
-      <CustomerPaymentForm
-        open={openModal[2]}
-        handleClose={() => handleCloseModal(2)}
-      />
-
-      <ExpensesPaymentForm
-        open={openModal[3]}
-        handleClose={() => handleCloseModal(3)}
-      />
-
-      <TransportExpensePayment
-        open={openModal[4]}
-        handleClose={() => handleCloseModal(4)}
-      />
-
-      <CustomTaxPayment
-        open={openModal[5]}
-        handleClose={() => handleCloseModal(5)}
-      />
-
-      <TransitPayment
-        open={openModal[6]}
-        handleClose={() => handleCloseModal(6)}
-      />
-
-      <ESLPayment open={openModal[7]} handleClose={() => handleCloseModal(7)} />
-
       <JournalEntryForm
         open={openModal[8]}
         handleClose={() => handleCloseModal(8)}
