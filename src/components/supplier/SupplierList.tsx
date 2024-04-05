@@ -41,6 +41,7 @@ const SupplierList = () => {
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
   const {isError, error, loading} = useSelector(selectSupplier);
   const [selectedSupplier, setSelectedSupplier] = useState(null);
+  const [openPaymentModal, setOpenPaymentModal] = useState(false);
 
   const openConfirmationModal = () => {
     setConfirmationModalOpen(true);
@@ -117,12 +118,20 @@ const SupplierList = () => {
     setSelectedSupplierId(null);
     setSelectedSupplier(null)
   };
+
+  const handleOpenPaymentModal = () => {
+    setOpenPaymentModal(true);
+  };
+
+  const handleClosePaymentModal = () => {
+    setOpenPaymentModal(false);
+  };
   return (
     <div>
       {hasPermission(PERMISSIONS.CreateSupplier) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
        Add Supplier
       </Button>}
-      <Button variant="contained" color="primary" onClick={handleOpenModal} style={{marginLeft:'10px'}}>
+      <Button variant="contained" color="primary" onClick={handleOpenPaymentModal} style={{marginLeft:'10px'}}>
        Add Supplier Payment
       </Button>
       <TablePagination
@@ -184,8 +193,8 @@ const SupplierList = () => {
       </TableContainer>}
       <SupplierForm open={openModal} handleClose={handleCloseModal} selectedSupplier={selectedSupplier}/>
       <SupplierPaymentForm
-        open={openModal}
-        handleClose={() => handleCloseModal()}
+        open={openPaymentModal}
+        handleClose={() => handleClosePaymentModal()}
       />
       <ConfirmationModal
         open={confirmationModalOpen}
