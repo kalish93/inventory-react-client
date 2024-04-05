@@ -79,7 +79,8 @@ const InventoryList = () => {
                 </TableCell>
                 <TableCell>{inventory.purchase?.number}</TableCell>
                 <TableCell>
-                  {dayjs(inventory.purchase?.date).format("YYYY-MM-DD")}
+                { inventory.productPurchase ?
+                new Date(inventory.productPurchase?.date).toLocaleDateString() : ''}
                 </TableCell>
                 <TableCell>
                   {inventory.productPurchase?.purchaseQuantity}
@@ -89,7 +90,8 @@ const InventoryList = () => {
                 </TableCell>
                 <TableCell>{inventory.sale?.invoiceNumber}</TableCell>
                 <TableCell>
-                  {dayjs(inventory.sale?.invoiceDate).format("YYYY-MM-DD")}
+                  {inventory.sale ?
+                  new Date(inventory?.sale?.invoiceDate).toLocaleDateString() : ''}
                 </TableCell>
                 <TableCell>{inventory.saleDetail?.saleQuantity}</TableCell>
                 <TableCell>{inventory.saleDetail?.saleUnitPrice}</TableCell>
