@@ -189,6 +189,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
+      dispatch(getTransportCost(1,10));
     },
   });
 

@@ -26,6 +26,7 @@ import BanksList from "./bank/bankList";
 import { jwtDecode } from "jwt-decode";
 import BankDetail from "./bank/bankDetail";
 import ProvisionList from "./provision/ProvisionList";
+import ExpensesPaymentForm from "./ca-transaction/ExpensesPaymentForm";
 
 const drawerWidth = 240;
 
@@ -287,7 +288,16 @@ const Home = () => {
             element={
               <ProtectedRoute
                 element={<ProvisionList />}
-                permission={PERMISSIONS.GetBanks}
+                permission={PERMISSIONS.GetProvisions}
+              />
+            }
+          />
+          <Route
+            path="/operation-expence-payment"
+            element={
+              <ProtectedRoute
+                element={<ExpensesPaymentForm />}
+                permission={PERMISSIONS.CreateCaTransaction}
               />
             }
           />

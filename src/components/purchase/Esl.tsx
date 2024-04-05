@@ -4,6 +4,7 @@ import { AppDispatch } from "../../app/store";
 import { selectPurchase } from "../../features/purchase/purchaseSlice";
 import { getEslCosts } from "../../features/purchase/purchaseActions";
 import {
+  Button,
   Paper,
   Table,
   TableBody,
@@ -14,6 +15,7 @@ import {
   TableRow,
 } from "@mui/material";
 import dayjs from "dayjs";
+import ESLPayment from "../ca-transaction/ESLPayment";
 
 const Esl = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -21,6 +23,7 @@ const Esl = () => {
   const { items: esl = [], currentPage, totalCount } = purchaseState.eslCosts;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     dispatch(getEslCosts(page + 1, rowsPerPage));
@@ -34,8 +37,20 @@ const Esl = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  
+  const handleCloseModal = () => {
+    setOpenModal(false)
+  }
+
+  const handleOpenModal = () => {
+    setOpenModal(true)
+  }
+
   return (
     <div>
+      <Button variant="contained" color="primary" onClick={handleOpenModal} style={{marginLeft:'10px'}}>
+       Add ESL Payment
+      </Button>
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
@@ -79,6 +94,7 @@ const Esl = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <ESLPayment open={openModal} handleClose={() => handleCloseModal()} />
     </div>
   );
 };
