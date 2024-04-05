@@ -84,7 +84,6 @@ const UpdateSaleForm: React.FC<UpdateSaleFormProps> = ({
 
   useEffect(() => {
     if (selectedSale) {
-      console.log(selectedSale);
       formik.setValues({
         invoiceNumber: selectedSale ? selectedSale.invoiceNumber : "",
         invoiceDate: selectedSale ? selectedSale.invoiceDate.split("T")[0] : "",
