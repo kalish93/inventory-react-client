@@ -45,6 +45,7 @@ const SalesList = () => {
   const { isError, error, loading } = useSelector(selectSale);
   const [selectedSale, setSelectedSale] = useState(null);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  const [deleteSubmitted, setDeleteSubmitted] = useState(false);
 
   const openConfirmationModal = () => {
     setConfirmationModalOpen(true);
@@ -67,15 +68,26 @@ const SalesList = () => {
   const handleDeleteSale = () => {
     handleMenuClose();
     if (selectedSaleId !== null) {
-      dispatch(deleteSale(selectedSaleId)).then(() => {
-        if (!isError && !loading) {
-          showSnackbar("sale deleted successfully", "success");
-        } else {
-          showSnackbar(error, "error");
-        }
+      dispatch(deleteSale(selectedSaleId)) 
+      .then(() => {
+        setDeleteSubmitted(true);
+      })
+      .catch(() => {
+        setDeleteSubmitted(true);
       });
     }
   };
+
+  useEffect(() => {
+    if (deleteSubmitted) {
+      if (error) {
+        showSnackbar(error, "error");
+      } else {
+        showSnackbar("Sale deleted successfully", "success");
+      }
+      setDeleteSubmitted(false);
+    }
+  }, [deleteSubmitted, error]);
 
   const handleMenuOpen = (event: any, saleId: any, sale: any) => {
     setAnchorEl(event.currentTarget);
