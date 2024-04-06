@@ -386,7 +386,7 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
                   fullWidth
                   margin="normal"
                   type="date"
-                  value={dayjs(formik.values.date).format("DD/MM/YYYY")}
+                  value={dayjs(formik.values.date).format("MM/DD/YYYY")}
                   onChange={formik.handleChange}
                   error={formik.touched.date && !formik.values.date}
                   onBlur={formik.handleBlur}

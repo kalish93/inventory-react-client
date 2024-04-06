@@ -323,7 +323,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 500,
+            width: 1000,
             maxHeight: "80vh",
             overflowY: "auto",
             bgcolor: "background.paper",
@@ -338,248 +338,264 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
           >
             Purchase Form
           </Typography>
-          <TextField
-            name="number"
-            label="Purchase/ Waybill Number"
-            variant="outlined"
-            type="number"
-            fullWidth
-            margin="normal"
-            onChange={handleChange}
-            required
-            error={touched.number && !formData.number}
-            onBlur={() => setTouched({ ...touched, number: true })}
-          />
-          {touched.number && !formData.number && (
-            <FormHelperText error>Purchase number is required</FormHelperText>
-          )}
-
-          <TextField
-            name="date"
-            label="Purchase Date"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            type="date"
-            value={formData.date}
-            onChange={handleChange}
-            required
-            error={touched.date && !formData.date}
-            onBlur={() => setTouched({ ...touched, date: true })}
-          />
-
-          <Autocomplete
-            options={drivers}
-            getOptionLabel={(option) => option.truckNumber}
-            value={
-              drivers.find(
-                (d: { truckNumber: string }) =>
-                  d.truckNumber === formData.truckNumber
-              ) || null
-            }
-            onChange={(event, newValue) => {
-              handleChange({
-                target: {
-                  name: "truckNumber",
-                  value: newValue ? newValue.truckNumber : "",
-                },
-              });
-            }}
-            renderInput={(params) => (
+          <div style={{ display: "flex", gap: "2.5rem" }}>
+            <div style={{ maxWidth: "33%" }}>
               <TextField
-                {...params}
-                label="Truck Number"
+                style={{ marginTop: "0" }}
+                name="number"
+                label="Purchase/ Waybill Number"
+                variant="outlined"
+                type="number"
+                fullWidth
+                margin="normal"
+                onChange={handleChange}
+                required
+                error={touched.number && !formData.number}
+                onBlur={() => setTouched({ ...touched, number: true })}
+              />
+              {touched.number && !formData.number && (
+                <FormHelperText error>
+                  Purchase number is required
+                </FormHelperText>
+              )}
+
+              <TextField
+                name="date"
+                label="Purchase Date"
                 variant="outlined"
                 fullWidth
+                margin="normal"
+                type="date"
+                value={formData.date}
+                onChange={handleChange}
                 required
-                error={touched.truckNumber && !formData.truckNumber}
-                onBlur={() => setTouched({ ...touched, truckNumber: true })}
+                error={touched.date && !formData.date}
+                onBlur={() => setTouched({ ...touched, date: true })}
               />
-            )}
-          />
 
-          <FormControl fullWidth variant="outlined" margin="normal">
-            <InputLabel id="supplier-label">Supplier</InputLabel>
-            <Select
-              labelId="supplier-label"
-              id="supplier"
-              name="supplierId"
-              value={formData.supplierId}
-              onChange={handleChange}
-              label="Supplier"
-              required
-            >
-              {suppliers.map((supplier: any) => (
-                <MenuItem key={supplier.id} value={supplier.id}>
-                  {supplier.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          {supplierCurrency === "USD" && (
-            <TextField
-              name="exchangeRate"
-              label="Exchange rate"
-              variant="outlined"
-              type="number"
-              fullWidth
-              margin="normal"
-              onChange={handleChange}
-              required
-              error={touched.exchangeRate && !formData.exchangeRate}
-              onBlur={() => setTouched({ ...touched, exchangeRate: true })}
-            />
-          )}
-          {touched.exchangeRate && !formData.exchangeRate && (
-            <FormHelperText error>Exchange rate is required</FormHelperText>
-          )}
-
-          <TextField
-            name="transportCost"
-            label="Transport Cost"
-            variant="outlined"
-            type="number"
-            fullWidth
-            margin="normal"
-            onChange={handleChange}
-            required
-            error={touched.transportCost && !formData.transportCost}
-            onBlur={() => setTouched({ ...touched, transportCost: true })}
-          />
-          {touched.transportCost && !formData.transportCost && (
-            <FormHelperText error>Transport cost is required</FormHelperText>
-          )}
-          <TextField
-            name="eslCustomCost"
-            label="ESL custom cost"
-            variant="outlined"
-            type="number"
-            fullWidth
-            margin="normal"
-            onChange={handleChange}
-            required
-            error={touched.eslCustomCost && !formData.eslCustomCost}
-            onBlur={() => setTouched({ ...touched, eslCustomCost: true })}
-          />
-          {touched.eslCustomCost && !formData.eslCustomCost && (
-            <FormHelperText error>ESL custom cost is required</FormHelperText>
-          )}
-
-          <TextField
-            name="transitFees"
-            label="Transit fees"
-            variant="outlined"
-            type="number"
-            fullWidth
-            margin="normal"
-            onChange={handleChange}
-            required
-            error={touched.transitFees && !formData.transitFees}
-            onBlur={() => setTouched({ ...touched, transitFees: true })}
-          />
-          {touched.transitFees && !formData.transitFees && (
-            <FormHelperText error>Transit fee is required</FormHelperText>
-          )}
-
-          <Typography>Add Products</Typography>
-
-          <div style={{ marginBottom: 15 }}>
-            <Autocomplete
-              options={declarations.filter((declaration: any) =>
-                declaration.declarationProducts.some(
-                  (product: any) => product.declarationBalance !== 0
-                )
-              )}
-              getOptionLabel={(option) => option.number}
-              value={
-                declarations.find(
-                  (d: { id: any }) => d.id === formData.declarationId
-                ) || null
-              }
-              onChange={(event, newValue) => {
-                handleChange({
-                  target: {
-                    name: "declarationId",
-                    value: newValue ? newValue.id : "",
-                  },
-                });
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Declaration Number"
-                  variant="outlined"
-                  fullWidth
+              <FormControl fullWidth variant="outlined" margin="normal">
+                <InputLabel id="supplier-label">Supplier</InputLabel>
+                <Select
+                  labelId="supplier-label"
+                  id="supplier"
+                  name="supplierId"
+                  value={formData.supplierId}
+                  onChange={handleChange}
+                  label="Supplier"
                   required
-                  error={touched.productId && !formData.declarationId}
-                  sx={{ marginBottom: 1 }}
+                >
+                  {suppliers.map((supplier: any) => (
+                    <MenuItem key={supplier.id} value={supplier.id}>
+                      {supplier.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              {supplierCurrency === "USD" && (
+                <TextField
+                  name="exchangeRate"
+                  label="Exchange rate"
+                  variant="outlined"
+                  type="number"
+                  fullWidth
+                  margin="normal"
+                  onChange={handleChange}
+                  required
+                  error={touched.exchangeRate && !formData.exchangeRate}
+                  onBlur={() => setTouched({ ...touched, exchangeRate: true })}
                 />
               )}
-            />
+              {touched.exchangeRate && !formData.exchangeRate && (
+                <FormHelperText error>Exchange rate is required</FormHelperText>
+              )}
+            </div>
 
-            <Autocomplete
-              options={filteredProducts}
-              getOptionLabel={(option) => option.name}
-              value={
-                products.find(
-                  (p: { id: any }) => p.id === formData.productId
-                ) || null
-              }
-              onChange={(event, newValue) => {
-                handleChange({
-                  target: {
-                    name: "productId",
-                    value: newValue ? newValue.id : "",
-                  },
-                });
-              }}
-              renderInput={(params) => (
+            <div style={{ maxWidth: "33%" }}>
+              <Autocomplete
+                options={drivers}
+                getOptionLabel={(option) => option.truckNumber}
+                value={
+                  drivers.find(
+                    (d: { truckNumber: string }) =>
+                      d.truckNumber === formData.truckNumber
+                  ) || null
+                }
+                onChange={(event, newValue) => {
+                  handleChange({
+                    target: {
+                      name: "truckNumber",
+                      value: newValue ? newValue.truckNumber : "",
+                    },
+                  });
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    sx={{ marginBottom: 1 }}
+                    label="Truck Number"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    error={touched.truckNumber && !formData.truckNumber}
+                    onBlur={() => setTouched({ ...touched, truckNumber: true })}
+                  />
+                )}
+              />
+
+              <TextField
+                name="transportCost"
+                label="Transport Cost"
+                variant="outlined"
+                type="number"
+                fullWidth
+                margin="normal"
+                onChange={handleChange}
+                required
+                error={touched.transportCost && !formData.transportCost}
+                onBlur={() => setTouched({ ...touched, transportCost: true })}
+              />
+              {touched.transportCost && !formData.transportCost && (
+                <FormHelperText error>
+                  Transport cost is required
+                </FormHelperText>
+              )}
+              <TextField
+                name="eslCustomCost"
+                label="ESL custom cost"
+                variant="outlined"
+                type="number"
+                fullWidth
+                margin="normal"
+                onChange={handleChange}
+                required
+                error={touched.eslCustomCost && !formData.eslCustomCost}
+                onBlur={() => setTouched({ ...touched, eslCustomCost: true })}
+              />
+              {touched.eslCustomCost && !formData.eslCustomCost && (
+                <FormHelperText error>
+                  ESL custom cost is required
+                </FormHelperText>
+              )}
+
+              <TextField
+                name="transitFees"
+                label="Transit fees"
+                variant="outlined"
+                type="number"
+                fullWidth
+                margin="normal"
+                onChange={handleChange}
+                required
+                error={touched.transitFees && !formData.transitFees}
+                onBlur={() => setTouched({ ...touched, transitFees: true })}
+              />
+              {touched.transitFees && !formData.transitFees && (
+                <FormHelperText error>Transit fee is required</FormHelperText>
+              )}
+            </div>
+            <div style={{ maxWidth: "33%" }}>
+              <Typography sx={{ marginBottom: 2 }}>Add Products</Typography>
+              <div style={{ marginBottom: 15 }}>
+                <Autocomplete
+                  options={declarations.filter((declaration: any) =>
+                    declaration.declarationProducts.some(
+                      (product: any) => product.declarationBalance !== 0
+                    )
+                  )}
+                  getOptionLabel={(option) => option.number}
+                  value={
+                    declarations.find(
+                      (d: { id: any }) => d.id === formData.declarationId
+                    ) || null
+                  }
+                  onChange={(event, newValue) => {
+                    handleChange({
+                      target: {
+                        name: "declarationId",
+                        value: newValue ? newValue.id : "",
+                      },
+                    });
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      sx={{ marginBottom: 3 }}
+                      {...params}
+                      label="Declaration Number"
+                      variant="outlined"
+                      fullWidth
+                      required
+                      error={touched.productId && !formData.declarationId}
+                    />
+                  )}
+                />
+
+                <Autocomplete
+                  options={filteredProducts}
+                  getOptionLabel={(option) => option.name}
+                  value={
+                    products.find(
+                      (p: { id: any }) => p.id === formData.productId
+                    ) || null
+                  }
+                  onChange={(event, newValue) => {
+                    handleChange({
+                      target: {
+                        name: "productId",
+                        value: newValue ? newValue.id : "",
+                      },
+                    });
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Product"
+                      variant="outlined"
+                      fullWidth
+                      required
+                      error={touched.productId && !formData.productId}
+                      sx={{ marginBottom: 1 }}
+                    />
+                  )}
+                />
+
                 <TextField
-                  {...params}
-                  label="Product"
+                  name="purchaseQuantity"
+                  label="Purchase Quantity"
                   variant="outlined"
                   fullWidth
+                  margin="normal"
+                  type="number"
+                  value={
+                    formData.purchaseQuantity === null
+                      ? ""
+                      : formData.purchaseQuantity
+                  }
+                  onChange={handleChange}
                   required
-                  error={touched.productId && !formData.productId}
-                  sx={{ marginBottom: 1 }}
+                  error={touched.purchaseQuantity && !formData.purchaseQuantity}
                 />
-              )}
-            />
 
-            <TextField
-              name="purchaseQuantity"
-              label="Purchase Quantity"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              type="number"
-              value={
-                formData.purchaseQuantity === null
-                  ? ""
-                  : formData.purchaseQuantity
-              }
-              onChange={handleChange}
-              required
-              error={touched.purchaseQuantity && !formData.purchaseQuantity}
-            />
-
-            <TextField
-              name="purchaseUnitPrice"
-              label="Purchase Unit Price (USD)"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              type="number"
-              value={
-                formData.purchaseUnitPrice === null
-                  ? ""
-                  : formData.purchaseUnitPrice
-              }
-              onChange={handleChange}
-              required
-              error={touched.purchaseUnitPrice && !formData.purchaseUnitPrice}
-            />
+                <TextField
+                  name="purchaseUnitPrice"
+                  label="Purchase Unit Price (USD)"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  type="number"
+                  value={
+                    formData.purchaseUnitPrice === null
+                      ? ""
+                      : formData.purchaseUnitPrice
+                  }
+                  onChange={handleChange}
+                  required
+                  error={
+                    touched.purchaseUnitPrice && !formData.purchaseUnitPrice
+                  }
+                />
+              </div>
+            </div>
           </div>
           {addedProducts.length > 0 && (
             <Card sx={{ mt: 2, p: 2, bgcolor: "#f0f0f0" }}>
