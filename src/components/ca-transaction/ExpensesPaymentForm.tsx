@@ -144,7 +144,7 @@ const ExpensesPaymentForm = () => {
           }}
         >
           <form onSubmit={formik.handleSubmit}>
-            <Typography variant="h6" component="div" style={{textAlign:'center', marginBottom:'20px'}}>
+            <Typography variant="h5" component="div" style={{textAlign:'center', marginBottom:'20px'}}>
               Operation Expenses Payment Form
             </Typography>
             
