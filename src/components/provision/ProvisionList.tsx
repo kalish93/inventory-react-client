@@ -47,7 +47,11 @@ console.log(provisions)
             <TableRow>
               <TableCell>Product Name</TableCell>
               <TableCell>Date</TableCell>
-              <TableCell>COGS</TableCell>
+              <TableCell>Purchase UCOGS</TableCell>
+              <TableCell>Sales UCOGS</TableCell>
+              <TableCell>Unit Cost Of Transport</TableCell>
+              <TableCell>Unit Cost Of ESL</TableCell>
+              <TableCell>Unit Cost Of Transit</TableCell>
               <TableCell>Purchase Number</TableCell>
               <TableCell>Declaration Number</TableCell>
               <TableCell>Sale Quantity</TableCell>
@@ -63,7 +67,19 @@ console.log(provisions)
                   {new Date(item.date).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
+                  {item.saleDetail.productPurchase.purchaseUnitCostOfGoods.toFixed(2)}
+                </TableCell>
+                <TableCell>
                   {item.saleDetail.unitCostOfGoods.toFixed(2)}
+                </TableCell>
+                <TableCell>
+                  {item.saleDetail.productPurchase.transport.unitTransportCost.toFixed(2)}
+                </TableCell>
+                <TableCell>
+                  {item.saleDetail.productPurchase.esl.unitEslCost.toFixed(2)}
+                </TableCell>
+                <TableCell>
+                  {item.saleDetail.productPurchase.transit.unitTransitCost.toFixed(2)}
                 </TableCell>
                 <TableCell>
                   {item.saleDetail.purchase.number}
