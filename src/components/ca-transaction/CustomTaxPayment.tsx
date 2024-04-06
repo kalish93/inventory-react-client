@@ -50,7 +50,7 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
   );
 
   const displayedDeclarations = declarations.filter(
-    (declaration: any) => declaration.declarationProducts.length !== 0
+    (declaration: any) => declaration?.declarationProducts?.length !== 0
   );
 
   const banks = useSelector((state: any) => state.bank.banks.items);
