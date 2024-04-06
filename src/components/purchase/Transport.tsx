@@ -44,17 +44,22 @@ const Transport = () => {
   };
 
   const handleCloseModal = () => {
-    setOpenModal(false)
-  }
+    setOpenModal(false);
+  };
 
   const handleOpenModal = () => {
-    setOpenModal(true)
-  }
+    setOpenModal(true);
+  };
 
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={handleOpenModal} style={{marginLeft:'10px'}}>
-       Add Transport Payment
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleOpenModal}
+        style={{ marginLeft: "10px" }}
+      >
+        Add Transport Payment
       </Button>
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
@@ -83,7 +88,7 @@ const Transport = () => {
           <TableBody>
             {transport.map((item: any) => (
               <TableRow key={item.id}>
-                <TableCell>{dayjs(item.date).format("YYYY-MM-DD")}</TableCell>
+                <TableCell>{dayjs(item.date).format("DD/MM/YYYY")}</TableCell>
                 <TableCell>{item.cost}</TableCell>
                 <TableCell>{item.purchase?.truckNumber}</TableCell>
                 <TableCell>

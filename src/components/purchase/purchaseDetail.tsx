@@ -38,7 +38,7 @@ const PurchaseDetail = () => {
         Purchase Number: {purchase.number}
       </Typography>
       <Typography variant="subtitle1" gutterBottom>
-        Purchase Date: {dayjs(purchase.date).format("YYYY-MM-DD")}
+        Purchase Date: {dayjs(purchase.date).format("DD/MM/YYYY")}
       </Typography>
       <Typography variant="subtitle1" gutterBottom>
         Truck Number: {purchase.truckNumber}
@@ -66,9 +66,13 @@ const PurchaseDetail = () => {
                 <TableCell>{item.declaration.number}</TableCell>
                 <TableCell>{item.product.name}</TableCell>
                 <TableCell>{item.purchaseQuantity.toLocaleString()}</TableCell>
-                <TableCell>{item?.purchaseUnitPriceETB?.toLocaleString()}</TableCell>
-                <TableCell>{item?.purchaseUnitPriceUSD?.toLocaleString()}</TableCell>
-                <TableCell>{item?.purchaseTotalETB?.toLocaleString()}</TableCell>
+                <TableCell>
+                  {item.purchaseUnitPriceETB.toLocaleString()}
+                </TableCell>
+                <TableCell>
+                  {item.purchaseUnitPriceUSD.toLocaleString()}
+                </TableCell>
+                <TableCell>{item.purchaseTotalETB.toLocaleString()}</TableCell>
                 <TableCell>{item.purchaseUnitCostOfGoods.toFixed(2)}</TableCell>
               </TableRow>
             ))}

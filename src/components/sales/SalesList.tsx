@@ -28,7 +28,6 @@ import { hasPermission } from "../../utils/checkPermission";
 import { PERMISSIONS } from "../../core/permissions";
 import UpdateSaleForm from "./UpdateSaleForm";
 
-
 const SalesList = () => {
   const dispatch = useDispatch<AppDispatch>();
   const SalesState = useSelector(selectSale);
@@ -141,9 +140,11 @@ const SalesList = () => {
 
   return (
     <div>
-      {hasPermission(PERMISSIONS.CreateSale) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
-        Add Sale
-      </Button>}
+      {hasPermission(PERMISSIONS.CreateSale) && (
+        <Button variant="contained" color="primary" onClick={handleOpenModal}>
+          Add Sale
+        </Button>
+      )}
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
@@ -153,87 +154,99 @@ const SalesList = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      {hasPermission(PERMISSIONS.GetSales) && <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Invoice Number</TableCell>
-              <TableCell>Invoice Date</TableCell>
-              <TableCell>Customer Name</TableCell>
-              <TableCell>Paid Amount</TableCell>
-              <TableCell>Payment Status</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {sales.map((sale: any) => (
-              <TableRow
-                key={sale.id}
-                component={Link}
-                to={`/sales/${sale.id}`}
-                style={{ textDecoration: "none" }}
-              >
-                <TableCell>{sale.invoiceNumber}</TableCell>
-                <TableCell>
-                  {dayjs(sale.invoiceDate).format("YYYY-MM-DD")}
-                </TableCell>
-                <TableCell>{sale.customer?.firstName + " " + sale.customer?.lastName}</TableCell>
-                <TableCell>{sale.paidAmount}</TableCell>
-                <TableCell>{sale.paymentStatus}</TableCell>
-                <TableCell>
-                  <IconButton
-                    aria-label="Actions"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      event.preventDefault(); // Prevent default behavior
-                      handleMenuOpen(event, sale.id, sale);
-                    }}
-                    style={{ margin: 0, padding: 0 }}
-                  >
-                    <MoreVertIcon />
-                  </IconButton>
-                  <Menu
-                    id="actions-menu"
-                    MenuListProps={{
-                      "aria-labelledby": "long-button",
-                    }}
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                    PaperProps={{
-                      style: {
-                        width: "20ch",
-                        boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
-                      },
-                    }}
-                  >
-                    {hasPermission(PERMISSIONS.UpdateSale) && <MenuItem
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        event.preventDefault();
-                        handleUpdateSale();
-                      }}
-                    >
-                      Update
-                    </MenuItem>}
-                    {hasPermission(PERMISSIONS.DeleteSaleBy) && <MenuItem
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        event.preventDefault();
-                        openConfirmationModal();
-                      }}
-                    >
-                      Delete
-                    </MenuItem>}
-                  </Menu>
-                </TableCell>
+      {hasPermission(PERMISSIONS.GetSales) && (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Invoice Number</TableCell>
+                <TableCell>Invoice Date</TableCell>
+                <TableCell>Customer Name</TableCell>
+                <TableCell>Paid Amount</TableCell>
+                <TableCell>Payment Status</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>}
+            </TableHead>
+            <TableBody>
+              {sales.map((sale: any) => (
+                <TableRow
+                  key={sale.id}
+                  component={Link}
+                  to={`/sales/${sale.id}`}
+                  style={{ textDecoration: "none" }}
+                >
+                  <TableCell>{sale.invoiceNumber}</TableCell>
+                  <TableCell>
+                    {dayjs(sale.invoiceDate).format("DD/MM/YYYY")}
+                  </TableCell>
+                  <TableCell>
+                    {sale.customer?.firstName + " " + sale.customer?.lastName}
+                  </TableCell>
+                  <TableCell>{sale.paidAmount}</TableCell>
+                  <TableCell>{sale.paymentStatus}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      aria-label="Actions"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        event.preventDefault(); // Prevent default behavior
+                        handleMenuOpen(event, sale.id, sale);
+                      }}
+                      style={{ margin: 0, padding: 0 }}
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
+                    <Menu
+                      id="actions-menu"
+                      MenuListProps={{
+                        "aria-labelledby": "long-button",
+                      }}
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={handleMenuClose}
+                      PaperProps={{
+                        style: {
+                          width: "20ch",
+                          boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
+                        },
+                      }}
+                    >
+                      {hasPermission(PERMISSIONS.UpdateSale) && (
+                        <MenuItem
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            event.preventDefault();
+                            handleUpdateSale();
+                          }}
+                        >
+                          Update
+                        </MenuItem>
+                      )}
+                      {hasPermission(PERMISSIONS.DeleteSaleBy) && (
+                        <MenuItem
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            event.preventDefault();
+                            openConfirmationModal();
+                          }}
+                        >
+                          Delete
+                        </MenuItem>
+                      )}
+                    </Menu>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
       <SaleForm open={openModal} handleClose={handleCloseModal} />
-      <UpdateSaleForm open={openUpdateModal} handleClose={handleCloseUpdateModal} selectedSale={selectedSale} />
+      <UpdateSaleForm
+        open={openUpdateModal}
+        handleClose={handleCloseUpdateModal}
+        selectedSale={selectedSale}
+      />
       <ConfirmationModal
         open={confirmationModalOpen}
         onClose={closeConfirmationModal}

@@ -170,7 +170,13 @@ const CATransactionsForm: React.FC<ProductFormProps> = ({
           <Typography variant="h6" component="div">
             {title} Form
           </Typography>
-          <div style={{ display: "flex", justifyContent: "space-between", marginTop: "1rem" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "1rem",
+            }}
+          >
             <div style={{ width: "45%" }}>
               <Autocomplete
                 options={cashOfAccountBanks}
@@ -255,7 +261,7 @@ const CATransactionsForm: React.FC<ProductFormProps> = ({
                 fullWidth
                 margin="normal"
                 type="date"
-                value={dayjs(formik.values.date).format("YYYY-MM-DD")}
+                value={dayjs(formik.values.date).format("DD/MM/YYYY")}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={formik.touched.date && Boolean(formik.errors.date)}

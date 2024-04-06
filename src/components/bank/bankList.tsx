@@ -161,7 +161,7 @@ const BanksList = () => {
                     <TableCell>{bank.address}</TableCell>
                     <TableCell>{bank.startingValue}</TableCell>
                     <TableCell>
-                      {dayjs(bank.startingValueDate).format("YYYY-MM-DD")}
+                      {dayjs(bank.startingValueDate).format("DD/MM/YYYY")}
                     </TableCell>
 
                     <TableCell>

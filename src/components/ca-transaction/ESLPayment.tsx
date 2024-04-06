@@ -82,11 +82,12 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
   );
 
   const eslSupplier = suppliers.find(
-    (supplier: any) => supplier.name === "ESL Warehouse"
+    (supplier: any) => supplier.name === "ESL Custom Warehouse"
   );
 
   const unpaidESL = eslCosts.filter(
-    (eslCost) => eslCost.paymentStatus === "Incomplete" ||
+    (eslCost) =>
+      eslCost.paymentStatus === "Incomplete" ||
       eslCost.paymentStatus === "Partially Complete"
   );
 
@@ -156,7 +157,6 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
         chartofAccountId: accountsPayable.id,
       };
 
-
       Promise.all([
         dispatch(createCATransaction(formDataToSend1)),
         dispatch(createCATransaction(formDataToSend2)),
@@ -166,7 +166,7 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
-      dispatch(getEslCosts(1,10));
+      dispatch(getEslCosts(1, 10));
     },
   });
 
@@ -182,7 +182,9 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
       updatedPaidforEsls.push({
         ...esl,
         paidAmount:
-          remainingAmount >= 0 ? esl.cost - Number(esl.paidAmount) : esl.cost - Number(esl.paidAmount) + remainingAmount,
+          remainingAmount >= 0
+            ? esl.cost - Number(esl.paidAmount)
+            : esl.cost - Number(esl.paidAmount) + remainingAmount,
         paymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
       });
       console.log(remainingAmount);
@@ -239,7 +241,7 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  gap: "1rem",
+                  gap: "1.5rem",
                   minWidth: "33%",
                 }}
               >
@@ -300,6 +302,7 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
 
               <div style={{ maxWidth: "33%" }}>
                 <TextField
+                  style={{ marginTop: "0rem" }}
                   name="date"
                   label="Transaction Date"
                   variant="outlined"
@@ -336,17 +339,16 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
               </div>
 
               <div>
-                {paidforEsls.length > 0 &&
-                  paidforEsls.map((esl: any) => (
-                    <div>
-                      <Typography variant="subtitle1" component="div">
-                        Purchase Num:{esl.purchase.number}
-                      </Typography>
-                      <Typography variant="subtitle1" component="div">
-                        Track Num:{esl.purchase.truckNumber}
-                      </Typography>
-                    </div>
-                  ))}
+                {paidforEsls.map((esl: any) => (
+                  <div>
+                    <Typography variant="subtitle1" component="div">
+                      Purchase Num:{esl.purchase.number}
+                    </Typography>
+                    <Typography variant="subtitle1" component="div">
+                      Track Num:{esl.purchase.truckNumber}
+                    </Typography>
+                  </div>
+                ))}
               </div>
             </div>
 
