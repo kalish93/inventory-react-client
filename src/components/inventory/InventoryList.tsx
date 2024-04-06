@@ -55,9 +55,9 @@ const InventoryList = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Product Name</TableCell>
               <TableCell>Purchase Number</TableCell>
               <TableCell>Purchase Date</TableCell>
+              <TableCell>Product Name</TableCell>
               <TableCell>Purchase Quantity</TableCell>
               <TableCell>Purchase Unit Price</TableCell>
               <TableCell>Invoice Number</TableCell>
@@ -70,17 +70,17 @@ const InventoryList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {inventories.map((inventory: any) => (
-              <TableRow key={inventory.id}>
+            {inventories.map((inventory: any, idx: number) => (
+              <TableRow key={idx}>
+                <TableCell>{inventory.purchase?.number}</TableCell>
+                <TableCell>
+                  {(inventory.purchase || inventory.productPurchase) &&
+                    dayjs(inventory.purchase?.date ?? inventory.productPurchase?.date).format("DD/MM/YYYY")}
+                </TableCell>
                 <TableCell>
                   {inventory.sale
                     ? inventory.saleDetail?.product?.name
                     : inventory.productPurchase.product.name}
-                </TableCell>
-                <TableCell>{inventory.purchase?.number}</TableCell>
-                <TableCell>
-                { inventory.productPurchase ?
-                new Date(inventory.productPurchase?.date).toLocaleDateString() : ''}
                 </TableCell>
                 <TableCell>
                   {inventory.productPurchase?.purchaseQuantity}
@@ -90,8 +90,8 @@ const InventoryList = () => {
                 </TableCell>
                 <TableCell>{inventory.sale?.invoiceNumber}</TableCell>
                 <TableCell>
-                  {inventory.sale ?
-                  new Date(inventory?.sale?.invoiceDate).toLocaleDateString() : ''}
+                  {inventory.sale &&
+                    dayjs(inventory.sale?.invoiceDate).format("DD/MM/YYYY")}
                 </TableCell>
                 <TableCell>{inventory.saleDetail?.saleQuantity}</TableCell>
                 <TableCell>{inventory.saleDetail?.saleUnitPrice}</TableCell>

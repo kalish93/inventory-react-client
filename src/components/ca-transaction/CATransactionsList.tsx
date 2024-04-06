@@ -130,13 +130,13 @@ const CATransactionsList = () => {
   return (
     <div>
       {hasPermission(PERMISSIONS.CreateCaTransaction) && (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleOpenModal(8)}
-          >
-            Add Journal Enty
-          </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => handleOpenModal(8)}
+        >
+          Add Journal Enty
+        </Button>
       )}
 
       {hasPermission(PERMISSIONS.GetCaTransactions) && (
@@ -174,7 +174,7 @@ const CATransactionsList = () => {
               {CATransactions &&
                 CATransactions.map((ca: any) => (
                   <TableRow key={ca.id}>
-                    <TableCell>{dayjs(ca.date).format("YYYY-MM-DD")}</TableCell>
+                    <TableCell>{dayjs(ca.date).format("DD/MM/YYYY")}</TableCell>
                     <TableCell>{ca.type}</TableCell>
                     <TableCell>
                       {ca.purchase?.number ||

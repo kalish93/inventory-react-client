@@ -34,8 +34,8 @@ const SaleDetail = () => {
   const saleState = useSelector(selectSale);
   const sale = saleState.sale;
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [snackbarMessage, setSnackbarMessage] = useState("");
   const [isDeleteSubmitted, setIsDeleteSubmitted] = useState(false);
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false); // State for confirmation modal
   const [openModal, setOpenModal] = useState(false);
@@ -44,19 +44,15 @@ const SaleDetail = () => {
   const [selectedSaleDetail, setSelectedSaleDetail] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
 
-  
   useEffect(() => {
     dispatch(getSale(id));
   }, [dispatch, id]);
-
 
   const handleUpdate = () => {
     handleOpenModal();
     handleMenuClose();
   };
 
-
-  
   const openConfirmationModal = () => {
     setConfirmationModalOpen(true);
   };
@@ -69,29 +65,29 @@ const SaleDetail = () => {
     handleConfirmDelete();
     closeConfirmationModal();
   };
-  
+
   const handleConfirmDelete = () => {
     handleMenuClose();
-    if(selectedSaleId != null){
-    dispatch(deleteSaleDetail(selectedSaleId))
-      .then(() => {
-        setIsDeleteSubmitted(true);
-      })
-      .catch(() => {
-        setIsDeleteSubmitted(true);
-      });
-    setConfirmationModalOpen(false); 
-    setSelectedSaleDetail(null);
-    setSelectedSaleId(null);
-    }// Close the confirmation modal after confirming delete
+    if (selectedSaleId != null) {
+      dispatch(deleteSaleDetail(selectedSaleId))
+        .then(() => {
+          setIsDeleteSubmitted(true);
+        })
+        .catch(() => {
+          setIsDeleteSubmitted(true);
+        });
+      setConfirmationModalOpen(false);
+      setSelectedSaleDetail(null);
+      setSelectedSaleId(null);
+    } // Close the confirmation modal after confirming delete
   };
 
   useEffect(() => {
     if (!loading && isDeleteSubmitted) {
       if (isError) {
-        showSnackbar(error || 'An error occurred', 'error');
+        showSnackbar(error || "An error occurred", "error");
       } else {
-        showSnackbar('Sale detail deleted successfully', 'success');
+        showSnackbar("Sale detail deleted successfully", "success");
         // Redirect to the declarations list after successful deletion
       }
       setIsDeleteSubmitted(false);
@@ -128,29 +124,34 @@ const SaleDetail = () => {
     setAnchorEl(null);
   };
 
-
   if (!sale) {
     return <CircularProgress />;
   }
 
   return (
     <div>
-     <div style={{display:"flex", justifyContent:'space-between', alignItems:'center' }}>
-    <div>
-    <Typography variant="h5" gutterBottom>
-        Invoice Number: {sale.invoiceNumber}
-      </Typography>
-      <Typography variant="subtitle1" gutterBottom>
-        Invoice Date: {dayjs(sale.invoiceDate).format("YYYY-MM-DD")}
-      </Typography>
-      <Typography variant="subtitle1" gutterBottom>
-        Customer Name: {sale.customer.firstName}
-      </Typography>
-    </div>
-      {/* <Button variant="contained" color="primary" onClick={handleOpenModal}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <div>
+          <Typography variant="h5" gutterBottom>
+            Invoice Number: {sale.invoiceNumber}
+          </Typography>
+          <Typography variant="subtitle1" gutterBottom>
+            Invoice Date: {dayjs(sale.invoiceDate).format("DD/MM/YYYY")}
+          </Typography>
+          <Typography variant="subtitle1" gutterBottom>
+            Customer Name: {sale.customer.firstName}
+          </Typography>
+        </div>
+        {/* <Button variant="contained" color="primary" onClick={handleOpenModal}>
         Add Product
       </Button> */}
-     </div>
+      </div>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -207,12 +208,16 @@ const SaleDetail = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <SaleDetailForm open={openModal} handleClose={handleCloseModal} initialValues={selectedSaleDetail}/>
+      <SaleDetailForm
+        open={openModal}
+        handleClose={handleCloseModal}
+        initialValues={selectedSaleDetail}
+      />
 
       <ConfirmationModal // Confirmation modal for delete
-         open={confirmationModalOpen}
-         onClose={closeConfirmationModal}
-         onConfirm={handleConfirmAction}
+        open={confirmationModalOpen}
+        onClose={closeConfirmationModal}
+        onConfirm={handleConfirmAction}
         title="Delete Sale"
         content="Are you sure you want to delete this sale detail?"
       />
@@ -221,12 +226,12 @@ const SaleDetail = () => {
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Alert
           onClose={handleCloseSnackbar}
           severity={snackbarSeverity as "success" | "error"}
-          sx={{ width: '100%' }}
+          sx={{ width: "100%" }}
         >
           {snackbarMessage}
         </Alert>

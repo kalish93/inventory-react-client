@@ -39,9 +39,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
   const declarations = useSelector(
     (state: any) => state.declaration.declarations.items
   );
-  const suppliers = useSelector(
-    (state: any) => state.supplier.suppliers.items
-  );
+  const suppliers = useSelector((state: any) => state.supplier.suppliers.items);
   const drivers = useSelector((state: any) => state.driver.drivers.items);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -132,26 +130,34 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
 
     const productDeclaration = selectedDeclaration.declarationProducts.find(
       (item: any) => item.product.id === formData.productId
-    )
-  
+    );
+
     if (selectedDeclaration) {
       let purchaseQuantity = parseInt(formData.purchaseQuantity);
-      if(addedProducts.find(product => product.productId === formData.productId )){
-        addedProducts.forEach(product => {
-          if(product.productId === formData.productId )
-          purchaseQuantity += parseInt(product.purchaseQuantity as any)
+      if (
+        addedProducts.find(
+          (product) => product.productId === formData.productId
+        )
+      ) {
+        addedProducts.forEach((product) => {
+          if (product.productId === formData.productId)
+            purchaseQuantity += parseInt(product.purchaseQuantity as any);
         });
-      }else{
+      } else {
         purchaseQuantity = parseInt(formData.purchaseQuantity);
       }
-      if ((productDeclaration.declarationBalance == null && productDeclaration.declarationQuantity >= purchaseQuantity) || (productDeclaration.declarationBalance >= purchaseQuantity)) {
+      if (
+        (productDeclaration.declarationBalance == null &&
+          productDeclaration.declarationQuantity >= purchaseQuantity) ||
+        productDeclaration.declarationBalance >= purchaseQuantity
+      ) {
         const newProduct = {
           productId: formData.productId,
           declarationId: formData.declarationId,
           purchaseQuantity: formData.purchaseQuantity,
           purchaseUnitPrice: formData.purchaseUnitPrice,
         };
-  
+
         setAddedProducts((prevProducts) => [...prevProducts, newProduct]);
         setFormData((prevData: any) => ({
           ...prevData,
@@ -162,11 +168,13 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
         }));
       } else {
         // Display an error message or handle the case where purchase quantity exceeds declaration balance
-        showSnackbar(`Purchase quantity exceeds the declaration balance.`, "error");
+        showSnackbar(
+          `Purchase quantity exceeds the declaration balance.`,
+          "error"
+        );
       }
     }
   };
-  
 
   const handleRemoveProduct = (index: number) => () => {
     setAddedProducts((prevProducts) =>
@@ -259,13 +267,13 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
 
   const isAddProductButtonDisabled = () => {
     return (
-        !formData.productId ||
-        formData.productId === "" ||
-        formData.declarationId === "" ||
-        formData.purchaseQuantity === null ||
-        formData.purchaseQuantity <= 0 ||
-        formData.purchaseUnitPrice === null ||
-        formData.purchaseUnitPrice <= 0
+      !formData.productId ||
+      formData.productId === "" ||
+      formData.declarationId === "" ||
+      formData.purchaseQuantity === null ||
+      formData.purchaseQuantity <= 0 ||
+      formData.purchaseUnitPrice === null ||
+      formData.purchaseUnitPrice <= 0
     );
   };
 
@@ -288,191 +296,193 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
 
         setFilteredProducts(productsForDeclaration);
       }
-    } else{
-      setFilteredProducts([])
+    } else {
+      setFilteredProducts([]);
     }
   }, [formData.declarationId, declarations, products]);
 
-  const selectedSupplier = suppliers.find((s: any) => s.id === formData.supplierId);
+  const selectedSupplier = suppliers.find(
+    (s: any) => s.id === formData.supplierId
+  );
   const supplierCurrency = selectedSupplier ? selectedSupplier.currency : "";
 
   return (
     <div>
-    <Modal
-      open={open}
-      onClose={(e, reason) => {
-        if (reason === "backdropClick") {
-          return;
-        }
-        handleClose();
-      }}
-    >
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 500,
-          maxHeight: "80vh",
-          overflowY: "auto",
-          bgcolor: "background.paper",
-          boxShadow: 24,
-          p: 4,
+      <Modal
+        open={open}
+        onClose={(e, reason) => {
+          if (reason === "backdropClick") {
+            return;
+          }
+          handleClose();
         }}
       >
-        <Typography
-          variant="h6"
-          component="div"
-          sx={{ flexGrow: 1, marginBottom: 2 }}
-        >
-          Purchase Form
-        </Typography>
-        <TextField
-          name="number"
-          label="Purchase/ Waybill Number"
-          variant="outlined"
-          type="number"
-          fullWidth
-          margin="normal"
-          onChange={handleChange}
-          required
-          error={touched.number && !formData.number}
-          onBlur={() => setTouched({ ...touched, number: true })}
-        />
-        {touched.number && !formData.number && (
-          <FormHelperText error>Purchase number is required</FormHelperText>
-        )}
-
-        <TextField
-          name="date"
-          label="Purchase Date"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          type="date"
-          value={dayjs(formData.date).format("YYYY-MM-DD")}
-          onChange={handleChange}
-          required
-          error={touched.date && !formData.date}
-          onBlur={() => setTouched({ ...touched, date: true })}
-        />
-
-        <Autocomplete
-          options={drivers}
-          getOptionLabel={(option) => option.truckNumber}
-          value={
-            drivers.find(
-              (d: { truckNumber: string }) =>
-                d.truckNumber === formData.truckNumber
-            ) || null
-          }
-          onChange={(event, newValue) => {
-            handleChange({
-              target: {
-                name: "truckNumber",
-                value: newValue ? newValue.truckNumber : "",
-              },
-            });
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 500,
+            maxHeight: "80vh",
+            overflowY: "auto",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
           }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Truck Number"
-              variant="outlined"
-              fullWidth
-              required
-              error={touched.truckNumber && !formData.truckNumber}
-              onBlur={() => setTouched({ ...touched, truckNumber: true })}
-            />
-          )}
-        />
-
-        <FormControl fullWidth variant="outlined" margin="normal">
-          <InputLabel id="supplier-label">Supplier</InputLabel>
-          <Select
-            labelId="supplier-label"
-            id="supplier"
-            name="supplierId"
-            value={formData.supplierId}
-            onChange={handleChange}
-            label="Supplier"
-            required
+        >
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, marginBottom: 2 }}
           >
-            {suppliers.map((supplier: any) => (
-              <MenuItem key={supplier.id} value={supplier.id}>
-                {supplier.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        {supplierCurrency === "USD" && (
+            Purchase Form
+          </Typography>
           <TextField
-            name="exchangeRate"
-            label="Exchange rate"
+            name="number"
+            label="Purchase/ Waybill Number"
             variant="outlined"
             type="number"
             fullWidth
             margin="normal"
             onChange={handleChange}
             required
-            error={touched.exchangeRate && !formData.exchangeRate}
-            onBlur={() => setTouched({ ...touched, exchangeRate: true })}
+            error={touched.number && !formData.number}
+            onBlur={() => setTouched({ ...touched, number: true })}
           />
-        )}
-        {touched.exchangeRate && !formData.exchangeRate && (
-          <FormHelperText error>Exchange rate is required</FormHelperText>
-        )}
+          {touched.number && !formData.number && (
+            <FormHelperText error>Purchase number is required</FormHelperText>
+          )}
 
-        <TextField
-          name="transportCost"
-          label="Transport Cost"
-          variant="outlined"
-          type="number"
-          fullWidth
-          margin="normal"
-          onChange={handleChange}
-          required
-          error={touched.transportCost && !formData.transportCost}
-          onBlur={() => setTouched({ ...touched, transportCost: true })}
-        />
-        {touched.transportCost && !formData.transportCost && (
-          <FormHelperText error>Transport cost is required</FormHelperText>
-        )}
-        <TextField
-          name="eslCustomCost"
-          label="ESL custom cost"
-          variant="outlined"
-          type="number"
-          fullWidth
-          margin="normal"
-          onChange={handleChange}
-          required
-          error={touched.eslCustomCost && !formData.eslCustomCost}
-          onBlur={() => setTouched({ ...touched, eslCustomCost: true })}
-        />
-        {touched.eslCustomCost && !formData.eslCustomCost && (
-          <FormHelperText error>ESL custom cost is required</FormHelperText>
-        )}
+          <TextField
+            name="date"
+            label="Purchase Date"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            type="date"
+            value={formData.date}
+            onChange={handleChange}
+            required
+            error={touched.date && !formData.date}
+            onBlur={() => setTouched({ ...touched, date: true })}
+          />
 
-        <TextField
-          name="transitFees"
-          label="Transit fees"
-          variant="outlined"
-          type="number"
-          fullWidth
-          margin="normal"
-          onChange={handleChange}
-          required
-          error={touched.transitFees && !formData.transitFees}
-          onBlur={() => setTouched({ ...touched, transitFees: true })}
-        />
-        {touched.transitFees && !formData.transitFees && (
-          <FormHelperText error>Transit fee is required</FormHelperText>
-        )}
+          <Autocomplete
+            options={drivers}
+            getOptionLabel={(option) => option.truckNumber}
+            value={
+              drivers.find(
+                (d: { truckNumber: string }) =>
+                  d.truckNumber === formData.truckNumber
+              ) || null
+            }
+            onChange={(event, newValue) => {
+              handleChange({
+                target: {
+                  name: "truckNumber",
+                  value: newValue ? newValue.truckNumber : "",
+                },
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Truck Number"
+                variant="outlined"
+                fullWidth
+                required
+                error={touched.truckNumber && !formData.truckNumber}
+                onBlur={() => setTouched({ ...touched, truckNumber: true })}
+              />
+            )}
+          />
 
-        <Typography>Add Products</Typography>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <InputLabel id="supplier-label">Supplier</InputLabel>
+            <Select
+              labelId="supplier-label"
+              id="supplier"
+              name="supplierId"
+              value={formData.supplierId}
+              onChange={handleChange}
+              label="Supplier"
+              required
+            >
+              {suppliers.map((supplier: any) => (
+                <MenuItem key={supplier.id} value={supplier.id}>
+                  {supplier.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          {supplierCurrency === "USD" && (
+            <TextField
+              name="exchangeRate"
+              label="Exchange rate"
+              variant="outlined"
+              type="number"
+              fullWidth
+              margin="normal"
+              onChange={handleChange}
+              required
+              error={touched.exchangeRate && !formData.exchangeRate}
+              onBlur={() => setTouched({ ...touched, exchangeRate: true })}
+            />
+          )}
+          {touched.exchangeRate && !formData.exchangeRate && (
+            <FormHelperText error>Exchange rate is required</FormHelperText>
+          )}
+
+          <TextField
+            name="transportCost"
+            label="Transport Cost"
+            variant="outlined"
+            type="number"
+            fullWidth
+            margin="normal"
+            onChange={handleChange}
+            required
+            error={touched.transportCost && !formData.transportCost}
+            onBlur={() => setTouched({ ...touched, transportCost: true })}
+          />
+          {touched.transportCost && !formData.transportCost && (
+            <FormHelperText error>Transport cost is required</FormHelperText>
+          )}
+          <TextField
+            name="eslCustomCost"
+            label="ESL custom cost"
+            variant="outlined"
+            type="number"
+            fullWidth
+            margin="normal"
+            onChange={handleChange}
+            required
+            error={touched.eslCustomCost && !formData.eslCustomCost}
+            onBlur={() => setTouched({ ...touched, eslCustomCost: true })}
+          />
+          {touched.eslCustomCost && !formData.eslCustomCost && (
+            <FormHelperText error>ESL custom cost is required</FormHelperText>
+          )}
+
+          <TextField
+            name="transitFees"
+            label="Transit fees"
+            variant="outlined"
+            type="number"
+            fullWidth
+            margin="normal"
+            onChange={handleChange}
+            required
+            error={touched.transitFees && !formData.transitFees}
+            onBlur={() => setTouched({ ...touched, transitFees: true })}
+          />
+          {touched.transitFees && !formData.transitFees && (
+            <FormHelperText error>Transit fee is required</FormHelperText>
+          )}
+
+          <Typography>Add Products</Typography>
 
           <div style={{ marginBottom: 15 }}>
             <Autocomplete
@@ -512,8 +522,9 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
               options={filteredProducts}
               getOptionLabel={(option) => option.name}
               value={
-                products.find((p: { id: any }) => p.id === formData.productId) ||
-                null
+                products.find(
+                  (p: { id: any }) => p.id === formData.productId
+                ) || null
               }
               onChange={(event, newValue) => {
                 handleChange({
@@ -537,124 +548,132 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
             />
 
             <TextField
-              name='purchaseQuantity'              
+              name="purchaseQuantity"
               label="Purchase Quantity"
               variant="outlined"
               fullWidth
               margin="normal"
               type="number"
-              value={formData.purchaseQuantity === null ? '' : formData.purchaseQuantity}
+              value={
+                formData.purchaseQuantity === null
+                  ? ""
+                  : formData.purchaseQuantity
+              }
               onChange={handleChange}
               required
               error={touched.purchaseQuantity && !formData.purchaseQuantity}
             />
 
             <TextField
-              name='purchaseUnitPrice'
+              name="purchaseUnitPrice"
               label="Purchase Unit Price (USD)"
               variant="outlined"
               fullWidth
               margin="normal"
               type="number"
-              value={formData.purchaseUnitPrice === null ? '' : formData.purchaseUnitPrice}
+              value={
+                formData.purchaseUnitPrice === null
+                  ? ""
+                  : formData.purchaseUnitPrice
+              }
               onChange={handleChange}
               required
               error={touched.purchaseUnitPrice && !formData.purchaseUnitPrice}
             />
           </div>
-        {addedProducts.length > 0 && (
-          <Card sx={{ mt: 2, p: 2, bgcolor: "#f0f0f0" }}>
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1, marginBottom: 1 }}
-            >
-              Added Products
-            </Typography>
-            {addedProducts.map((product, index) => {
-              const productName =
-                products.find((p: any) => p.id === product.productId)?.name ||
-                "";
-              const declarationNumber =
-                declarations.find((d: any) => d.id === product.declarationId)
-                  ?.number || "";
+          {addedProducts.length > 0 && (
+            <Card sx={{ mt: 2, p: 2, bgcolor: "#f0f0f0" }}>
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ flexGrow: 1, marginBottom: 1 }}
+              >
+                Added Products
+              </Typography>
+              {addedProducts.map((product, index) => {
+                const productName =
+                  products.find((p: any) => p.id === product.productId)?.name ||
+                  "";
+                const declarationNumber =
+                  declarations.find((d: any) => d.id === product.declarationId)
+                    ?.number || "";
 
-              return (
-                <div key={index}>
-                  <Typography variant="body1" component="div">
-                    Product Name: {productName}, Quantity:{" "}
-                    {product.purchaseQuantity}, Purchase Quantity:{" "}
-                    {product.purchaseUnitPrice}, Declaration Number:{" "}
-                    {declarationNumber}
-                  </Typography>
-                  <IconButton
-                    onClick={handleEditProduct(index)}
-                    color="primary"
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={handleRemoveProduct(index)}
-                    color="secondary"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </div>
-              );
-            })}
-          </Card>
-        )}
-
-        <Button
-          variant="outlined"
-          color="primary"
-          onClick={handleAddProduct}
-          disabled={isAddProductButtonDisabled()}
-          sx={{
-            mt: 2,
-            borderRadius: 20,
-            color: "#2196F3",
-            border: "2px solid #2196F3",
-          }}
-        >
-          Add Product
-        </Button>
-        <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSubmit}
-            disabled={!isPurchaseFormValid()}
-          >
-            Submit
-          </Button>
+                return (
+                  <div key={index}>
+                    <Typography variant="body1" component="div">
+                      Product Name: {productName}, Quantity:{" "}
+                      {product.purchaseQuantity}, Purchase Quantity:{" "}
+                      {product.purchaseUnitPrice}, Declaration Number:{" "}
+                      {declarationNumber}
+                    </Typography>
+                    <IconButton
+                      onClick={handleEditProduct(index)}
+                      color="primary"
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={handleRemoveProduct(index)}
+                      color="secondary"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </div>
+                );
+              })}
+            </Card>
+          )}
 
           <Button
             variant="outlined"
-            color="warning"
-            onClick={handleCancel}
-            sx={{ borderRadius: 20 }}
+            color="primary"
+            onClick={handleAddProduct}
+            disabled={isAddProductButtonDisabled()}
+            sx={{
+              mt: 2,
+              borderRadius: 20,
+              color: "#2196F3",
+              border: "2px solid #2196F3",
+            }}
           >
-            Cancel
+            Add Product
           </Button>
+          <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+              disabled={!isPurchaseFormValid()}
+            >
+              Submit
+            </Button>
+
+            <Button
+              variant="outlined"
+              color="warning"
+              onClick={handleCancel}
+              sx={{ borderRadius: 20 }}
+            >
+              Cancel
+            </Button>
+          </Box>
         </Box>
-      </Box>
-    </Modal>
-    <Snackbar
-    open={snackbarOpen}
-    autoHideDuration={6000}
-    onClose={handleCloseSnackbar}
-    anchorOrigin={{ vertical: "top", horizontal: "center" }}
-  >
-    <Alert
-      onClose={handleCloseSnackbar}
-      severity={snackbarSeverity as "success" | "error"}
-      sx={{ width: "100%" }}
-    >
-      {snackbarMessage}
-    </Alert>
-  </Snackbar>
-  </div>
+      </Modal>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity as "success" | "error"}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </div>
   );
 };
 export default PurchaseForm;

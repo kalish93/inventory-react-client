@@ -84,6 +84,20 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
     (ca: any) => ca.name === "Import Transport Cost"
   );
 
+  const importTransportDemurrage = cashOfAccounts.find(
+    (ca: any) => ca.name === "Import Transport Demurrage"
+  );
+
+  const importTransportBakshish = cashOfAccounts.find(
+    (ca: any) => ca.name === "Import Transport Bakshish"
+  );
+
+  const transportTypes = [
+    importTransportBakshish,
+    importTransportCost,
+    importTransportDemurrage,
+  ];
+
   const accountsPayable = cashOfAccounts.find(
     (ca: any) => ca.name === "Accounts Payable (A/P) - ETB"
   );
@@ -139,6 +153,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
       amount: null,
       transactionRemark: "",
       type: "",
+      supplierId: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -189,7 +204,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
-      dispatch(getTransportCost(1,10));
+      dispatch(getTransportCost(1, 10));
     },
   });
 
@@ -272,7 +287,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 1000,
+            width: 900,
             maxHeight: "80vh",
             overflowY: "auto",
             bgcolor: "background.paper",
@@ -295,8 +310,8 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  gap: "1rem",
-                  minWidth: "47%",
+                  gap: "1.5rem",
+                  minWidth: "33%",
                 }}
               >
                 <Autocomplete
@@ -372,7 +387,46 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
                     />
                   )}
                 />
+                <Autocomplete
+                  options={transportTypes}
+                  getOptionLabel={(option) => option.name}
+                  value={
+                    transportTypes.find(
+                      (d: { id: string }) => d.id === formik.values.supplierId
+                    ) || null
+                  }
+                  onChange={(event, newValue) => {
+                    formik.setFieldValue(
+                      "supplierId",
+                      newValue ? newValue.id : ""
+                    );
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Payment Type"
+                      variant="outlined"
+                      fullWidth
+                      required
+                      value={formik.values.supplierId}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.supplierId &&
+                        Boolean(formik.errors.supplierId)
+                      }
+                      onBlur={formik.handleBlur}
+                      helperText={
+                        formik.touched.supplierId &&
+                        (formik.errors.supplierId as React.ReactNode)
+                      }
+                    />
+                  )}
+                />
+              </div>
+
+              <div style={{ maxWidth: "33%" }}>
                 <TextField
+                style={{ marginTop: "0rem"}}
                   name="date"
                   label="Transaction Date"
                   variant="outlined"
@@ -389,9 +443,6 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
                   }
                   required
                 />
-              </div>
-
-              <div style={{ maxWidth: "47%" }}>
                 <TextField
                   name="amount"
                   label="Amount"
@@ -418,6 +469,9 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
                   onChange={formik.handleChange}
                   value={formik.values.transactionRemark}
                 />
+              </div>
+
+              <div style={{ maxWidth: "33%" }}>
                 <Typography variant="subtitle1" component="div">
                   Truck Number: {selectedPurchase?.truckNumber}
                 </Typography>

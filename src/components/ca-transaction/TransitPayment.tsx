@@ -93,8 +93,9 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
   );
 
   const unpaidTransits = transitFees.filter(
-    (transit) => transit.paymentStatus === "Incomplete" ||
-        transit.paymentStatus === "Partially Complete"
+    (transit) =>
+      transit.paymentStatus === "Incomplete" ||
+      transit.paymentStatus === "Partially Complete"
   );
 
   unpaidTransits.reverse();
@@ -175,7 +176,7 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
-      dispatch(getTransitFee(1,10));
+      dispatch(getTransitFee(1, 10));
     },
   });
 
@@ -193,7 +194,9 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
       updatedPaidforTransits.push({
         ...transit,
         paidAmount:
-          remainingAmount >= 0 ? transit.cost - Number(transit.paidAmount) : transit.cost - Number(transit.paidAmount) + remainingAmount,
+          remainingAmount >= 0
+            ? transit.cost - Number(transit.paidAmount)
+            : transit.cost - Number(transit.paidAmount) + remainingAmount,
         paymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
       });
       console.log(remainingAmount);
@@ -251,8 +254,8 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  gap: "1rem",
-                  minWidth: "47%",
+                  gap: "1.5rem",
+                  minWidth: "33%",
                 }}
               >
                 <Autocomplete
@@ -299,10 +302,21 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
                   disabled
                   value={transitSupplier?.name}
                 />
+                <TextField
+                  style={{ marginTop: "0rem" }}
+                  name="transactionRemark"
+                  label="Transaction Remark"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  onChange={formik.handleChange}
+                  value={formik.values.transactionRemark}
+                />
               </div>
 
-              <div style={{ maxWidth: "47%" }}>
+              <div style={{ maxWidth: "33%" }}>
                 <TextField
+                  style={{ marginTop: "0rem" }}
                   name="date"
                   label="Transaction Date"
                   variant="outlined"
@@ -336,15 +350,8 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
                   }
                   required
                 />
-                <TextField
-                  name="transactionRemark"
-                  label="Transaction Remark"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  onChange={formik.handleChange}
-                  value={formik.values.transactionRemark}
-                />
+              </div>
+              <div style={{ maxWidth: "33%" }}>
                 {paidforTransits.length > 0 &&
                   paidforTransits.map((transit: any) => (
                     <div>

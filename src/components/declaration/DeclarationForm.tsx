@@ -276,7 +276,7 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
             fullWidth
             margin="normal"
             type="date"
-            value={dayjs(formData.date).format("YYYY-MM-DD")}
+            value={formData.date}
             onChange={handleChange}
             required
             error={touched.date && !formData.date}

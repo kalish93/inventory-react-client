@@ -14,7 +14,10 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-import { getTransitFee, getTransportCost } from "../../features/purchase/purchaseActions";
+import {
+  getTransitFee,
+  getTransportCost,
+} from "../../features/purchase/purchaseActions";
 import dayjs from "dayjs";
 import TransitPayment from "../ca-transaction/TransitPayment";
 
@@ -43,17 +46,22 @@ const Transit = () => {
     setPage(0);
   };
   const handleCloseModal = () => {
-    setOpenModal(false)
-  }
+    setOpenModal(false);
+  };
 
   const handleOpenModal = () => {
-    setOpenModal(true)
-  }
+    setOpenModal(true);
+  };
 
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={handleOpenModal} style={{marginLeft:'10px'}}>
-       Add Transit Payment
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleOpenModal}
+        style={{ marginLeft: "10px" }}
+      >
+        Add Transit Payment
       </Button>
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
@@ -82,24 +90,23 @@ const Transit = () => {
           <TableBody>
             {transit.map((item: any) => (
               <TableRow key={item.id}>
-              <TableCell>{dayjs(item.date).format("YYYY-MM-DD")}</TableCell>
-              <TableCell>{item.cost}</TableCell>
-              <TableCell>{item.purchase.truckNumber}</TableCell>
-              <TableCell>{item?.productPurchase?.declaration?.number}</TableCell>
-              <TableCell>{item.unitTransitCost?.toFixed(2)}</TableCell>
-              <TableCell>{item.purchase.number}</TableCell>
-              <TableCell>{item.type}</TableCell>
-              <TableCell>{item.paidAmount}</TableCell>
-              <TableCell>{item.paymentStatus}</TableCell>
-            </TableRow>
+                <TableCell>{dayjs(item.date).format("DD/MM/YYYY")}</TableCell>
+                <TableCell>{item.cost}</TableCell>
+                <TableCell>{item.purchase.truckNumber}</TableCell>
+                <TableCell>
+                  {item?.productPurchase?.declaration?.number}
+                </TableCell>
+                <TableCell>{item.unitTransitCost?.toFixed(2)}</TableCell>
+                <TableCell>{item.purchase.number}</TableCell>
+                <TableCell>{item.type}</TableCell>
+                <TableCell>{item.paidAmount}</TableCell>
+                <TableCell>{item.paymentStatus}</TableCell>
+              </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <TransitPayment
-        open={openModal}
-        handleClose={() => handleCloseModal()}
-      />
+      <TransitPayment open={openModal} handleClose={() => handleCloseModal()} />
     </div>
   );
 };
