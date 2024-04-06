@@ -74,7 +74,8 @@ const InventoryList = () => {
               <TableRow key={idx}>
                 <TableCell>{inventory.purchase?.number}</TableCell>
                 <TableCell>
-                  {dayjs(inventory.purchase?.date).format("DD/MM/YYYY")}
+                  {(inventory.purchase || inventory.productPurchase) &&
+                    dayjs(inventory.purchase?.date ?? inventory.productPurchase?.date).format("DD/MM/YYYY")}
                 </TableCell>
                 <TableCell>
                   {inventory.sale
@@ -89,7 +90,8 @@ const InventoryList = () => {
                 </TableCell>
                 <TableCell>{inventory.sale?.invoiceNumber}</TableCell>
                 <TableCell>
-                  {dayjs(inventory.sale?.invoiceDate).format("DD/MM/YYYY")}
+                  {inventory.sale &&
+                    dayjs(inventory.sale?.invoiceDate).format("DD/MM/YYYY")}
                 </TableCell>
                 <TableCell>{inventory.saleDetail?.saleQuantity}</TableCell>
                 <TableCell>{inventory.saleDetail?.saleUnitPrice}</TableCell>
