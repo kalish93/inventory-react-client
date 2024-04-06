@@ -52,6 +52,7 @@ console.log(provisions)
               <TableCell>Unit Cost Of Transport</TableCell>
               <TableCell>Unit Cost Of ESL</TableCell>
               <TableCell>Unit Cost Of Transit</TableCell>
+              <TableCell>Unit Cost Of Tax</TableCell>
               <TableCell>Purchase Number</TableCell>
               <TableCell>Declaration Number</TableCell>
               <TableCell>Sale Quantity</TableCell>
@@ -80,6 +81,9 @@ console.log(provisions)
                 </TableCell>
                 <TableCell>
                   {item.saleDetail.productPurchase.transit.unitTransitCost.toFixed(2)}
+                </TableCell>
+                <TableCell>
+                  {item.productDeclaration.unitIncomeTax.toFixed(2)}
                 </TableCell>
                 <TableCell>
                   {item.saleDetail.purchase.number}
