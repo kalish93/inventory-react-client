@@ -174,7 +174,7 @@ const CATransactionsList = () => {
               {CATransactions &&
                 CATransactions.map((ca: any) => (
                   <TableRow key={ca.id}>
-                    <TableCell>{dayjs(ca.date).format("DD/MM/YYYY")}</TableCell>
+                    <TableCell>{dayjs(ca.date).format("MM/DD/YYYY")}</TableCell>
                     <TableCell>{ca.type}</TableCell>
                     <TableCell>
                       {ca.purchase?.number ||

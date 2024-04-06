@@ -75,7 +75,10 @@ const InventoryList = () => {
                 <TableCell>{inventory.purchase?.number}</TableCell>
                 <TableCell>
                   {(inventory.purchase || inventory.productPurchase) &&
-                    dayjs(inventory.purchase?.date ?? inventory.productPurchase?.date).format("DD/MM/YYYY")}
+                    dayjs(
+                      inventory.purchase?.date ??
+                        inventory.productPurchase?.date
+                    ).format("MM/DD/YYYY")}
                 </TableCell>
                 <TableCell>
                   {inventory.sale
@@ -86,19 +89,21 @@ const InventoryList = () => {
                   {inventory.productPurchase?.purchaseQuantity}
                 </TableCell>
                 <TableCell>
-                  {inventory.productPurchase?.purchaseUnitPriceETB}
+                  {inventory.productPurchase?.purchaseUnitPriceETB?.toLocaleString()}
                 </TableCell>
                 <TableCell>{inventory.sale?.invoiceNumber}</TableCell>
                 <TableCell>
                   {inventory.sale &&
-                    dayjs(inventory.sale?.invoiceDate).format("DD/MM/YYYY")}
+                    dayjs(inventory.sale?.invoiceDate).format("MM/DD/YYYY")}
                 </TableCell>
                 <TableCell>{inventory.saleDetail?.saleQuantity}</TableCell>
-                <TableCell>{inventory.saleDetail?.saleUnitPrice}</TableCell>
+                <TableCell>
+                  {inventory.saleDetail?.saleUnitPrice?.toLocaleString()}
+                </TableCell>
                 <TableCell>{inventory.balanceQuantity}</TableCell>
                 <TableCell>
-                  {inventory.productPurchase?.purchaseUnitCostOfGoods ??
-                    inventory.saleDetail?.unitCostOfGoods}
+                  {inventory.productPurchase?.purchaseUnitCostOfGoods?.toLocaleString() ??
+                    inventory.saleDetail?.unitCostOfGoods?.toLocaleString()}
                 </TableCell>
                 <TableCell>
                   {inventory.productPurchase?.declaration?.number ??
