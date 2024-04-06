@@ -229,7 +229,7 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
             fullWidth
             margin="normal"
             type="date"
-            value={dayjs(formData.invoiceDate).format("DD/MM/YYYY")}
+            value={formData.invoiceDate}
             onChange={handleChange}
             required
             error={touched.invoiceDate && !formData.invoiceDate}
