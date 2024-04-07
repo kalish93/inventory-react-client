@@ -163,19 +163,19 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
         remark: values.transactionRemark,
         credit: values.amount,
         debit: null,
-        supplierId: TransporterSupplier.id,
+        supplierId: TransporterSupplier?.id,
         purchaseId: values.chartofAccountId2,
         type: "Supplier Payment",
         transactionRemark: values.transactionRemark,
       };
 
       const formDataToSend2 = {
-        chartofAccountId: accountsPayable.id,
+        chartofAccountId: accountsPayable?.id,
         date: values.date,
         remark: values.transactionRemark,
         credit: null,
         debit: values.amount,
-        supplierId: TransporterSupplier.id,
+        supplierId: TransporterSupplier?.id,
         purchaseId: values.chartofAccountId2,
         type: "Supplier Payment",
         transactionRemark: values.transactionRemark,
@@ -192,7 +192,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
         payment: values.amount,
         deposit: null,
         type: "Supplier Payment",
-        chartofAccountId: accountsPayable.id,
+        chartofAccountId: accountsPayable?.id,
       };
 
       Promise.all([
@@ -210,13 +210,13 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
 
   useEffect(() => {
     const currentPurchase = purchases.find(
-      (purchase: any) => purchase.id === formik.values.chartofAccountId2
+      (purchase: any) => purchase?.id === formik.values.chartofAccountId2
     );
     setSelectedPurchase(currentPurchase);
 
     const currentUnpaidTransports = unpaidTransports.filter(
       (transport: any) =>
-        transport.purchase.id === formik.values.chartofAccountId2
+        transport.purchase?.id === formik.values.chartofAccountId2
     );
 
     const currentTransports = transports.filter(
@@ -226,7 +226,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
 
     const currentPaidTransports = paidTransports.filter(
       (transport: any) =>
-        transport.purchase.id === formik.values.chartofAccountId2
+        transport.purchase?.id === formik.values.chartofAccountId2
     );
 
     const totalAmount = currentTransports.reduce(
@@ -303,7 +303,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                marginTop: "20px",
+                margin: "20px",
               }}
             >
               <div
@@ -320,13 +320,13 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
                   value={
                     banks.find(
                       (d: { id: string }) =>
-                        d.id === formik.values.chartofAccountId1
+                        d?.id === formik.values.chartofAccountId1
                     ) || null
                   }
                   onChange={(event, newValue) => {
                     formik.setFieldValue(
                       "chartofAccountId1",
-                      newValue ? newValue.id : ""
+                      newValue ? newValue?.id : ""
                     );
                   }}
                   renderInput={(params) => (
@@ -357,13 +357,13 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
                   value={
                     purchases.find(
                       (d: { id: string }) =>
-                        d.id === formik.values.chartofAccountId2
+                        d?.id === formik.values.chartofAccountId2
                     ) || null
                   }
                   onChange={(event, newValue) => {
                     formik.setFieldValue(
                       "chartofAccountId2",
-                      newValue ? newValue.id : ""
+                      newValue ? newValue?.id : ""
                     );
                   }}
                   renderInput={(params) => (
@@ -392,13 +392,13 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
                   getOptionLabel={(option) => option.name}
                   value={
                     transportTypes.find(
-                      (d: { id: string }) => d.id === formik.values.supplierId
+                      (d: { id: string }) => d?.id === formik.values.supplierId
                     ) || null
                   }
                   onChange={(event, newValue) => {
                     formik.setFieldValue(
                       "supplierId",
-                      newValue ? newValue.id : ""
+                      newValue ? newValue?.id : ""
                     );
                   }}
                   renderInput={(params) => (

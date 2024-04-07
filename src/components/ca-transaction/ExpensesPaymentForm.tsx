@@ -123,7 +123,6 @@ const ExpensesPaymentForm = () => {
         chartofAccountId: values.chartofAccountId2,
       };
 
-
       Promise.all([
         dispatch(createCATransaction(formDataToSend1)),
         dispatch(createCATransaction(formDataToSend2)),
@@ -131,156 +130,159 @@ const ExpensesPaymentForm = () => {
       ]);
       setIsFormSubmitted(true);
       formik.resetForm();
-      navigate('/ca-transactions')
+      navigate("/ca-transactions");
     },
   });
 
   return (
-    <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
-        <Card
-          style={{
-            padding: '20px',
-            maxWidth: '600px'
-          }}
-        >
-          <form onSubmit={formik.handleSubmit}>
-            <Typography variant="h5" component="div" style={{textAlign:'center', marginBottom:'20px'}}>
-              Operation Expenses Payment Form
-            </Typography>
-            
-                <Autocomplete
-                style={{
-                  marginBottom:'20px'
-                }}
-                  options={banks}
-                  getOptionLabel={(option) => option.name}
-                  value={
-                    banks.find(
-                      (d: { id: string }) =>
-                        d.id === formik.values.chartofAccountId1
-                    ) || null
-                  }
-                  onChange={(event, newValue) => {
-                    formik.setFieldValue(
-                      "chartofAccountId1",
-                      newValue ? newValue.id : ""
-                    );
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Bank Name"
-                      variant="outlined"
-                      fullWidth
-                      required
-                      value={formik.values.chartofAccountId1}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.chartofAccountId1 &&
-                        Boolean(formik.errors.chartofAccountId1)
-                      }
-                      onBlur={formik.handleBlur}
-                      helperText={
-                        formik.touched.chartofAccountId1 &&
-                        (formik.errors.chartofAccountId1 as React.ReactNode)
-                      }
-                    />
-                  )}
-                />
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Card
+        style={{
+          padding: "20px",
+          maxWidth: "600px",
+        }}
+      >
+        <form onSubmit={formik.handleSubmit}>
+          <Typography
+            variant="h5"
+            component="div"
+            style={{ textAlign: "center", marginBottom: "20px" }}
+          >
+            Operation Expenses Payment Form
+          </Typography>
 
-                <Autocomplete
-                  options={cashOfAccountExpenses}
-                  getOptionLabel={(option) => option.name}
-                  value={
-                    cashOfAccountExpenses.find(
-                      (d: { id: string }) =>
-                        d.id === formik.values.chartofAccountId2
-                    ) || null
-                  }
-                  onChange={(event, newValue) => {
-                    formik.setFieldValue(
-                      "chartofAccountId2",
-                      newValue ? newValue.id : ""
-                    );
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Expense Name"
-                      variant="outlined"
-                      fullWidth
-                      required
-                      value={formik.values.chartofAccountId2}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.chartofAccountId2 &&
-                        Boolean(formik.errors.chartofAccountId2)
-                      }
-                      onBlur={formik.handleBlur}
-                      helperText={
-                        formik.touched.chartofAccountId2 &&
-                        (formik.errors.chartofAccountId2 as React.ReactNode)
-                      }
-                    />
-                  )}
-                />
-                <TextField
-                  name="date"
-                  label="Transaction Date"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  type="date"
-                  value={formik.values.date}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.date && Boolean(formik.errors.date)}
-                  helperText={
-                    formik.touched.date &&
-                    (formik.errors.date as React.ReactNode)
-                  }
-                  required
-                />
+          <Autocomplete
+            options={banks}
+            getOptionLabel={(option) => option.name}
+            value={
+              banks.find(
+                (d: { id: string }) => d.id === formik.values.chartofAccountId1
+              ) || null
+            }
+            onChange={(event, newValue) => {
+              formik.setFieldValue(
+                "chartofAccountId1",
+                newValue ? newValue.id : ""
+              );
+            }}
+            renderInput={(params) => (
+              <TextField
+                sx={{ marginBottom: 3 }}
+                {...params}
+                label="Bank Name"
+                variant="outlined"
+                fullWidth
+                required
+                value={formik.values.chartofAccountId1}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.chartofAccountId1 &&
+                  Boolean(formik.errors.chartofAccountId1)
+                }
+                onBlur={formik.handleBlur}
+                helperText={
+                  formik.touched.chartofAccountId1 &&
+                  (formik.errors.chartofAccountId1 as React.ReactNode)
+                }
+              />
+            )}
+          />
 
+          <Autocomplete
+            options={cashOfAccountExpenses}
+            getOptionLabel={(option) => option.name}
+            value={
+              cashOfAccountExpenses.find(
+                (d: { id: string }) => d.id === formik.values.chartofAccountId2
+              ) || null
+            }
+            onChange={(event, newValue) => {
+              formik.setFieldValue(
+                "chartofAccountId2",
+                newValue ? newValue.id : ""
+              );
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                sx={{ marginBottom: 1}}
+                label="Expense Name"
+                variant="outlined"
+                fullWidth
+                required
+                value={formik.values.chartofAccountId2}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.chartofAccountId2 &&
+                  Boolean(formik.errors.chartofAccountId2)
+                }
+                onBlur={formik.handleBlur}
+                helperText={
+                  formik.touched.chartofAccountId2 &&
+                  (formik.errors.chartofAccountId2 as React.ReactNode)
+                }
+              />
+            )}
+          />
+          <TextField
+            name="date"
+            label="Transaction Date"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            type="date"
+            value={formik.values.date}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.date && Boolean(formik.errors.date)}
+            helperText={
+              formik.touched.date && (formik.errors.date as React.ReactNode)
+            }
+            required
+          />
 
-             
-                <TextField
-                  name="amount"
-                  label="Amount"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  onChange={formik.handleChange}
-                  value={formik.values.amount}
-                  type="number"
-                  error={formik.touched.amount && Boolean(formik.errors.amount)}
-                  onBlur={formik.handleBlur}
-                  helperText={
-                    formik.touched.amount &&
-                    (formik.errors.amount as React.ReactNode)
-                  }
-                  required
-                />
-                <TextField
-                  name="transactionRemark"
-                  label="Transaction Remark"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  onChange={formik.handleChange}
-                  value={formik.values.transactionRemark}
-                />
+          <TextField
+            name="amount"
+            label="Amount"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            onChange={formik.handleChange}
+            value={formik.values.amount}
+            type="number"
+            error={formik.touched.amount && Boolean(formik.errors.amount)}
+            onBlur={formik.handleBlur}
+            helperText={
+              formik.touched.amount && (formik.errors.amount as React.ReactNode)
+            }
+            required
+          />
+          <TextField
+            name="transactionRemark"
+            label="Transaction Remark"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            onChange={formik.handleChange}
+            value={formik.values.transactionRemark}
+          />
 
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              disabled={!formik.isValid || formik.isSubmitting}
-            >
-              Submit
-            </Button>
-          </form>
-        </Card>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            disabled={!formik.isValid || formik.isSubmitting}
+          >
+            Submit
+          </Button>
+        </form>
+      </Card>
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
