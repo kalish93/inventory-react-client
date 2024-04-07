@@ -160,7 +160,6 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
         chartofAccountId: accountsPayable.id,
       };
 
-
       Promise.all([
         dispatch(createCATransaction(formDataToSend1)),
         dispatch(createCATransaction(formDataToSend2)),
@@ -250,15 +249,15 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                marginTop: "20px",
+                margin: "20px",
               }}
             >
               <div
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  gap: "1rem",
-                  minWidth: "47%",
+                  gap: "1.5rem",
+                  minWidth: "33%",
                 }}
               >
                 <Autocomplete
@@ -344,8 +343,9 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
                 />
               </div>
 
-              <div style={{ maxWidth: "47%" }}>
+              <div style={{ maxWidth: "33%" }}>
                 <TextField
+                  sx={{ marginTop: 0 }}
                   name="date"
                   label="Transaction Date"
                   variant="outlined"
@@ -388,6 +388,8 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
                   onChange={formik.handleChange}
                   value={formik.values.transactionRemark}
                 />
+              </div>
+              <div style={{ maxWidth: "33%" }}>
                 <Typography variant="subtitle1" component="div">
                   Balance Before Payment: {amountBefore}
                 </Typography>
