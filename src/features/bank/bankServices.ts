@@ -1,5 +1,5 @@
 import { handleRequest } from "../../utils/apiService";
-import { BANK_URL, CATRANSACTIONS_URL } from "../../core/api-routes";
+import { BANK_TRANSACTIONS_URL, BANK_URL, CATRANSACTIONS_URL } from "../../core/api-routes";
 import { CreateBank, Bank } from "../../models/bank";
 
 export const bankService = {
@@ -120,6 +120,22 @@ export const bankService = {
   getBank: async (bankId: String) => {
     try {
       const response = await handleRequest(`${BANK_URL}/${bankId}`, {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to get bank");
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getBankTransactions: async (bankId: String,page: number, pageSize: number) => {
+    try {
+      const response = await handleRequest(`${BANK_TRANSACTIONS_URL}/${bankId}/?page=${page}&pageSize=${pageSize}`, {
         method: "GET",
       });
 

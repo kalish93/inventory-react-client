@@ -4,6 +4,7 @@ import { PaginatedList } from "../../models/commons/paginatedList";
 
 interface BankState {
   banks: PaginatedList<Bank>;
+  bankTransactions: PaginatedList<any>;
   loading: boolean;
   error: any | null;
   isError: boolean;
@@ -13,6 +14,13 @@ interface BankState {
 
 const initialState: BankState = {
   banks: {
+    items: [],
+    totalCount: 0,
+    pageSize: 0,
+    currentPage: 1,
+    totalPages: 1,
+  },
+  bankTransactions: {
     items: [],
     totalCount: 0,
     pageSize: 0,
@@ -90,6 +98,11 @@ const bankSlice = createSlice({
       state.loading = false;
       state.successMessage = "Bank Updated Succesfully.";
     },
+
+    getBankTransactionsSuccess: (state, action: PayloadAction<PaginatedList<Bank>>) => {
+      state.bankTransactions = action.payload;
+      state.loading = false;
+    },
   },
 });
 
@@ -101,6 +114,7 @@ export const {
   deleteBankSuccess,
   updateBankSuccess,
   getBankByIdSuccess,
+  getBankTransactionsSuccess
 } = bankSlice.actions;
 
 export const selectBank = (state: { bank: BankState }) => state.bank;
