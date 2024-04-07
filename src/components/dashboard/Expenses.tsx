@@ -4,10 +4,7 @@ import { getExpenses } from "../../features/dashboard/dashboardActions";
 import React, { useEffect, useState } from "react";
 import * as echarts from "echarts/core";
 import { PieChart } from "echarts/charts";
-import {
-  LegendComponent,
-  TitleComponent,
-} from "echarts/components";
+import { LegendComponent, TitleComponent } from "echarts/components";
 import { CanvasRenderer } from "echarts/renderers";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Card, TextField } from "@mui/material";
@@ -29,29 +26,33 @@ const PieChartComponent: React.FC<{ data: ExpenseData }> = ({ data }) => {
     const option = {
       title: {
         text: "Expenses Chart",
-        subtext: "Total Expence: " + data?.totalExpense,
-        left: 'center'
+        subtext: "Total Expense: " + data?.totalExpense.toLocaleString(),
+        right: "78%",
       },
       tooltip: {
         trigger: "item",
         formatter: "{a} <br/>{b}: {c} ({d}%)",
       },
       legend: {
+        orient: "",
+        left: "30%",
         type: "scroll",
-        orient: "vertical",
-        right: "60%",
         top: "middle",
         formatter: function (name: string) {
-      const expense = data?.detailExpenses.find((item) => item.name === name);
-      return `${name} - ${expense?.amount}`;
-    },
+          const expense = data?.detailExpenses.find(
+            (item) => item.name === name
+          );
+          return `${name} - ${expense?.amount.toLocaleString()}`;
+        },
       },
       series: [
         {
           name: "Expense",
           type: "pie",
-          radius: ["40%", "70%"],
+          radius: ["50%", "70%"],
           avoidLabelOverlap: false,
+          right: "70%",
+          top: "10%",
           itemStyle: {
             borderRadius: 10,
             borderColor: "#fff",
@@ -61,9 +62,9 @@ const PieChartComponent: React.FC<{ data: ExpenseData }> = ({ data }) => {
             show: false,
             position: "center",
             formatter: function (params: any) {
-          const { name, percent } = params;
-          return `${name}\n${percent.toFixed(2)}%`;
-        },
+              const { name, percent } = params;
+              return `${name}\n${percent.toFixed(2)}%`;
+            },
           },
           emphasis: {
             label: {
@@ -89,7 +90,7 @@ const PieChartComponent: React.FC<{ data: ExpenseData }> = ({ data }) => {
     };
   }, [data]);
 
-  return <div id="pieChart" style={{ height: 300}} />;
+  return <div id="pieChart" style={{ height: 300 }} />;
 };
 
 const Expenses = () => {
@@ -124,42 +125,60 @@ const Expenses = () => {
     dispatch(getExpenses());
   }, [dispatch]);
 
-    return (
-      <Card
-        variant="outlined"
-        style={{ boxSizing: "border-box", width: "100%", padding: "10px", paddingRight: "0rem" }}
+  return (
+    <Card
+      variant="outlined"
+      style={{
+        boxSizing: "border-box",
+        width: "100%",
+        padding: "10px",
+        paddingRight: "0rem",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "15px",
+          marginBottom: "15px",
+        }}
       >
-        <div style={{display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'center', gap:'15px', marginBottom:'15px'}}>
-          <TextField
-            id="startDate"
-            label="Start Date"
-            type="date"
-            InputLabelProps={{ shrink: true }}
-            name="startDate"
-            value={startDate}
-            onChange={handleDateChange}
-            size="small"
-          />
-          <TextField
-            id="endDate"
-            label="End Date"
-            type="date"
-            InputLabelProps={{ shrink: true }}
-            name="endDate"
-            value={endDate}
-            onChange={handleDateChange}
-            size="small"
-          />
-          <Button variant="contained" onClick={handleFilter}>
-            Apply Filter
-          </Button>
-          <Button color="warning" variant="contained" onClick={handleRemoveFilter}>
+        <TextField
+          id="startDate"
+          label="Start Date"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          name="startDate"
+          value={startDate}
+          onChange={handleDateChange}
+          size="small"
+        />
+        <TextField
+          id="endDate"
+          label="End Date"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          name="endDate"
+          value={endDate}
+          onChange={handleDateChange}
+          size="small"
+        />
+        <Button variant="contained" onClick={handleFilter}>
+          Apply Filter
+        </Button>
+        <Button
+          color="warning"
+          variant="contained"
+          onClick={handleRemoveFilter}
+        >
           Remove Filter
         </Button>
-        </div>
-        <PieChartComponent data={expenses} />
-      </Card>
-    );
+      </div>
+      <PieChartComponent data={expenses} />
+    </Card>
+  );
 };
 
 export default Expenses;

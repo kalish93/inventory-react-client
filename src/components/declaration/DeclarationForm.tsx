@@ -246,7 +246,8 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
             overflowY: "auto",
             bgcolor: "background.paper",
             boxShadow: 24,
-            p: 4,
+            px: 4,
+            py: 2,
           }}
         >
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -361,7 +362,7 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
             color="primary"
             onClick={handleAddProduct}
             disabled={isAddProductButtonDisabled()}
-            sx={{ borderRadius: 20, mt: 2 }}
+            sx={{ borderRadius: 2, mt: 2 }}
           >
             Add Product
           </Button>
@@ -402,25 +403,26 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
               })}
             </Card>
           )}
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+              disabled={!isDeclarationFormValid()}
+              sx={{ mt: 2 }}
+            >
+              Submit
+            </Button>
 
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSubmit}
-            disabled={!isDeclarationFormValid()}
-            sx={{ mt: 2 }}
-          >
-            Submit
-          </Button>
-
-          <Button
-            variant="outlined"
-            color="warning"
-            onClick={handleCancel}
-            sx={{ marginLeft: 1, mt: 2 }}
-          >
-            Cancel
-          </Button>
+            <Button
+              variant="outlined"
+              color="warning"
+              onClick={handleCancel}
+              sx={{ marginLeft: 1, mt: 2 }}
+            >
+              Cancel
+            </Button>
+          </Box>
         </Box>
       </Modal>
       <Snackbar
