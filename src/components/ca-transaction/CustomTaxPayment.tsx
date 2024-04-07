@@ -170,6 +170,7 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
+      dispatch(getDeclarations(1,10))
     },
   });
 
