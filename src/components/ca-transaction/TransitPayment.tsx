@@ -181,11 +181,9 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
   });
 
   useEffect(() => {
-    console.log("transit fees", transitFees);
     const updatedPaidforTransits = [];
 
     let remainingAmount = formik.values.amount as unknown as number;
-    console.log(remainingAmount, "remaining amount");
     let i = 0;
     while (remainingAmount > 0 && i < unpaidTransits.length) {
       const transit = unpaidTransits[i];
@@ -206,7 +204,6 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
     }
 
     setPaidforTransits(updatedPaidforTransits);
-    console.log(paidforTransits);
   }, [formik.values.amount, dispatch]);
 
   const handleCancel = () => {
@@ -247,7 +244,7 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                marginTop: "20px",
+                margin: "20px",
               }}
             >
               <div

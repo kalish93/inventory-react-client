@@ -197,7 +197,7 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 500,
+            width: 900,
             maxHeight: "80vh",
             overflowY: "auto",
             bgcolor: "background.paper",
@@ -208,119 +208,137 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Sales Form
           </Typography>
-          <TextField
-            name="invoiceNumber"
-            label="Invoice Number"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            onChange={handleChange}
-            required
-            error={touched.invoiceNumber && !formData.invoiceNumber}
-            onBlur={() => handleBlur("invoiceNumber")}
-          />
-          {touched.invoiceNumber && !formData.invoiceNumber && (
-            <FormHelperText error>Invoice number is required</FormHelperText>
-          )}
-          <TextField
-            name="invoiceDate"
-            label="Invoice Date"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            type="date"
-            value={formData.invoiceDate}
-            onChange={handleChange}
-            required
-            error={touched.invoiceDate && !formData.invoiceDate}
-            onBlur={() => setTouched({ ...touched, invoiceDate: true })}
-          />
 
-          <Autocomplete
-            options={customers}
-            getOptionLabel={(option) =>
-              option.firstName + " " + option.lastName
-            }
-            value={
-              customers.find(
-                (d: { id: string }) => d.id === formData.customerId
-              ) || null
-            }
-            onChange={(event, newValue) => {
-              handleChange({
-                target: {
-                  name: "customerId",
-                  value: newValue ? newValue.id : "",
-                },
-              });
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
             }}
-            renderInput={(params) => (
+          >
+            <div style={{ maxWidth: "50%" }}>
               <TextField
-                {...params}
-                label="Customer"
+                name="invoiceNumber"
+                label="Invoice Number"
                 variant="outlined"
                 fullWidth
+                margin="normal"
+                onChange={handleChange}
                 required
-                error={touched.customerId && !formData.customerId}
-                onBlur={() => setTouched({ ...touched, customerId: true })}
+                error={touched.invoiceNumber && !formData.invoiceNumber}
+                onBlur={() => handleBlur("invoiceNumber")}
               />
-            )}
-          />
-          <Typography style={{ marginTop: "10px", marginBottom: "10px" }}>
-            Add Product
-          </Typography>
-          <Autocomplete
-            options={products}
-            getOptionLabel={(option) => option.name}
-            value={
-              products.find((p: { id: any }) => p.id === formData.productId) ||
-              null
-            }
-            onChange={(event, newValue) => {
-              handleChange({
-                target: {
-                  name: "productId",
-                  value: newValue ? newValue.id : "",
-                },
-              });
-            }}
-            renderInput={(params) => (
+              {touched.invoiceNumber && !formData.invoiceNumber && (
+                <FormHelperText error>
+                  Invoice number is required
+                </FormHelperText>
+              )}
               <TextField
-                {...params}
-                label="Product"
+                name="invoiceDate"
+                label="Invoice Date"
                 variant="outlined"
                 fullWidth
+                margin="normal"
+                type="date"
+                sx={{ marginBottom: 3 }}
+                value={formData.invoiceDate}
+                onChange={handleChange}
                 required
-                error={touched.productId && !formData.productId}
+                error={touched.invoiceDate && !formData.invoiceDate}
+                onBlur={() => setTouched({ ...touched, invoiceDate: true })}
               />
-            )}
-          />
 
-          <TextField
-            name="saleQuantity"
-            label="Sale Quantity"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            type="number"
-            value={formData.saleQuantity === 0 ? "" : formData.saleQuantity}
-            onChange={handleChange}
-            required
-            error={touched.saleQuantity && !formData.saleQuantity}
-          />
-          <TextField
-            name="saleUnitPrice"
-            label="Sale Unit Price"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            type="number"
-            value={formData.saleUnitPrice === 0 ? "" : formData.saleUnitPrice}
-            onChange={handleChange}
-            required
-            error={touched.saleUnitPrice && !formData.saleUnitPrice}
-          />
+              <Autocomplete
+                options={customers}
+                getOptionLabel={(option) =>
+                  option.firstName + " " + option.lastName
+                }
+                value={
+                  customers.find(
+                    (d: { id: string }) => d.id === formData.customerId
+                  ) || null
+                }
+                onChange={(event, newValue) => {
+                  handleChange({
+                    target: {
+                      name: "customerId",
+                      value: newValue ? newValue.id : "",
+                    },
+                  });
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Customer"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    error={touched.customerId && !formData.customerId}
+                    onBlur={() => setTouched({ ...touched, customerId: true })}
+                  />
+                )}
+              />
+            </div>
+            <div style={{ maxWidth: "50%" }}>
+              <Typography style={{ marginTop: "10px", marginBottom: "10px" }}>
+                Add Product
+              </Typography>
+              <Autocomplete
+                options={products}
+                getOptionLabel={(option) => option.name}
+                value={
+                  products.find(
+                    (p: { id: any }) => p.id === formData.productId
+                  ) || null
+                }
+                onChange={(event, newValue) => {
+                  handleChange({
+                    target: {
+                      name: "productId",
+                      value: newValue ? newValue.id : "",
+                    },
+                  });
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    sx={{ marginBottom: 1 }}
+                    label="Product"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    error={touched.productId && !formData.productId}
+                  />
+                )}
+              />
 
+              <TextField
+                name="saleQuantity"
+                label="Sale Quantity"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                type="number"
+                value={formData.saleQuantity === 0 ? "" : formData.saleQuantity}
+                onChange={handleChange}
+                required
+                error={touched.saleQuantity && !formData.saleQuantity}
+              />
+              <TextField
+                name="saleUnitPrice"
+                label="Sale Unit Price"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                type="number"
+                value={
+                  formData.saleUnitPrice === 0 ? "" : formData.saleUnitPrice
+                }
+                onChange={handleChange}
+                required
+                error={touched.saleUnitPrice && !formData.saleUnitPrice}
+              />
+            </div>
+          </div>
           <Button
             variant="outlined"
             color="primary"

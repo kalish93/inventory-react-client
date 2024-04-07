@@ -144,7 +144,7 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
         debit: values.debit,
         number: values.journalEntryNumber,
         credit: null,
-        transactionRemark: values.transactionRemark,
+        remark: values.transactionRemark,
         type: "Journal Entry",
         accountPayableRecievableDetail: values.accountPayableRecievableDetail,
       };
@@ -154,7 +154,7 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
         debit: null,
         credit: values.credit,
         number: values.journalEntryNumber,
-        transactionRemark: values.transactionRemark,
+        remark: values.transactionRemark,
         type: "Journal Entry",
         accountPayableRecievableDetail: values.accountPayableRecievableDetail,
       };
@@ -387,7 +387,7 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
                   fullWidth
                   margin="normal"
                   type="date"
-                  value={formik.values.date ? dayjs(formik.values.date).format("MM/DD/YYYY") : ''}
+                  value={formik.values.date}
                   onChange={formik.handleChange}
                   error={formik.touched.date && !formik.values.date}
                   onBlur={formik.handleBlur}

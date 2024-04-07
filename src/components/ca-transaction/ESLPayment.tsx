@@ -192,7 +192,6 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
 
       if (remainingAmount <= 0) break; // Exit the loop if remaining amount is <= 0
     }
-    console.log(updatedPaidforEsls);
     setPaidforEsls(updatedPaidforEsls);
   }, [formik.values.amount, dispatch]);
 
@@ -234,7 +233,7 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                marginTop: "20px",
+                margin: "20px",
               }}
             >
               <div
@@ -290,6 +289,7 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
                   value={eslSupplier?.name}
                 />
                 <TextField
+                  sx={{ marginTop: 0 }}
                   name="transactionRemark"
                   label="Transaction Remark"
                   variant="outlined"

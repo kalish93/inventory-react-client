@@ -118,6 +118,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
     chartofAccountId1: yup.string().required("Bank name is required"),
     date: yup.string().required("Transaction date is required"),
     amount: yup.number().required("Transaction amount is required"),
+    exchangeRate: yup.number().required("Exchange rate is required"),
   });
 
   const formik = useFormik({
@@ -127,9 +128,8 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
       date: "",
       amount: null,
       transactionRemark: "",
-      exchangeRate: 0,
+      exchangeRate: null,
       type: "",
-      purchaseId: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -142,7 +142,6 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
           ? values.amount! * values.exchangeRate
           : values.amount,
         supplierId: values.chartofAccountId2,
-        purchaseId: values.purchaseId,
         type: "Supplier Payment",
       };
 
@@ -159,7 +158,6 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
         debit: null,
         supplierId: values.chartofAccountId2,
         type: "Supplier Payment",
-        purchaseId: values.purchaseId,
         USDAmount: values.amount,
       };
 
@@ -183,7 +181,6 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
           : accountsPayable.id,
       };
 
-      console.log("formDataToSend3", formDataToSend3);
       Promise.all([
         dispatch(createCATransaction(formDataToSend1)),
         dispatch(createCATransaction(formDataToSend2)),
@@ -208,7 +205,6 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
     let i = 0;
     while (remainingAmount > 0 && i < unpaidPurchases.length) {
       const purchase = unpaidPurchases[i];
-      console.log("purchase", purchase);
       let totalAmount = 0;
       for (let productPurchase of purchase.products) {
         totalAmount +=
@@ -216,7 +212,6 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
           productPurchase.purchaseQuantity;
       }
       //
-      console.log(i, remainingAmount, totalAmount, purchase.paidAmountUSD);
       remainingAmount -= totalAmount - Number(purchase.paidAmountUSD);
       updatedPaidforPurchases.push({
         ...purchase,
@@ -227,9 +222,9 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
         paidAmountETB:
           remainingAmount >= 0
             ? (totalAmount - Number(purchase.paidAmountUSD)) *
-              formik.values.exchangeRate
+              formik.values.exchangeRate!!
             : (totalAmount - Number(purchase.paidAmountUSD) + remainingAmount) *
-              formik.values.exchangeRate,
+              formik.values.exchangeRate!!,
         paymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
       });
       i++;
@@ -238,7 +233,6 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
     }
 
     setPaidforPurchases(updatedPaidforPurchases);
-    console.log("paidforPurchases", paidforPurchases);
   }, [formik.values.amount, formik.values.exchangeRate, dispatch]);
 
   return (
@@ -303,6 +297,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                   renderInput={(params) => (
                     <TextField
                       {...params}
+                      sx={{ marginBottom: 1 }}
                       label="Bank Name"
                       variant="outlined"
                       fullWidth
@@ -321,16 +316,47 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                     />
                   )}
                 />
-                <TextField
-                  label="Supplier"
-                  variant="outlined"
-                  fullWidth
-                  disabled
-                  value={osmaSupplier?.name}
+                <Autocomplete
+                  options={foringnCurrencySupplier}
+                  getOptionLabel={(option) => option.name}
+                  value={
+                    foringnCurrencySupplier.find(
+                      (d: { id: string }) =>
+                        d.id === formik.values.chartofAccountId2
+                    ) || null
+                  }
+                  onChange={(event, newValue) => {
+                    formik.setFieldValue(
+                      "chartofAccountId2",
+                      newValue ? newValue.id : ""
+                    );
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      sx={{ marginBottom: 1 }}
+                      label="Supplier"
+                      variant="outlined"
+                      fullWidth
+                      required
+                      value={formik.values.chartofAccountId2}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.chartofAccountId2 &&
+                        Boolean(formik.errors.chartofAccountId2)
+                      }
+                      onBlur={formik.handleBlur}
+                      helperText={
+                        formik.touched.chartofAccountId2 &&
+                        (formik.errors.chartofAccountId2 as React.ReactNode)
+                      }
+                    />
+                  )}
                 />
 
                 <TextField
                   name="date"
+                  sx={{ marginTop: 0}}
                   label="Transaction Date"
                   variant="outlined"
                   fullWidth
@@ -350,8 +376,9 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
 
               <div style={{ maxWidth: "47%" }}>
                 <TextField
+                  style={{ marginTop: "0" }}
                   name="amount"
-                  label="Amount"
+                  label="Amount (USD)"
                   variant="outlined"
                   fullWidth
                   margin="normal"
@@ -366,16 +393,6 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                   }
                   required
                 />
-                <TextField
-                  name="transactionRemark"
-                  label="Transaction Remark"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  onChange={formik.handleChange}
-                  value={formik.values.transactionRemark}
-                />
-
                 <TextField
                   name="exchangeRate"
                   label="Exchange Rate"
@@ -395,6 +412,15 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                     (formik.errors.exchangeRate as React.ReactNode)
                   }
                   required
+                />
+                <TextField
+                  name="transactionRemark"
+                  label="Transaction Remark"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  onChange={formik.handleChange}
+                  value={formik.values.transactionRemark}
                 />
                 <Typography style={{ marginTop: "1rem" }}></Typography>
               </div>
