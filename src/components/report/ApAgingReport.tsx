@@ -2,25 +2,25 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../app/store';
 import { selectReport } from '../../features/report/reportSlice';
-import { generateCustomerAgingReport } from '../../features/report/reportActions';
 import { Card, Button, TextField } from '@mui/material';
+import { generateApAgingReport } from '../../features/report/reportActions';
 
-function CustomerAgingReportGenerator() {
+function ApAgingReportGenerator() {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error, customerAgingReport } = useSelector(selectReport);
+  const { loading, error, apAgingReport } = useSelector(selectReport);
   const [endDate, setEndDate] = useState('');
 
   const handleGenerateReport = () => {
-    dispatch(generateCustomerAgingReport(endDate));
+    dispatch(generateApAgingReport(endDate));
   };
 
   const handleDownloadReport = () => {
-    if (customerAgingReport) {
-      const blob = new Blob([customerAgingReport], { type: 'application/pdf' });
+    if (apAgingReport) {
+      const blob = new Blob([apAgingReport], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'A/R-aging-summary.pdf');
+      link.setAttribute('download', 'A/P-aging-summary.pdf');
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -30,7 +30,7 @@ function CustomerAgingReportGenerator() {
   return (
     <div>
       <Card style={{padding:'20px', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'10px'}}>
-        <h2>A/R Aging Summary</h2>
+        <h2>A/P Aging Summary</h2>
         <div>
           <TextField
             id="endDate"
@@ -52,7 +52,7 @@ function CustomerAgingReportGenerator() {
           {loading ? 'Generating Report...' : 'Generate Report'}
         </Button>
         {error && <div>Error: {error}</div>}
-        {customerAgingReport && (
+        {apAgingReport && (
           <div>
             <Button variant="contained" color='secondary' onClick={handleDownloadReport}>
               Download Report
@@ -64,4 +64,4 @@ function CustomerAgingReportGenerator() {
   );
 }
 
-export default CustomerAgingReportGenerator;
+export default ApAgingReportGenerator;
