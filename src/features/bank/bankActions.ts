@@ -6,6 +6,7 @@ import {
   getBankSuccess,
   getBankByIdSuccess,
   updateBankSuccess,
+  getBankTransactionsSuccess,
 } from "./bankSlice";
 import { AppDispatch } from "../../app/store";
 import { bankService } from "./bankServices";
@@ -88,3 +89,14 @@ export const deleteBank = (bankId: string) => async (dispatch: AppDispatch) => {
     dispatch(bankFailure("Unknown error"));
   }
 };
+
+export const getBankTransactions =
+  (id: any, page: number, pageSize: number) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(bankStart());
+      const response = await bankService.getBankTransactions(id, page, pageSize);
+      dispatch(getBankTransactionsSuccess(response));
+    } catch (error) {
+      dispatch(bankFailure(error));
+    }
+  };

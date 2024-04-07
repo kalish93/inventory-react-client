@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../app/store";
 
@@ -12,23 +12,40 @@ import {
   TableRow,
   CircularProgress,
   Typography,
+  TablePagination,
 } from "@mui/material";
 import dayjs from "dayjs";
 import { useParams } from "react-router-dom";
 import { selectBank } from "../../features/bank/bankSlice";
-import { getBank } from "../../features/bank/bankActions";
+import { getBank, getBankTransactions } from "../../features/bank/bankActions";
 
 const BankDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const bankState = useSelector(selectBank);
   const bank = bankState.bank;
+  const { items: bankTransactions = [], currentPage, totalCount } = bankState.bankTransactions;
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     dispatch(getBank(id));
   }, [dispatch, id]);
 
-  console.log(bank);
+
+  useEffect(() => {
+    dispatch(getBankTransactions(id, page + 1, rowsPerPage));
+  }, [dispatch,id, page, rowsPerPage]);
+
+  const handleChangePage = (_: any, newPage: React.SetStateAction<number>) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: { target: { value: string } }) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  
   if (!bank) {
     return <CircularProgress />;
   }
@@ -41,7 +58,15 @@ const BankDetail = () => {
       <Typography variant="subtitle1" gutterBottom>
         Bank Start Date: {dayjs(bank.startingValueDate).format("DD/MM/YYYY")}
       </Typography>
-
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={totalCount || 0}
+        rowsPerPage={rowsPerPage}
+        page={currentPage && currentPage > 0 ? currentPage - 1 : 0}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -58,7 +83,7 @@ const BankDetail = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {bank.bankTransactions.map((item: any) => (
+            {bankTransactions.map((item: any) => (
               <TableRow key={item.id}>
                 <TableCell>{dayjs(item.date).format("DD/MM/YYYY")}</TableCell>
                 <TableCell>{item.payee}</TableCell>

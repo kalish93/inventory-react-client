@@ -19,7 +19,7 @@ import { AppDispatch } from "../../app/store";
 import { styled } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import { selectTransactions } from "../../features/ca-transaction/transactionSlice";
-import { createCATransaction } from "../../features/ca-transaction/transactionActions";
+import { createCATransaction, getCATransactions } from "../../features/ca-transaction/transactionActions";
 import { getCashOfAccounts } from "../../features/cash-of-account/cashOfAccountActions";
 import dayjs from "dayjs";
 import { getUsers } from "../../features/user/userActions";
@@ -171,6 +171,7 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
       handleClose();
       setIsFormSubmitted(true);
       formik.resetForm();
+      dispatch(getCATransactions(1,10))
     },
   });
 
@@ -386,7 +387,7 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
                   fullWidth
                   margin="normal"
                   type="date"
-                  value={dayjs(formik.values.date).format("DD/MM/YYYY")}
+                  value={formik.values.date ? dayjs(formik.values.date).format("YYYY-MM-DD") : ''}
                   onChange={formik.handleChange}
                   error={formik.touched.date && !formik.values.date}
                   onBlur={formik.handleBlur}

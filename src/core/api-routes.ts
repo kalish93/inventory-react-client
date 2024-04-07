@@ -24,6 +24,7 @@ export const CHANGE_PASSWORD_URL = `${BASE_URL}/change-password`
 export const PERMISSIONS_URL = `${BASE_URL}/permissions`
 export const PRODUCT_CATEGORIES_URL = `${BASE_URL}/product-categories`
 export const BANK_URL = `${BASE_URL}/banks`
+export const BANK_TRANSACTIONS_URL = `${BASE_URL}/bank-transactions`
 export const TRANSPORT_URL = `${BASE_URL}/transports`
 export const ESL_URL = `${BASE_URL}/esl`
 export const TRANSIT_FEES_URL = `${BASE_URL}/transit-fees`
