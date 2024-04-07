@@ -131,9 +131,9 @@ const SupplierList = () => {
       {hasPermission(PERMISSIONS.CreateSupplier) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
        Add Supplier
       </Button>}
-      <Button variant="contained" color="primary" onClick={handleOpenPaymentModal} style={{marginLeft:'10px'}}>
+      {hasPermission(PERMISSIONS.CreateSupplierPayment) && <Button variant="contained" color="primary" onClick={handleOpenPaymentModal} style={{marginLeft:'10px'}}>
        Add Supplier Payment
-      </Button>
+      </Button>}
       <TablePagination
          rowsPerPageOptions={[5, 10, 25]}
          component="div"

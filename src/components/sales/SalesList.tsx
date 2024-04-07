@@ -222,7 +222,7 @@ const SalesList = () => {
                           Update
                         </MenuItem>
                       )}
-                      {hasPermission(PERMISSIONS.DeleteSaleBy) && (
+                      {hasPermission(PERMISSIONS.DeleteSale) && (
                         <MenuItem
                           onClick={(event) => {
                             event.stopPropagation();

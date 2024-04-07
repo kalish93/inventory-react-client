@@ -58,7 +58,7 @@ export const PERMISSIONS = {
     CreateSale: "CreateSale",
     UpdateSale: "UpdateSale",
     GetSaleById: "GetSaleById",
-    DeleteSaleBy: "DeleteSale",
+    DeleteSale: "DeleteSale",
     GetStores: "GetStores",
     CreateStore: "CreateStore",
     UpdateStore: "UpdateStore",
@@ -88,5 +88,14 @@ export const PERMISSIONS = {
     UpdateDeclarationDetail: "UpdateDeclarationDetail",
     CreateDeclarationDetail : "CreateDeclarationDetail",
     GetProvisions : "GetProvisions",
+    CreateCustomerPayment : "CreateCustomerPayment",
+    GenerateCustomerAgingReport: "GenerateCustomerAgingReport",
+    GenerateBankTransactionReport: "GenerateBankTransactionReport",
+    CreateSupplierPayment: "CreateSupplierPayment",
+    CreateEslCustom: "CreateEslCustom",
+    CreateCustomTaxPayment: "CreateCustomTaxPayment",
+    CreateTransitPayment: "CreateTransitPayment",
+    CreateTransportPayment: "CreateTransportPayment",
+    CreateEslPayment: "CreateEslPayment",
 };
   

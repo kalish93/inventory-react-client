@@ -134,9 +134,9 @@ const CustomerList = () => {
       {hasPermission(PERMISSIONS.CreateCustomer) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
        Add Customer
       </Button>}
-      <Button variant="contained" color="primary" onClick={handleOpenPaymentModal} style={{marginLeft:'10px'}}>
+      {hasPermission(PERMISSIONS.CreateCustomerPayment) && <Button variant="contained" color="primary" onClick={handleOpenPaymentModal} style={{marginLeft:'10px'}}>
        Add Customer Payment
-      </Button>
+      </Button>}
       <TablePagination
          rowsPerPageOptions={[5, 10, 25]}
          component="div"
