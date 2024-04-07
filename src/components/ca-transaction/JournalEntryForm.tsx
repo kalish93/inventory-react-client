@@ -19,7 +19,10 @@ import { AppDispatch } from "../../app/store";
 import { styled } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import { selectTransactions } from "../../features/ca-transaction/transactionSlice";
-import { createCATransaction, getCATransactions } from "../../features/ca-transaction/transactionActions";
+import {
+  createCATransaction,
+  getCATransactions,
+} from "../../features/ca-transaction/transactionActions";
 import { getCashOfAccounts } from "../../features/cash-of-account/cashOfAccountActions";
 import dayjs from "dayjs";
 import { getUsers } from "../../features/user/userActions";
@@ -171,7 +174,7 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
       handleClose();
       setIsFormSubmitted(true);
       formik.resetForm();
-      dispatch(getCATransactions(1,10))
+      dispatch(getCATransactions(1, 10));
     },
   });
 
@@ -217,7 +220,7 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                marginTop: "20px",
+                margin: "20px",
                 gap: "1rem",
               }}
             >

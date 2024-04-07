@@ -178,8 +178,6 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
         totalAmount += productsale.totalSales;
       }
       //
-      console.log(remainingAmount, totalAmount, sale.paidAmount);
-
       remainingAmount -= totalAmount - Number(sale.paidAmount);
       updatedPaidforSales.push({
         ...sale,
@@ -195,7 +193,6 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
     }
 
     setPaidforSales(updatedPaidforSales);
-    console.log("paidforSales", paidforSales);
   }, [formik.values.amount, formik.values.chartofAccountId2, dispatch]);
 
   const handleCancel = () => {
@@ -236,14 +233,14 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                marginTop: "20px",
+                margin: "20px",
               }}
             >
               <div
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  gap: "1rem",
+                  gap: "1.5rem",
                   minWidth: "47%",
                 }}
               >
@@ -321,6 +318,7 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
                   )}
                 />
                 <TextField
+                  sx={{ marginTop: 0 }}
                   name="date"
                   label="Transaction Date"
                   variant="outlined"
@@ -341,6 +339,7 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
 
               <div style={{ maxWidth: "47%" }}>
                 <TextField
+                  sx={{ marginTop: 0 }}
                   name="amount"
                   label="Amount"
                   variant="outlined"

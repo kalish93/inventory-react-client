@@ -345,7 +345,7 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
             onClick={handleAddProduct}
             sx={{
               marginTop: 2,
-              borderRadius: 20,
+              borderRadius: 2,
               color: "#2196F3",
               border: "2px solid #2196F3",
             }}
@@ -390,23 +390,25 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
               })}
             </Card>
           )}
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSubmit}
-            sx={{ marginTop: 2 }}
-            disabled={isSubmitButtonDisabled()}
-          >
-            Submit
-          </Button>
-          <Button
-            variant="outlined"
-            color="warning"
-            onClick={handleCancel}
-            sx={{ marginLeft: 1, marginTop: 2 }}
-          >
-            Cancel
-          </Button>
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+              sx={{ marginTop: 2 }}
+              disabled={isSubmitButtonDisabled()}
+            >
+              Submit
+            </Button>
+            <Button
+              variant="outlined"
+              color="warning"
+              onClick={handleCancel}
+              sx={{ marginLeft: 1, marginTop: 2 }}
+            >
+              Cancel
+            </Button>
+          </Box>
         </Box>
       </Modal>
       <Snackbar
