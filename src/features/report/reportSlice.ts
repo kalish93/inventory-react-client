@@ -6,6 +6,7 @@ interface ReportState {
   isError: boolean;
   successMessage: any;
   customerAgingReport: string | null;
+  apAgingReport: string | null;
   bankTransactionReport: string | null;
 }
 
@@ -15,6 +16,7 @@ const initialState: ReportState = {
   isError: false,
   successMessage: null,
   customerAgingReport: null,
+  apAgingReport: null,
   bankTransactionReport: null,
 };
 
@@ -29,6 +31,10 @@ const reportSlice = createSlice({
       },
       generateCustomerAgingReportSuccess: (state, action) => {
         state.customerAgingReport = action.payload;
+        state.loading = false;
+      },
+      generateApAgingReportSuccess: (state, action) => {
+        state.apAgingReport = action.payload;
         state.loading = false;
       },
 
@@ -47,7 +53,8 @@ export const {
     generateCustomerAgingReportSuccess,
     generateReportFailure,
     generateReportStart,
-    generateBankTransactionReportSuccess
+    generateBankTransactionReportSuccess,
+    generateApAgingReportSuccess
   } = reportSlice.actions;
   
 export const selectReport = (state: { report: ReportState }) => state.report; 
