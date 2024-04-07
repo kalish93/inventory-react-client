@@ -91,7 +91,8 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
 </DrawerHeader>
 
       <List>
-        {(hasPermission(PERMISSIONS.GetAllBanks) ||
+        {(hasPermission(PERMISSIONS.GenerateBankTransactionReport)||
+          hasPermission(PERMISSIONS.GenerateCustomerAgingReport)||
           hasPermission(PERMISSIONS.GetAllExpenses)) && (
           <ListItem
             button
