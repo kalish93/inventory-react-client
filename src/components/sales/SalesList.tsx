@@ -67,13 +67,13 @@ const SalesList = () => {
   const handleDeleteSale = () => {
     handleMenuClose();
     if (selectedSaleId !== null) {
-      dispatch(deleteSale(selectedSaleId)) 
-      .then(() => {
-        setDeleteSubmitted(true);
-      })
-      .catch(() => {
-        setDeleteSubmitted(true);
-      });
+      dispatch(deleteSale(selectedSaleId))
+        .then(() => {
+          setDeleteSubmitted(true);
+        })
+        .catch(() => {
+          setDeleteSubmitted(true);
+        });
     }
   };
 
@@ -177,7 +177,7 @@ const SalesList = () => {
                 >
                   <TableCell>{sale.invoiceNumber}</TableCell>
                   <TableCell>
-                    {dayjs(sale.invoiceDate).format("DD/MM/YYYY")}
+                    {dayjs(sale.invoiceDate).format("MM/DD/YYYY")}
                   </TableCell>
                   <TableCell>
                     {sale.customer?.firstName + " " + sale.customer?.lastName}

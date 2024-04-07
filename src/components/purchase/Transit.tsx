@@ -90,7 +90,7 @@ const Transit = () => {
           <TableBody>
             {transit.map((item: any) => (
               <TableRow key={item.id}>
-                <TableCell>{dayjs(item.date).format("DD/MM/YYYY")}</TableCell>
+                <TableCell>{dayjs(item.date).format("MM/DD/YYYY")}</TableCell>
                 <TableCell>{item.cost}</TableCell>
                 <TableCell>{item.purchase.truckNumber}</TableCell>
                 <TableCell>
