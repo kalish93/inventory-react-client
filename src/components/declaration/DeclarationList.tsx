@@ -161,14 +161,14 @@ const DeclarationList = () => {
             Add Declaration
           </Button>
         )}
-        <Button
+        {hasPermission(PERMISSIONS.CreateCustomTaxPayment) && <Button
           variant="contained"
           color="primary"
           onClick={handleOpenTransactionModal}
           style={{ marginLeft: "10px" }}
         >
           Add Custom Tax Payment
-        </Button>
+        </Button>}
       </div>
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}

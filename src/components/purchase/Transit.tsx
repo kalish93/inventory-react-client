@@ -20,6 +20,8 @@ import {
 } from "../../features/purchase/purchaseActions";
 import dayjs from "dayjs";
 import TransitPayment from "../ca-transaction/TransitPayment";
+import { hasPermission } from "../../utils/checkPermission";
+import { PERMISSIONS } from "../../core/permissions";
 
 const Transit = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -55,14 +57,14 @@ const Transit = () => {
 
   return (
     <div>
-      <Button
+      {hasPermission(PERMISSIONS.CreateTransitPayment) && <Button
         variant="contained"
         color="primary"
         onClick={handleOpenModal}
         style={{ marginLeft: "10px" }}
       >
         Add Transit Payment
-      </Button>
+      </Button>}
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"

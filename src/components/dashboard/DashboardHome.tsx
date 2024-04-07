@@ -10,7 +10,6 @@ const DashboardHome = () =>{
     return(
         <div style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'20px'}}>
             {hasPermission(PERMISSIONS.GetAllExpenses) && <Expenses/>}
-            {/* {hasPermission(PERMISSIONS.GetAllBanks) && <BankPositions/>} */}
             <Reports/>
         </div>
     )

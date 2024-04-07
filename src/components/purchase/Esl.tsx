@@ -16,6 +16,8 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 import ESLPayment from "../ca-transaction/ESLPayment";
+import { hasPermission } from "../../utils/checkPermission";
+import { PERMISSIONS } from "../../core/permissions";
 
 const Esl = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -48,14 +50,14 @@ const Esl = () => {
 
   return (
     <div>
-      <Button
+      {hasPermission(PERMISSIONS.CreateEslPayment) && <Button
         variant="contained"
         color="primary"
         onClick={handleOpenModal}
         style={{ marginLeft: "10px" }}
       >
         Add ESL Payment
-      </Button>
+      </Button>}
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
