@@ -67,12 +67,12 @@ const PurchaseDetail = () => {
                 <TableCell>{item.product.name}</TableCell>
                 <TableCell>{item.purchaseQuantity.toLocaleString()}</TableCell>
                 <TableCell>
-                  {item.purchaseUnitPriceETB.toLocaleString()}
+                  {item.purchaseUnitPriceETB?.toLocaleString()}
                 </TableCell>
                 <TableCell>
-                  {item.purchaseUnitPriceUSD.toLocaleString()}
+                  {item.purchaseUnitPriceUSD?.toLocaleString()}
                 </TableCell>
-                <TableCell>{item.purchaseTotalETB.toLocaleString()}</TableCell>
+                <TableCell>{item.purchaseTotalETB?.toLocaleString()}</TableCell>
                 <TableCell>{item.purchaseUnitCostOfGoods.toFixed(2)}</TableCell>
               </TableRow>
             ))}
