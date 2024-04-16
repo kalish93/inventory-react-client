@@ -604,7 +604,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
             disabled={isAddProductButtonDisabled()}
             sx={{
               mt: 2,
-              borderRadius: 20,
+              borderRadius: 2,
               color: "#2196F3",
               border: "2px solid #2196F3",
             }}
@@ -653,23 +653,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
               })}
             </Card>
           )}
-
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={handleAddProduct}
-            disabled={isAddProductButtonDisabled()}
-            sx={{
-              mt: 2,
-
-              borderRadius: 2,
-              color: "#2196F3",
-              border: "2px solid #2196F3",
-            }}
-          >
-            Add Product
-          </Button>
-          <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
+          <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end", gap:'10px' }}>
             <Button
               variant="contained"
               color="primary"
