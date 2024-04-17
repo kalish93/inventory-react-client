@@ -18,7 +18,7 @@ import InventoryList from "./inventory/InventoryList";
 import CashOfAccountList from "./cash-of-account/CashOfAccountList";
 import CATransactionsList from "./ca-transaction/CATransactionsList";
 import DashboardHome from "./dashboard/DashboardHome";
-import { CssBaseline, styled } from "@mui/material";
+import { Container, CssBaseline, styled } from "@mui/material";
 import PermissionList from "./auth/PermissionList";
 import { hasPermission } from "../utils/checkPermission";
 import { PERMISSIONS } from "../core/permissions";
@@ -121,11 +121,13 @@ const Home = () => {
   const [showDrawer, setShowDrawer] = useState(true);
 
   return (
-    <div style={{ display: "flex" }}>
+    <>
       <CssBaseline />
       <Navbar showDrawer={showDrawer} setShowDrawer={setShowDrawer} />
+    <div style={{ display: "flex" }}>
       <Sidebar showDrawer={showDrawer} setShowDrawer={setShowDrawer} />
       <Main open={showDrawer}>
+        <Container>
         <Routes>
           <Route
             path="/users"
@@ -302,8 +304,10 @@ const Home = () => {
             }
           />
         </Routes>
+        </Container>
       </Main>
     </div>
+    </>
   );
 };
 

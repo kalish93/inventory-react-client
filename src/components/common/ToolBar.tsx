@@ -66,7 +66,7 @@ const Navbar = ({ showDrawer, setShowDrawer }: NavBarProps) => {
     navigate("/change-password");
   }
   return (
-    <div style={{ display: "flex" }}>
+    <>
       <AppBar
         open={showDrawer}
         position="fixed"
@@ -128,24 +128,11 @@ const Navbar = ({ showDrawer, setShowDrawer }: NavBarProps) => {
                   </Menu>
 
                   </IconButton>
-            {/* <IconButton
-                edge="end"
-                aria-label="logout"
-                aria-haspopup="true"
-                color="inherit"
-                onClick={handleLogout}
-              > 
-                <LogoutIcon />
-              </IconButton> */}
             </>
           )}
         </Toolbar>
       </AppBar>
-
-      <main style={{ flexGrow: 1, padding: "16px" }}>
-        <Toolbar />
-      </main>
-    </div>
+    </>
   );
 };
 
