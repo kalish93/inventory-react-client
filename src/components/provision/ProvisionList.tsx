@@ -56,6 +56,7 @@ console.log(provisions)
               <TableCell>Purchase Number</TableCell>
               <TableCell>Declaration Number</TableCell>
               <TableCell>Sale Quantity</TableCell>
+              <TableCell>Invoice Number</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -93,6 +94,9 @@ console.log(provisions)
                 </TableCell>
                 <TableCell>
                   {item.saleDetail.saleQuantity}
+                </TableCell>
+                <TableCell>
+                  {item.saleDetail.sale.invoiceNumber}
                 </TableCell>
               </TableRow>
             ))}
