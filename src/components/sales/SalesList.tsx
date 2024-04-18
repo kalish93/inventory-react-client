@@ -211,7 +211,7 @@ const SalesList = () => {
                         },
                       }}
                     >
-                      {hasPermission(PERMISSIONS.UpdateSale) && (
+                      {/* {hasPermission(PERMISSIONS.UpdateSale) && (
                         <MenuItem
                           onClick={(event) => {
                             event.stopPropagation();
@@ -221,7 +221,7 @@ const SalesList = () => {
                         >
                           Update
                         </MenuItem>
-                      )}
+                      )} */}
                       {hasPermission(PERMISSIONS.DeleteSale) && (
                         <MenuItem
                           onClick={(event) => {

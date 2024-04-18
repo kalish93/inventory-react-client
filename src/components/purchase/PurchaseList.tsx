@@ -258,7 +258,7 @@ const PurchaseList = () => {
                           },
                         }}
                       >
-                        {hasPermission(PERMISSIONS.UpdatePurchase) && (
+                        {/* {hasPermission(PERMISSIONS.UpdatePurchase) && (
                           <MenuItem
                             onClick={(event) => {
                               event.stopPropagation();
@@ -268,7 +268,7 @@ const PurchaseList = () => {
                           >
                             Update
                           </MenuItem>
-                        )}
+                        )} */}
                         {hasPermission(PERMISSIONS.DeletePurchase) && (
                           <MenuItem
                             onClick={(event) => {
