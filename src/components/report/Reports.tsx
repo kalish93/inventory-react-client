@@ -1,9 +1,11 @@
 import React from "react";
 import CustomerAgingReportGenerator from "./customerAgingReport";
 import BankTransactionReportGenerator from "./bankTransactionReport";
+import TransactionWithSplitSummary from "./transactionWithSplitsReport";
 import { hasPermission } from "../../utils/checkPermission";
 import { PERMISSIONS } from "../../core/permissions";
 import ApAgingReportGenerator from "./ApAgingReport";
+import TrialBalanceReportGenerator from "./trialBalanceReport";
 
 const Reports = () => {
   return (
@@ -13,6 +15,8 @@ const Reports = () => {
       {hasPermission(PERMISSIONS.GenerateCustomerAgingReport) && <CustomerAgingReportGenerator />}
       {hasPermission(PERMISSIONS.GenerateAPAgingReport) && <ApAgingReportGenerator />}
       {hasPermission(PERMISSIONS.GenerateBankTransactionReport) && <BankTransactionReportGenerator />}
+      {hasPermission(PERMISSIONS.GenerateTransactionWithSplitSummary) && <TransactionWithSplitSummary />}
+      {hasPermission(PERMISSIONS.GenerateTrialBalanceReport) && <TrialBalanceReportGenerator />}
     </div>
    </>
   );

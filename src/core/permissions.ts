@@ -98,5 +98,7 @@ export const PERMISSIONS = {
     CreateTransportPayment: "CreateTransportPayment",
     CreateEslPayment: "CreateEslPayment",
     GenerateAPAgingReport: "GenerateAPAgingReport",
+    GenerateTransactionWithSplitSummary:"GenerateTransactionWithSplitSummary",
+    GenerateTrialBalanceReport:"GenerateTrialBalanceReport",
 };
   
