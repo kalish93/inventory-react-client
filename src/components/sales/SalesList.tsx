@@ -177,7 +177,7 @@ const SalesList = () => {
                 >
                   <TableCell>{sale.invoiceNumber}</TableCell>
                   <TableCell>
-                    {dayjs(sale.invoiceDate).format("MM/DD/YYYY")}
+                    {dayjs(sale.invoiceDate).format("MM-DD-YYYY")}
                   </TableCell>
                   <TableCell>
                     {sale.customer?.firstName + " " + sale.customer?.lastName}

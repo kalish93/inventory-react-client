@@ -24,7 +24,11 @@ const BankDetail = () => {
   const dispatch = useDispatch<AppDispatch>();
   const bankState = useSelector(selectBank);
   const bank = bankState.bank;
-  const { items: bankTransactions = [], currentPage, totalCount } = bankState.bankTransactions;
+  const {
+    items: bankTransactions = [],
+    currentPage,
+    totalCount,
+  } = bankState.bankTransactions;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -32,10 +36,9 @@ const BankDetail = () => {
     dispatch(getBank(id));
   }, [dispatch, id]);
 
-
   useEffect(() => {
     dispatch(getBankTransactions(id, page + 1, rowsPerPage));
-  }, [dispatch,id, page, rowsPerPage]);
+  }, [dispatch, id, page, rowsPerPage]);
 
   const handleChangePage = (_: any, newPage: React.SetStateAction<number>) => {
     setPage(newPage);
@@ -45,7 +48,7 @@ const BankDetail = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  
+
   if (!bank) {
     return <CircularProgress />;
   }
@@ -56,7 +59,7 @@ const BankDetail = () => {
         Bank Name: {bank.name}
       </Typography>
       <Typography variant="subtitle1" gutterBottom>
-        Bank Start Date: {dayjs(bank.startingValueDate).format("MM/DD/YYYY")}
+        Bank Start Date: {dayjs(bank.startingValueDate).format("MM-DD-YYYY")}
       </Typography>
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
@@ -85,12 +88,12 @@ const BankDetail = () => {
           <TableBody>
             {bankTransactions.map((item: any) => (
               <TableRow key={item.id}>
-                <TableCell>{dayjs(item.date).format("MM/DD/YYYY")}</TableCell>
+                <TableCell>{dayjs(item.date).format("MM-DD-YYYY")}</TableCell>
                 <TableCell>{item.payee}</TableCell>
-                <TableCell>{item.foreignCurrency}</TableCell>
-                <TableCell>{item.payment}</TableCell>
-                <TableCell>{item.deposit}</TableCell>
-                <TableCell>{item.balance}</TableCell>
+                <TableCell>{item.foreignCurrency?.toLocaleString()}</TableCell>
+                <TableCell>{item.payment?.toLocaleString()}</TableCell>
+                <TableCell>{item.deposit?.toLocaleString()}</TableCell>
+                <TableCell>{item.balance?.toLocaleString()}</TableCell>
                 <TableCell>{item.type}</TableCell>
                 <TableCell>
                   {item.chartofAccount ? item.chartofAccount.name : null}

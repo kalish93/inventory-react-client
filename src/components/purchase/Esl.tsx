@@ -50,14 +50,16 @@ const Esl = () => {
 
   return (
     <div>
-      {hasPermission(PERMISSIONS.CreateEslPayment) && <Button
-        variant="contained"
-        color="primary"
-        onClick={handleOpenModal}
-        style={{ marginLeft: "10px" }}
-      >
-        Add ESL Payment
-      </Button>}
+      {hasPermission(PERMISSIONS.CreateEslPayment) && (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOpenModal}
+          style={{ marginLeft: "10px" }}
+        >
+          Add ESL Payment
+        </Button>
+      )}
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
@@ -85,7 +87,7 @@ const Esl = () => {
           <TableBody>
             {esl.map((item: any) => (
               <TableRow key={item.id}>
-                <TableCell>{dayjs(item.date).format("MM/DD/YYYY")}</TableCell>
+                <TableCell>{dayjs(item.date).format("MM-DD-YYYY")}</TableCell>
                 <TableCell>{item.cost}</TableCell>
                 <TableCell>{item.purchase?.truckNumber}</TableCell>
                 <TableCell>

@@ -179,6 +179,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
         chartofAccountId: values.exchangeRate
           ? accountsPayableUSD.id
           : accountsPayable.id,
+        date: values.date,
       };
 
       Promise.all([
@@ -200,7 +201,6 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
 
   useEffect(() => {
     const updatedPaidforPurchases = [];
-    console.log(unpaidPurchases);
     let remainingAmount = formik.values.amount as unknown as number;
     let i = 0;
     while (remainingAmount > 0 && i < unpaidPurchases.length) {

@@ -121,6 +121,7 @@ const ExpensesPaymentForm = () => {
         type: "Expense",
         exchangeRate: null,
         chartofAccountId: values.chartofAccountId2,
+        date: values.date,
       };
 
       Promise.all([

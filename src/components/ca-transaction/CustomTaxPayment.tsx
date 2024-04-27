@@ -89,7 +89,7 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
   );
 
   const customIncomeTaxSupplier = suppliers.find(
-    (supplier: any) => supplier.name === "CUSTOM INCOME TAX"
+    (supplier: any) => supplier.name === "Custom Taxes"
   );
 
   useEffect(() => {
@@ -158,6 +158,7 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
         deposit: null,
         type: "Supplier Payment",
         chartofAccountId: accountsPayable.id,
+        date: values.date
       };
 
       Promise.all([
@@ -169,7 +170,7 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
-      dispatch(getDeclarations(1,10))
+      dispatch(getDeclarations(1, 10));
     },
   });
 
@@ -187,7 +188,7 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
 
     const paidDeclaration = declarations.filter(
       (declaration: any) =>
-        declaration.id === currentDeclaration?.id &&
+        declaration.number === currentDeclaration?.number &&
         declaration.paidAmount !== 0
     );
 
@@ -200,9 +201,10 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
           )
         : 0;
 
+
     const totalPaid =
       paidDeclaration.length !== 0
-        ? paidDeclaration[0].reduce(
+        ? paidDeclaration.reduce(
             (acc: number, declaration: any) => acc + declaration.paidAmount,
             0
           )

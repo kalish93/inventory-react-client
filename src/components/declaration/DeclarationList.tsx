@@ -161,14 +161,16 @@ const DeclarationList = () => {
             Add Declaration
           </Button>
         )}
-        {hasPermission(PERMISSIONS.CreateCustomTaxPayment) && <Button
-          variant="contained"
-          color="primary"
-          onClick={handleOpenTransactionModal}
-          style={{ marginLeft: "10px" }}
-        >
-          Add Custom Tax Payment
-        </Button>}
+        {hasPermission(PERMISSIONS.CreateCustomTaxPayment) && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleOpenTransactionModal}
+            style={{ marginLeft: "10px" }}
+          >
+            Add Custom Tax Payment
+          </Button>
+        )}
       </div>
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
@@ -200,7 +202,7 @@ const DeclarationList = () => {
                 >
                   <TableCell>{declaration.number}</TableCell>
                   <TableCell>
-                    {dayjs(declaration.date).format("MM/DD/YYYY")}
+                    {dayjs(declaration.date).format("MM-DD-YYYY")}
                   </TableCell>
                   <TableCell>
                     {declaration.paidAmount !== 0

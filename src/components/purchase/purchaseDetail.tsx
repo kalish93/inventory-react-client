@@ -38,7 +38,7 @@ const PurchaseDetail = () => {
         Purchase Number: {purchase.number}
       </Typography>
       <Typography variant="subtitle1" gutterBottom>
-        Purchase Date: {dayjs(purchase.date).format("MM/DD/YYYY")}
+        Purchase Date: {dayjs(purchase.date).format("MM-DD-YYYY")}
       </Typography>
       <Typography variant="subtitle1" gutterBottom>
         Truck Number: {purchase.truckNumber}

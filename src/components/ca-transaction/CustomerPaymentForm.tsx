@@ -143,6 +143,7 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
         type: "Customer Payment",
         exchangeRate: null,
         chartofAccountId: accountReceivable.id,
+        date: values.date,
       };
 
       const formDataToSend5 = {
@@ -172,7 +173,6 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
     let i = 0;
     while (remainingAmount > 0 && i < customerUnpaidSales.length) {
       const sale = unpaidSales[i];
-      console.log("sale", sale);
       let totalAmount = 0;
       for (let productsale of sale.sales) {
         totalAmount += productsale.totalSales;

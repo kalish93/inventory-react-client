@@ -55,14 +55,16 @@ const Transport = () => {
 
   return (
     <div>
-      {hasPermission(PERMISSIONS.CreateTransportPayment) && <Button
-        variant="contained"
-        color="primary"
-        onClick={handleOpenModal}
-        style={{ marginLeft: "10px" }}
-      >
-        Add Transport Payment
-      </Button>}
+      {hasPermission(PERMISSIONS.CreateTransportPayment) && (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOpenModal}
+          style={{ marginLeft: "10px" }}
+        >
+          Add Transport Payment
+        </Button>
+      )}
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
@@ -90,7 +92,7 @@ const Transport = () => {
           <TableBody>
             {transport.map((item: any) => (
               <TableRow key={item.id}>
-                <TableCell>{dayjs(item.date).format("MM/DD/YYYY")}</TableCell>
+                <TableCell>{dayjs(item.date).format("MM-DD-YYYY")}</TableCell>
                 <TableCell>{item.cost}</TableCell>
                 <TableCell>{item.purchase?.truckNumber}</TableCell>
                 <TableCell>
