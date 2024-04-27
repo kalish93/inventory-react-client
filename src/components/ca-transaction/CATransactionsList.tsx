@@ -87,7 +87,7 @@ const CATransactionsList = () => {
     totalCount,
   } = CATransactionState.transactions;
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(100);
   const [openModal, setOpenModal] = useState({
     1: false,
     2: false,
@@ -174,7 +174,7 @@ const CATransactionsList = () => {
               {CATransactions &&
                 CATransactions.map((ca: any) => (
                   <TableRow key={ca.id}>
-                    <TableCell>{dayjs(ca.date).format("MM/DD/YYYY")}</TableCell>
+                    <TableCell>{dayjs(ca.date).format("DD/MM/YYYY")}</TableCell>
                     <TableCell>{ca.type}</TableCell>
                     <TableCell>
                       {ca.purchase?.number ||

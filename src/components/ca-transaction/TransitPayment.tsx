@@ -163,9 +163,9 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
         deposit: null,
         type: "Supplier Payment",
         chartofAccountId: accountsPayable.id,
+        date: values.date,
       };
 
-      console.log(formDataToSend3);
 
       Promise.all([
         dispatch(createCATransaction(formDataToSend1)),
@@ -197,7 +197,6 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
             : transit.cost - Number(transit.paidAmount) + remainingAmount,
         paymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
       });
-      console.log(remainingAmount);
       i++;
 
       if (remainingAmount <= 0) break; // Exit the loop if remaining amount is <= 0

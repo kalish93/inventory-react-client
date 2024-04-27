@@ -166,6 +166,7 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
         type: "Journal Entry",
         deposit: flag ? null : values.debit,
         payment: flag ? values.credit : null,
+        date: values.date,
       };
 
       dispatch(createCATransaction(formDataToSend1));

@@ -188,11 +188,12 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
 
       const formDataToSend4 = {
         bankId: values.chartofAccountId1,
-        payee: values.chartofAccountId2,
+        payee: TransporterSupplier?.id,
         payment: values.amount,
         deposit: null,
         type: "Supplier Payment",
         chartofAccountId: accountsPayable?.id,
+        date: values.date,
       };
 
       Promise.all([

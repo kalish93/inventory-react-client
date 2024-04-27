@@ -219,7 +219,7 @@ const PurchaseList = () => {
                   >
                     <TableCell>{purchase.number}</TableCell>
                     <TableCell>
-                      {dayjs(purchase.date).format("MM/DD/YYYY")}
+                      {dayjs(purchase.date).format("DD/MM/YYYY")}
                     </TableCell>
                     <TableCell>{purchase.truckNumber}</TableCell>
                     <TableCell>{purchase.exchangeRate}</TableCell>

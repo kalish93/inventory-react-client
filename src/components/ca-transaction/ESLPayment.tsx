@@ -155,6 +155,7 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
         deposit: null,
         type: "Supplier Payment",
         chartofAccountId: accountsPayable.id,
+        date: values.date,
       };
 
       Promise.all([
