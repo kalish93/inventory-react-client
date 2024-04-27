@@ -78,7 +78,7 @@ const InventoryList = () => {
                     dayjs(
                       inventory.purchase?.date ??
                         inventory.productPurchase?.date
-                    ).format("DD/MM/YYYY")}
+                    ).format("MM-DD-YYYY")}
                 </TableCell>
                 <TableCell>
                   {inventory.sale
@@ -94,7 +94,7 @@ const InventoryList = () => {
                 <TableCell>{inventory.sale?.invoiceNumber}</TableCell>
                 <TableCell>
                   {inventory.sale &&
-                    dayjs(inventory.sale?.invoiceDate).format("DD/MM/YYYY")}
+                    dayjs(inventory.sale?.invoiceDate).format("MM-DD-YYYY")}
                 </TableCell>
                 <TableCell>{inventory.saleDetail?.saleQuantity}</TableCell>
                 <TableCell>

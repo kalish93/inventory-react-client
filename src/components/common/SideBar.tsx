@@ -1,5 +1,6 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import {
+  Collapse,
   Divider,
   Drawer,
   IconButton,
@@ -26,19 +27,10 @@ import PaidIcon from "@mui/icons-material/Paid";
 import { Link, useLocation } from "react-router-dom";
 import { hasPermission } from "../../utils/checkPermission";
 import { PERMISSIONS } from "../../core/permissions";
-import logo from '../../assets/logo-1.png'
-import FactCheckIcon from '@mui/icons-material/FactCheck';
-import PaymentIcon from '@mui/icons-material/Payment';
-
-// const drawerWidth = 240;
-
-// const DrawerHeader = styled("div")(({ theme }) => ({
-//   display: "flex",
-//   alignItems: "center",
-//   justifyContent: "flex-end",
-//   padding: theme.spacing(0, 1),
-//   ...theme.mixins.toolbar,
-// }));
+import logo from "../../assets/logo-1.png";
+import FactCheckIcon from "@mui/icons-material/FactCheck";
+import PaymentIcon from "@mui/icons-material/Payment";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
 const drawerWidth = 255;
 
@@ -64,7 +56,15 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
   const handleDrawerClose = () => {
     setShowDrawer(false);
   };
+  const [open, setOpen] = useState([false, false, false, false, false]);
 
+  const handleClick = (idx: number) => {
+    setOpen((prev) => {
+      const newState = [...prev];
+      newState[idx] = !prev[idx];
+      return newState;
+    });
+  };
   const isLinkActive = (pathname: string) => location.pathname === pathname;
 
   return (
@@ -81,18 +81,17 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
       variant="persistent"
       anchor="left"
     >
-      <DrawerHeader style={{marginBottom:'10px', marginTop:'10px'}}>
-  <Logo src={logo} alt="Logo" />
+      <DrawerHeader style={{ marginBottom: "10px", marginTop: "10px" }}>
+        <Logo src={logo} alt="Logo" />
 
-    <IconButton onClick={handleDrawerClose}>
-      <ChevronLeftIcon />
-    </IconButton>
-
-</DrawerHeader>
+        <IconButton onClick={handleDrawerClose}>
+          <ChevronLeftIcon />
+        </IconButton>
+      </DrawerHeader>
 
       <List>
-        {(hasPermission(PERMISSIONS.GenerateBankTransactionReport)||
-          hasPermission(PERMISSIONS.GenerateCustomerAgingReport)||
+        {(hasPermission(PERMISSIONS.GenerateBankTransactionReport) ||
+          hasPermission(PERMISSIONS.GenerateCustomerAgingReport) ||
           hasPermission(PERMISSIONS.GetAllExpenses)) && (
           <ListItem
             button
@@ -110,6 +109,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
 
         {hasPermission(PERMISSIONS.GetInventory) && (
           <ListItem
+            onClick={() => handleClick(0)}
             button
             component={Link}
             to="/inventory"
@@ -120,9 +120,27 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
               <InventoryIcon />
             </ListItemIcon>
             <ListItemText primary="Inventory" />
+            {open[0] ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
         )}
 
+        <Collapse in={open[0]} timeout="auto" unmountOnExit>
+          {hasPermission(PERMISSIONS.GetProducts) && (
+            <ListItem
+              sx={{ pl: 4 }}
+              button
+              component={Link}
+              to="/products"
+              key="Products"
+              selected={isLinkActive("/products")}
+            >
+              <ListItemIcon sx={{ color: "inherit" }}>
+                <ShoppingCartIcon />
+              </ListItemIcon>
+              <ListItemText primary="Products" />
+            </ListItem>
+          )}
+        </Collapse>
         {hasPermission(PERMISSIONS.GetUsers) && (
           <ListItem
             button
@@ -140,6 +158,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
 
         {hasPermission(PERMISSIONS.GetCustomers) && (
           <ListItem
+            onClick={() => handleClick(1)}
             button
             component={Link}
             to="/customers"
@@ -150,8 +169,26 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
               <PeopleIcon />
             </ListItemIcon>
             <ListItemText primary="Customers" />
+            {open[1] ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
         )}
+        <Collapse in={open[1]} timeout="auto" unmountOnExit>
+          {hasPermission(PERMISSIONS.GetSales) && (
+            <ListItem
+              sx={{ pl: 4 }}
+              button
+              component={Link}
+              to="/sales"
+              key="Sales"
+              selected={isLinkActive("/sales")}
+            >
+              <ListItemIcon sx={{ color: "inherit" }}>
+                <ReceiptIcon />
+              </ListItemIcon>
+              <ListItemText primary="Sales" />
+            </ListItem>
+          )}
+        </Collapse>
         {hasPermission(PERMISSIONS.GetDrivers) && (
           <ListItem
             button
@@ -163,7 +200,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
             <ListItemIcon sx={{ color: "inherit" }}>
               <LocalShippingIcon />
             </ListItemIcon>
-            <ListItemText primary="Drivers" />
+            <ListItemText primary="Trucks" />
           </ListItem>
         )}
         {hasPermission(PERMISSIONS.GetStores) && (
@@ -182,6 +219,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
         )}
         {hasPermission(PERMISSIONS.GetSuppliers) && (
           <ListItem
+            onClick={() => handleClick(2)}
             button
             component={Link}
             to="/suppliers"
@@ -192,23 +230,26 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
               <HandshakeIcon />
             </ListItemIcon>
             <ListItemText primary="Suppliers" />
+            {open[2] ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
         )}
-
-        {hasPermission(PERMISSIONS.GetProducts) && (
-          <ListItem
-            button
-            component={Link}
-            to="/products"
-            key="Products"
-            selected={isLinkActive("/products")}
-          >
-            <ListItemIcon sx={{ color: "inherit" }}>
-              <ShoppingCartIcon />
-            </ListItemIcon>
-            <ListItemText primary="Products" />
-          </ListItem>
-        )}
+        <Collapse in={open[2]} timeout="auto" unmountOnExit>
+          {hasPermission(PERMISSIONS.GetPurchases) && (
+            <ListItem
+              sx={{ pl: 4 }}
+              button
+              component={Link}
+              to="/purchases"
+              key="Purchases"
+              selected={isLinkActive("/purchases")}
+            >
+              <ListItemIcon sx={{ color: "inherit" }}>
+                <ShoppingBasketIcon />
+              </ListItemIcon>
+              <ListItemText primary="Purchases" />
+            </ListItem>
+          )}
+        </Collapse>
 
         {hasPermission(PERMISSIONS.GetDeclarations) && (
           <ListItem
@@ -222,50 +263,6 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
               <ArticleIcon />
             </ListItemIcon>
             <ListItemText primary="Declarations" />
-          </ListItem>
-        )}
-
-        {hasPermission(PERMISSIONS.GetPurchases) && (
-          <ListItem
-            button
-            component={Link}
-            to="/purchases"
-            key="Purchases"
-            selected={isLinkActive("/purchases")}
-          >
-            <ListItemIcon sx={{ color: "inherit" }}>
-              <ShoppingBasketIcon />
-            </ListItemIcon>
-            <ListItemText primary="Purchases" />
-          </ListItem>
-        )}
-
-        {hasPermission(PERMISSIONS.GetSales) && (
-          <ListItem
-            button
-            component={Link}
-            to="/sales"
-            key="Sales"
-            selected={isLinkActive("/sales")}
-          >
-            <ListItemIcon sx={{ color: "inherit" }}>
-              <ReceiptIcon />
-            </ListItemIcon>
-            <ListItemText primary="Sales" />
-          </ListItem>
-        )}
-        {hasPermission(PERMISSIONS.GetCaTransactions) && (
-          <ListItem
-            button
-            component={Link}
-            to="/ca-transactions"
-            key="CATransactions"
-            selected={isLinkActive("/ca-transactions")}
-          >
-            <ListItemIcon sx={{ color: "inherit" }}>
-              <PaidIcon />
-            </ListItemIcon>
-            <ListItemText primary="CA Transactions" />
           </ListItem>
         )}
 
@@ -288,6 +285,7 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
           hasPermission(PERMISSIONS.GetAllAccountTypes) ||
           hasPermission(PERMISSIONS.GetAllAccountSubTypes)) && (
           <ListItem
+            onClick={() => handleClick(3)}
             button
             component={Link}
             to="/cash-of-accounts"
@@ -298,22 +296,44 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
               <AccountBalanceWalletIcon />
             </ListItemIcon>
             <ListItemText primary="Chart Of Accounts" />
+            {open[3] ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
         )}
-        {hasPermission(PERMISSIONS.GetBanks) && (
-          <ListItem
-            button
-            component={Link}
-            to="/banks"
-            key="Banks"
-            selected={isLinkActive("/banks")}
-          >
-            <ListItemIcon sx={{ color: "inherit" }}>
-              <PaidIcon />
-            </ListItemIcon>
-            <ListItemText primary="Banks" />
-          </ListItem>
-        )}
+        <Collapse in={open[3]} timeout="auto" unmountOnExit>
+          <List>
+            {hasPermission(PERMISSIONS.GetBanks) && (
+              <ListItem
+                sx={{ pl: 4 }}
+                button
+                component={Link}
+                to="/banks"
+                key="Banks"
+                selected={isLinkActive("/banks")}
+              >
+                <ListItemIcon sx={{ color: "inherit" }}>
+                  <PaidIcon />
+                </ListItemIcon>
+                <ListItemText primary="Banks" />
+              </ListItem>
+            )}
+            {hasPermission(PERMISSIONS.GetCaTransactions) && (
+              <ListItem
+                sx={{ pl: 4 }}
+                button
+                component={Link}
+                to="/ca-transactions"
+                key="CATransactions"
+                selected={isLinkActive("/ca-transactions")}
+              >
+                <ListItemIcon sx={{ color: "inherit" }}>
+                  <PaidIcon />
+                </ListItemIcon>
+                <ListItemText primary="CA Transactions" />
+              </ListItem>
+            )}
+          </List>
+        </Collapse>
+
         {hasPermission(PERMISSIONS.GetProvisions) && (
           <ListItem
             button
