@@ -19,7 +19,7 @@ const theme = createTheme({
         root: {
           "&:hover": {
             backgroundColor: "#222831",
-            color: "white"
+            color: "white",
           },
           "&.Mui-selected": {
             backgroundColor: "#222831",
@@ -28,6 +28,23 @@ const theme = createTheme({
         },
       },
     },
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#222831",
+          color: "white",
+        },
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          color: "inherit",
+          font: "inherit",
+        },
+      },
+    },
+
     MuiListItemIcon: {
       styleOverrides: {
         "&:hover": {
