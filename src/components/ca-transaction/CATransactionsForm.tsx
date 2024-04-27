@@ -261,7 +261,7 @@ const CATransactionsForm: React.FC<ProductFormProps> = ({
                 fullWidth
                 margin="normal"
                 type="date"
-                value={dayjs(formik.values.date).format("MM-DD-YYYY")}
+                value={dayjs(formik.values.date).format("MM/DD/YYYY")}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={formik.touched.date && Boolean(formik.errors.date)}

@@ -59,7 +59,7 @@ const BankDetail = () => {
         Bank Name: {bank.name}
       </Typography>
       <Typography variant="subtitle1" gutterBottom>
-        Bank Start Date: {dayjs(bank.startingValueDate).format("MM-DD-YYYY")}
+        Bank Start Date: {dayjs(bank.startingValueDate).format("MM/DD/YYYY")}
       </Typography>
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
@@ -88,7 +88,7 @@ const BankDetail = () => {
           <TableBody>
             {bankTransactions.map((item: any) => (
               <TableRow key={item.id}>
-                <TableCell>{dayjs(item.date).format("MM-DD-YYYY")}</TableCell>
+                <TableCell>{dayjs(item.date).format("MM/DD/YYYY")}</TableCell>
                 <TableCell>{item.payee}</TableCell>
                 <TableCell>{item.foreignCurrency?.toLocaleString()}</TableCell>
                 <TableCell>{item.payment?.toLocaleString()}</TableCell>

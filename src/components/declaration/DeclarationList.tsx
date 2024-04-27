@@ -202,7 +202,7 @@ const DeclarationList = () => {
                 >
                   <TableCell>{declaration.number}</TableCell>
                   <TableCell>
-                    {dayjs(declaration.date).format("MM-DD-YYYY")}
+                    {dayjs(declaration.date).format("MM/DD/YYYY")}
                   </TableCell>
                   <TableCell>
                     {declaration.paidAmount !== 0
