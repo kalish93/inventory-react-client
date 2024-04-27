@@ -142,7 +142,7 @@ const SaleDetail = () => {
             Invoice Number: {sale.invoiceNumber}
           </Typography>
           <Typography variant="subtitle1" gutterBottom>
-            Invoice Date: {dayjs(sale.invoiceDate).format("MM-DD-YYYY")}
+            Invoice Date: {dayjs(sale.invoiceDate).format("MM/DD/YYYY")}
           </Typography>
           <Typography variant="subtitle1" gutterBottom>
             Customer Name: {sale.customer.firstName}
