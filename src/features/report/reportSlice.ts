@@ -10,6 +10,7 @@ interface ReportState {
   bankTransactionReport: string | null;
   transactionListWithSplitsReport: string | null;
   trialBalanceReport: string | null;
+  inventoryValuationReport: string | null;
 }
 
 const initialState: ReportState = {
@@ -21,7 +22,8 @@ const initialState: ReportState = {
   apAgingReport: null,
   bankTransactionReport: null,
   transactionListWithSplitsReport: null,
-  trialBalanceReport: null
+  trialBalanceReport: null,
+  inventoryValuationReport: null, 
 };
 
 const reportSlice = createSlice({
@@ -54,6 +56,10 @@ const reportSlice = createSlice({
         state.trialBalanceReport = action.payload;
         state.loading = false;
       },
+      generateInventoryValuationReportSuccess: (state, action) => {
+        state.inventoryValuationReport = action.payload;
+        state.loading = false;
+      },
       generateReportFailure: (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -68,7 +74,8 @@ export const {
     generateBankTransactionReportSuccess,
     generateTransactionListWithSplitsReportSuccess,
     generateTrialBalanceReportSuccess,
-    generateApAgingReportSuccess
+    generateApAgingReportSuccess,
+    generateInventoryValuationReportSuccess
   } = reportSlice.actions;
   
 export const selectReport = (state: { report: ReportState }) => state.report; 

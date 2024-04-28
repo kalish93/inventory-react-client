@@ -6,6 +6,7 @@ import { hasPermission } from "../../utils/checkPermission";
 import { PERMISSIONS } from "../../core/permissions";
 import ApAgingReportGenerator from "./ApAgingReport";
 import TrialBalanceReportGenerator from "./trialBalanceReport";
+import InventoryValuationReportGenerator from "./inventoryValuationReport";
 
 const Reports = () => {
   return (
@@ -17,6 +18,7 @@ const Reports = () => {
       {hasPermission(PERMISSIONS.GenerateBankTransactionReport) && <BankTransactionReportGenerator />}
       {hasPermission(PERMISSIONS.GenerateTransactionWithSplitSummary) && <TransactionWithSplitSummary />}
       {hasPermission(PERMISSIONS.GenerateTrialBalanceReport) && <TrialBalanceReportGenerator />}
+      {hasPermission(PERMISSIONS.GenerateInventoryValuationReport) && <InventoryValuationReportGenerator />}
     </div>
    </>
   );
