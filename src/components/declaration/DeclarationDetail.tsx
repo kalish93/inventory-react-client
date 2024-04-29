@@ -161,8 +161,8 @@ const DeclarationDetail = () => {
             <TableRow>
               <TableCell>Product Name</TableCell>
               <TableCell>Declaration Quantity</TableCell>
-              <TableCell>Total Income Tax</TableCell>
-              <TableCell>Unit Income Tax</TableCell>
+              <TableCell>Total Custom Tax</TableCell>
+              <TableCell>Unit Custom Tax</TableCell>
               <TableCell>Purchased Quantity</TableCell>
               <TableCell>Declaration Balance</TableCell>
               <TableCell>Action</TableCell>
