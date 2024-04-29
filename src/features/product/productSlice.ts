@@ -9,6 +9,7 @@ interface ProductState {
   isError: boolean;
   successMessage: string | null;
   productCategories: any;
+  unitOfMeasurements: any;
 }
 
 const initialState: ProductState = {
@@ -23,7 +24,8 @@ const initialState: ProductState = {
   error: null,
   isError: false,
   successMessage: null,
-  productCategories: []
+  productCategories: [],
+  unitOfMeasurements: []
 };
 
 const productSlice = createSlice({
@@ -159,6 +161,47 @@ const productSlice = createSlice({
     state.isError = true;
     state.error = action.payload;
     },
+
+      unitOfMeasurementsStart: (state) => {
+        state.loading = true;
+        state.error = null;
+        state.isError = false;
+      },
+    getUnitOfMeasurementsSuccess: (state, action) => {
+        state.unitOfMeasurements = action.payload;
+        state.loading = false;
+      },
+    createUnitOfMeasurementSuccess: (state, action) => {
+        const unitOfMeasurement = action.payload
+        state.unitOfMeasurements = [unitOfMeasurement,...state.unitOfMeasurements];
+        state.loading = false;
+      },
+    updateUnitOfMeasurementSuccess: (state, action) => {
+      const updated = action.payload;
+      const unitOfMeasurementIndex = state.unitOfMeasurements.findIndex(
+        (category: any) => category.id === updated.id
+      );
+      if (unitOfMeasurementIndex !== -1) {
+        state.unitOfMeasurements = state.unitOfMeasurements.map((category: any) =>
+        category.id === updated.id ? updated : category
+        );
+      } else {
+        state.unitOfMeasurements = [updated, ...state.unitOfMeasurements];
+      }
+      state.loading = false;
+      state.successMessage = 'Unit of measurement updated Successfully.'
+      },
+
+    deleteUnitOfMeasurementSuccess: (state, action) => {
+      const deleted = action.payload
+      state.unitOfMeasurements = state.unitOfMeasurements?.filter((category: any) => category.id !== deleted.id);
+      state.loading = false;
+    },
+    unitOfMeasurementsFailure: (state, action) => {
+    state.loading = false;
+    state.isError = true;
+    state.error = action.payload;
+    },
   },
 });
 
@@ -180,7 +223,13 @@ export const {
   getProductCategoriesSuccess,
   createProductCategorySuccess,
   updateProductCategorySuccess,
-  deleteProductCategorySuccess
+  deleteProductCategorySuccess,
+  createUnitOfMeasurementSuccess,
+  unitOfMeasurementsFailure,
+  unitOfMeasurementsStart,
+  updateUnitOfMeasurementSuccess,
+  getUnitOfMeasurementsSuccess,
+  deleteUnitOfMeasurementSuccess
 } = productSlice.actions;
 
 export const selectProduct = (state: { product: ProductState }) => state.product;

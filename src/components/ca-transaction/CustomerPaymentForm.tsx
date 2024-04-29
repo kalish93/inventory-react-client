@@ -283,7 +283,7 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
 
                 <Autocomplete
                   options={customers}
-                  getOptionLabel={(option) => option.firstName}
+                  getOptionLabel={(option) => option.firstName + " " + option.lastName}
                   value={
                     customers.find(
                       (d: { id: string }) =>

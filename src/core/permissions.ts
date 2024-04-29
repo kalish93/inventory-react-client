@@ -101,5 +101,9 @@ export const PERMISSIONS = {
     GenerateTransactionWithSplitSummary:"GenerateTransactionWithSplitSummary",
     GenerateTrialBalanceReport:"GenerateTrialBalanceReport",
     GenerateInventoryValuationReport:"GenerateInventoryValuationReport",
+    GetUnitOfMeasurements: "GetUnitOfMeasurements",
+    CreateUnitOfMeasurement: "CreateUnitOfMeasurement" ,
+    UpdateUnitOfMeasurement: "UpdateUnitOfMeasurement" ,
+    DeleteUnitOfMeasurement: "DeleteUnitOfMeasurement" 
 };
   

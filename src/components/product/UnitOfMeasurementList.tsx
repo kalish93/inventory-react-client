@@ -19,18 +19,18 @@ import {
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useNavigate } from "react-router-dom";
 import ConfirmationModal from "../common/confirmationModal";
-import CategoryForm from "./CategoryForm";
+import UnitOfMeasurementForm from "./UnitOfMeasurementForm";
 import { hasPermission } from "../../utils/checkPermission";
 import { PERMISSIONS } from "../../core/permissions";
-import { deleteProductCategory, getProductCategories } from "../../features/product/productActions";
+import { deleteUnitOfMeasurement, getUnitOfMeasurements } from "../../features/product/productActions";
 
-const CategoryList = () => {
+const UnitOfMeasurementList = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const categories = useSelector((state: any) => state.product.productCategories);
+  const categories = useSelector((state: any) => state.product.unitOfMeasurements);
   const [openModal, setOpenModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedUnitOfMeasurementId, setSelectedUnitOfMeasurementId] = useState(null);
+  const [selectedUnitOfMeasurement, setSelectedUnitOfMeasurement] = useState(null);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -48,7 +48,7 @@ const CategoryList = () => {
   };
 
   const handleConfirmAction = () => {
-    handleDeleteCategory();
+    handleDeleteUnitOfMeasurement();
     closeConfirmationModal();
   };
 
@@ -59,7 +59,7 @@ const CategoryList = () => {
   };
 
   useEffect(() => {
-    dispatch(getProductCategories());
+    dispatch(getUnitOfMeasurements());
   }, [dispatch]);
 
   const handleOpenModal = () => {
@@ -75,16 +75,16 @@ const CategoryList = () => {
       if (error) {
         showSnackbar(error, "error");
       } else {
-        showSnackbar("Category deleted successfully", "success");
+        showSnackbar("Unit Of Measurement deleted successfully", "success");
       }
       setDeleteSubmitted(false);
     }
   }, [deleteSubmitted, error]);
 
-  const handleDeleteCategory = () => {
+  const handleDeleteUnitOfMeasurement = () => {
     handleMenuClose();
-    if (selectedCategoryId !== null) {
-      dispatch(deleteProductCategory(selectedCategoryId))
+    if (selectedUnitOfMeasurementId !== null) {
+      dispatch(deleteUnitOfMeasurement(selectedUnitOfMeasurementId))
         .then(() => {
           setDeleteSubmitted(true);
         })
@@ -94,16 +94,16 @@ const CategoryList = () => {
     }
   };
 
-  const handleMenuOpen = (event: any, categoryId: any, category: any) => {
+  const handleMenuOpen = (event: any, UnitOfMeasurementId: any, UnitOfMeasurement: any) => {
     setAnchorEl(event.currentTarget);
-    setSelectedCategory(category);
-    setSelectedCategoryId(categoryId);
+    setSelectedUnitOfMeasurement(UnitOfMeasurement);
+    setSelectedUnitOfMeasurementId(UnitOfMeasurementId);
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-    setSelectedCategoryId(null);
-    setSelectedCategory(null);
+    setSelectedUnitOfMeasurementId(null);
+    setSelectedUnitOfMeasurement(null);
   };
 
   const handleCloseSnackbar = () => {
@@ -112,9 +112,9 @@ const CategoryList = () => {
 
   return (
     <div>
-      {hasPermission(PERMISSIONS.CreateProductCategory) && 
+      {hasPermission(PERMISSIONS.CreateUnitOfMeasurement) && 
       <Button variant="contained" color="primary" onClick={handleOpenModal} style={{marginBottom:'15px'}}>
-        Add Category
+        Add UnitOfMeasurement
       </Button>}
       {hasPermission(PERMISSIONS.GetProductCategories) && <TableContainer component={Paper}>
         <Table>
@@ -125,13 +125,13 @@ const CategoryList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {categories.map((category: any) => (
-              <TableRow key={category.id}>
-                <TableCell>{category.name}</TableCell>
+            {categories.map((UnitOfMeasurement: any) => (
+              <TableRow key={UnitOfMeasurement.id}>
+                <TableCell>{UnitOfMeasurement.name}</TableCell>
                 <TableCell>
                   <IconButton
                     aria-label="Actions"
-                    onClick={(event) => handleMenuOpen(event, category.id, category)}
+                    onClick={(event) => handleMenuOpen(event, UnitOfMeasurement.id, UnitOfMeasurement)}
                     style={{ margin: 0, padding: 0 }}
                   >
                     <MoreVertIcon />
@@ -150,8 +150,8 @@ const CategoryList = () => {
                       },
                     }}
                   >
-                    {hasPermission(PERMISSIONS.UpdateProductCategory) && <MenuItem onClick={handleOpenModal}>Update</MenuItem>}
-                    {hasPermission(PERMISSIONS.DeleteProductCategory) && <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>}
+                    {hasPermission(PERMISSIONS.UpdateUnitOfMeasurement) && <MenuItem onClick={handleOpenModal}>Update</MenuItem>}
+                    {hasPermission(PERMISSIONS.DeleteUnitOfMeasurement) && <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>}
                   </Menu>
                 </TableCell>
               </TableRow>
@@ -159,13 +159,13 @@ const CategoryList = () => {
           </TableBody>
         </Table>
       </TableContainer>}
-      <CategoryForm open={openModal} handleClose={handleCloseModal} selectedCategory={selectedCategory}/>
+      <UnitOfMeasurementForm open={openModal} handleClose={handleCloseModal} selectedUnitOfMeasurement={selectedUnitOfMeasurement}/>
       <ConfirmationModal
         open={confirmationModalOpen}
         onClose={closeConfirmationModal}
         onConfirm={handleConfirmAction}
-        title="Delete Category"
-        content="Are you sure you want to delete this category?"
+        title="Delete UnitOfMeasurement"
+        content="Are you sure you want to delete this UnitOfMeasurement?"
       />
       <Snackbar
         open={snackbarOpen}
@@ -186,4 +186,4 @@ const CategoryList = () => {
   );
 };
 
-export default CategoryList;
+export default UnitOfMeasurementList;

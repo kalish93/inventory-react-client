@@ -1,6 +1,6 @@
 export const IS_DEVELOPMENT_MODE  = true;
-// export const BASE_URL = 'http://localhost:4000/api';
-export const BASE_URL = 'https://inventory-backend-fgh1.onrender.com/api';
+export const BASE_URL = 'http://localhost:4000/api';
+// export const BASE_URL = 'https://inventory-backend-fgh1.onrender.com/api';
 export const LOGIN_URL = `${BASE_URL}/login`
 export const USERS_URL = `${BASE_URL}/users`
 export const ROLES_URL = `${BASE_URL}/roles`
@@ -32,3 +32,4 @@ export const TRANSIT_FEES_URL = `${BASE_URL}/transit-fees`
 export const DECLARATION_DETAIL_URL = `${BASE_URL}/declaration-detail`
 export const SALE_DETAIL_URL = `${BASE_URL}/sale-detail`
 export const PROVISIONS_URL = `${BASE_URL}/provisions`
+export const UNIT_OF_MEASUREMENT_URL = `${BASE_URL}/unit-of-measurements`

@@ -1,6 +1,6 @@
 import { AppDispatch } from "../../app/store";
 import { ProductService } from "./productService";
-import { createProductCategorySuccess, deleteProductCategorySuccess, deleteProductStart, deleteProductSuccess, deleteproductFailure, getProductCategoriesSuccess, getProductsFailure, getProductsStart, getProductsSuccess, productCategoriesFailure, productCategoriesStart, registerProductFailure, registerProductStart, registerProductSuccess, updateProductCategorySuccess, updateProductStart, updateProductSuccess, updateproductFailure } from "./productSlice";
+import { createProductCategorySuccess, createUnitOfMeasurementSuccess, deleteProductCategorySuccess, deleteProductStart, deleteProductSuccess, deleteUnitOfMeasurementSuccess, deleteproductFailure, getProductCategoriesSuccess, getProductsFailure, getProductsStart, getProductsSuccess, getUnitOfMeasurementsSuccess, productCategoriesFailure, productCategoriesStart, registerProductFailure, registerProductStart, registerProductSuccess, unitOfMeasurementsFailure, unitOfMeasurementsStart, updateProductCategorySuccess, updateProductStart, updateProductSuccess, updateUnitOfMeasurementSuccess, updateproductFailure } from "./productSlice";
 
 export const getProducts = (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
@@ -107,5 +107,60 @@ export const updateProductCategory = (data: any) => async (dispatch: AppDispatch
       }
     } catch (error) {
       dispatch(productCategoriesFailure('Unknown error'));
+    }
+  };
+
+
+  export const getUnitOfMeasurements = () => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(unitOfMeasurementsStart());
+      const response = await ProductService.getUnitOfMeasurements();
+      dispatch(getUnitOfMeasurementsSuccess(response));
+    } catch (error) {
+      dispatch(unitOfMeasurementsFailure(error));
+    }
+  };
+
+export const createUnitOfMeasurement = (data: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(unitOfMeasurementsStart());
+      const response = await ProductService.registerUnitOfMeasurements(data);
+      if (response.success) {
+        dispatch(createUnitOfMeasurementSuccess(response.data));
+      } else {
+        dispatch(unitOfMeasurementsFailure(response.error || 'Unknown error'));
+      }
+    } catch (error) {
+      dispatch(unitOfMeasurementsFailure('Unknown error'));
+    }
+  };
+
+export const updateUnitOfMeasurement = (data: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(unitOfMeasurementsStart());
+      const response = await ProductService.updateUnitOfMeasurement(data);
+      if (response.success) {
+        dispatch(updateUnitOfMeasurementSuccess(response.data));
+      } else {
+        dispatch(unitOfMeasurementsFailure(response.error || 'Unknown error'));
+      }
+    } catch (error) {
+      dispatch(unitOfMeasurementsFailure('Unknown error'));
+    }
+  };
+
+
+  export const deleteUnitOfMeasurement =
+  (id: string) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(unitOfMeasurementsStart());
+      const response = await ProductService.deleteUnitOfMeasurement(id);
+      if (response.success) {
+        dispatch(deleteUnitOfMeasurementSuccess(response.data));
+      } else {
+        dispatch(unitOfMeasurementsFailure(response.error || 'Unknown error'));
+      }
+    } catch (error) {
+      dispatch(unitOfMeasurementsFailure('Unknown error'));
     }
   };
