@@ -98,10 +98,10 @@ const transactionSlice = createSlice({
 
     deleteJournalEntrySuccess: (state, action) => {
       const deleted = action.payload;
-      const deletedIds = [deleted[0].id, deleted[1].id];
+      const deletedIds = deleted.map((item: { id: any; }) => item.id);
       state.transactions = {
           items: state.transactions?.items.filter(transaction => !deletedIds.includes(transaction.id)) || [],
-          totalCount: (state.transactions?.totalCount || 0) - 2,
+          totalCount: (state.transactions?.totalCount || 0) - deletedIds.length,
           pageSize: state.transactions?.pageSize || 10, 
           currentPage: state.transactions?.currentPage || 1, 
           totalPages: state.transactions?.totalPages || 1, 
