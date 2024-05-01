@@ -159,7 +159,7 @@ const BanksList = () => {
                   >
                     <TableCell>{bank.name}</TableCell>
                     <TableCell>{bank.address}</TableCell>
-                    <TableCell>{bank.startingValue}</TableCell>
+                    <TableCell>{bank.startingValue.toLocaleString()}</TableCell>
                     <TableCell>
                       {dayjs(bank.startingValueDate).format("MM/DD/YYYY")}
                     </TableCell>

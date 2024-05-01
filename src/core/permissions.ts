@@ -104,6 +104,8 @@ export const PERMISSIONS = {
     GetUnitOfMeasurements: "GetUnitOfMeasurements",
     CreateUnitOfMeasurement: "CreateUnitOfMeasurement" ,
     UpdateUnitOfMeasurement: "UpdateUnitOfMeasurement" ,
-    DeleteUnitOfMeasurement: "DeleteUnitOfMeasurement" 
+    DeleteUnitOfMeasurement: "DeleteUnitOfMeasurement" ,
+    CreateJournalEntry: "CreateJournalEntry" ,
+    DeleteJournalEntry: "DeleteJournalEntry" ,
 };
   
