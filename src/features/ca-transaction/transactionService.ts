@@ -1,6 +1,6 @@
 import { CreateCATransaction } from "../../models/ca-transaction";
 import { handleRequest } from "../../utils/apiService";
-import { BASE_URL, CATRANSACTIONS_URL } from "../../core/api-routes";
+import { BASE_URL, CATRANSACTIONS_URL, JOURNAL_ENTRY_URL } from "../../core/api-routes";
 
 export const CATransactionService = {
   getCATransactions: async (page = 1, pageSize = 10) => {
@@ -71,5 +71,45 @@ export const CATransactionService = {
     }
   },
 
+
+  registerJournalEntry: async (CATransactionData: any) => {
+    try {
+      const response = await handleRequest(JOURNAL_ENTRY_URL, {
+        method: "POST",
+        body: JSON.stringify(CATransactionData),
+      });
+
+      if (!response.ok) {
+        let errorMessage = `Bad Request: ${response.statusText}`;
+        const data = await response.json();
+        errorMessage = data.error || errorMessage;
+        return { success: false, error: errorMessage };
+      }
+
+      const data = await response.json();
+      return { success: true, data };
+    } catch (error) {
+      console.error("Error in registerCATransactions service:", error);
+      return { success: false, error: "Unexpected error occurred" };
+    }
+  },
+
+  deleteJournalEntry: async (id: any) => {
+    const response = await handleRequest(`${JOURNAL_ENTRY_URL}/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      let errorMessage = `Bad Request: ${response.statusText}`;
+
+        const data = await response.json();
+        errorMessage = data.error || errorMessage;
+
+      return { success: false, error: errorMessage };
+    }
+
+    const data = await response.json();
+    return { success: true, data };
+  },  
 
 };

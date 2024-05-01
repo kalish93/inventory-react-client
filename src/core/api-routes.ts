@@ -33,3 +33,4 @@ export const DECLARATION_DETAIL_URL = `${BASE_URL}/declaration-detail`
 export const SALE_DETAIL_URL = `${BASE_URL}/sale-detail`
 export const PROVISIONS_URL = `${BASE_URL}/provisions`
 export const UNIT_OF_MEASUREMENT_URL = `${BASE_URL}/unit-of-measurements`
+export const JOURNAL_ENTRY_URL = `${CATRANSACTIONS_URL}/journal-entry`
