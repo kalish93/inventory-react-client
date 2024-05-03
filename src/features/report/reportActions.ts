@@ -1,6 +1,6 @@
 import { AppDispatch } from "../../app/store";
 import { ReportService } from "./reportService";
-import { generateApAgingReportSuccess, generateBankTransactionReportSuccess, generateCustomerAgingReportSuccess, generateReportFailure, generateReportStart, generateTransactionListWithSplitsReportSuccess, generateTrialBalanceReportSuccess, generateInventoryValuationReportSuccess } from "./reportSlice";
+import { generateApAgingReportSuccess, generateBankTransactionReportSuccess, generateCustomerAgingReportSuccess, generateReportFailure, generateReportStart, generateTransactionListWithSplitsReportSuccess, generateTrialBalanceReportSuccess, generateInventoryValuationReportSuccess, generateProfitAndLossReportSuccess, generateBalanceSheetReportSuccess } from "./reportSlice";
 
 
 export const generateCustomerAgingReport =
@@ -69,6 +69,29 @@ async (dispatch: AppDispatch) => {
     dispatch(generateReportStart()); // Dispatch the action to indicate the start of report generation
     const response = await ReportService.getInventoryValuationReport( endDate); // Call the service method to generate the report
     dispatch(generateInventoryValuationReportSuccess(response.data)); // Dispatch the success action with the report URL
+  } catch (error) {
+    dispatch(generateReportFailure(error)); // Dispatch the failure action if an error occurs
+  }
+};
+
+export const generateProfitAndLoss =
+(startDate?: Date, endDate?:Date) =>
+async (dispatch: AppDispatch) => {
+  try {
+    dispatch(generateReportStart()); // Dispatch the action to indicate the start of report generation
+    const response = await ReportService.getProfitAndLossReport(startDate, endDate); // Call the service method to generate the report
+    dispatch(generateProfitAndLossReportSuccess(response.data)); // Dispatch the success action with the report URL
+  } catch (error) {
+    dispatch(generateReportFailure(error)); // Dispatch the failure action if an error occurs
+  }
+};
+export const generateBalanceSheet =
+(endDate?:Date) =>
+async (dispatch: AppDispatch) => {
+  try {
+    dispatch(generateReportStart()); // Dispatch the action to indicate the start of report generation
+    const response = await ReportService.getBalanceSheetReport(endDate); // Call the service method to generate the report
+    dispatch(generateBalanceSheetReportSuccess(response.data)); // Dispatch the success action with the report URL
   } catch (error) {
     dispatch(generateReportFailure(error)); // Dispatch the failure action if an error occurs
   }
