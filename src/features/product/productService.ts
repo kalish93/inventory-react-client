@@ -1,4 +1,4 @@
-import { PRODUCTS_URL, PRODUCT_CATEGORIES_URL } from "../../core/api-routes";
+import { PRODUCTS_URL, PRODUCT_CATEGORIES_URL, UNIT_OF_MEASUREMENT_URL } from "../../core/api-routes";
 import { CreateProduct } from "../../models/product";
 import { handleRequest } from "../../utils/apiService";
 
@@ -187,6 +187,97 @@ deleteProductCategory: async (id: string) => {
     return { success: true, data };
   } catch (error) {
     console.error("Error in delete product category service:", error);
+    return { success: false, error: "Unexpected error occurred" };
+  }
+},
+
+  getUnitOfMeasurements: async () => {
+    try {
+        const response = await handleRequest(UNIT_OF_MEASUREMENT_URL, {
+              method: "GET",
+            });
+
+        if (!response.ok) {
+            throw new Error('Error retrieving unit of measurements');
+        }
+
+        const data = await response.json();
+        return data;
+
+    } catch (error) {
+        console.error('Error in get product categories service:', error);
+        throw error;
+    }
+},
+      registerUnitOfMeasurements: async (unitOfMeasurement: any) => {
+        try{
+          const response = await handleRequest(UNIT_OF_MEASUREMENT_URL, {
+            method: "POST",
+            body: JSON.stringify(unitOfMeasurement),
+
+          });
+    
+        if (!response.ok) {
+          let errorMessage = `Bad Request: ${response.statusText}`;
+  
+            const data = await response.json();
+            errorMessage = data.error || errorMessage;
+  
+          return { success: false, error: errorMessage };
+        }
+  
+        const data = await response.json();
+        return { success: true, data };
+      } catch (error) {
+        console.error("Error in create unit of measurements service:", error);
+        return { success: false, error: "Unexpected error occurred" };
+      }
+    },
+
+  updateUnitOfMeasurement: async (unitOfMeasurement: any) => {
+    try{
+      const response = await handleRequest(`${UNIT_OF_MEASUREMENT_URL}/${unitOfMeasurement.id}`, {
+        method: "PUT",
+        body: JSON.stringify(unitOfMeasurement),
+
+      });
+
+    if (!response.ok) {
+      let errorMessage = `Bad Request: ${response.statusText}`;
+
+        const data = await response.json();
+        errorMessage = data.error || errorMessage;
+
+      return { success: false, error: errorMessage };
+    }
+
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    console.error("Error in update unitOfMeasurement service:", error);
+    return { success: false, error: "Unexpected error occurred" };
+  }
+},
+
+deleteUnitOfMeasurement: async (id: string) => {
+  try {
+    const response = await handleRequest(`${UNIT_OF_MEASUREMENT_URL}/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      let errorMessage = `Bad Request: ${response.statusText}`;
+
+        const data = await response.json();
+        errorMessage = data.error || errorMessage;
+
+      return { success: false, error: errorMessage };
+    }
+
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    console.error("Error in delete unitOfMeasurement service:", error);
     return { success: false, error: "Unexpected error occurred" };
   }
 },

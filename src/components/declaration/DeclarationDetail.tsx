@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Table,
   TableBody,
@@ -16,28 +16,34 @@ import {
   Button,
   Menu,
   MenuItem,
-} from '@mui/material';
-import { AppDispatch } from '../../app/store';
-import { selectDeclaration } from '../../features/declaration/declarationSlice';
-import { deleteDeclarationDetail, getDeclaration } from '../../features/declaration/declarationAction';
-import { useParams } from 'react-router-dom';
-import dayjs from 'dayjs';
+} from "@mui/material";
+import { AppDispatch } from "../../app/store";
+import { selectDeclaration } from "../../features/declaration/declarationSlice";
+import {
+  deleteDeclarationDetail,
+  getDeclaration,
+} from "../../features/declaration/declarationAction";
+import { useParams } from "react-router-dom";
+import dayjs from "dayjs";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import ConfirmationModal from '../common/confirmationModal';
-import DeclarationDetailForm from './DeclarationDefailForm';
+import ConfirmationModal from "../common/confirmationModal";
+import DeclarationDetailForm from "./DeclarationDefailForm";
 
 const DeclarationDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [snackbarMessage, setSnackbarMessage] = useState("");
   const [isDeleteSubmitted, setIsDeleteSubmitted] = useState(false);
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false); // State for confirmation modal
   const [openModal, setOpenModal] = useState(false);
-  const { isError, error, loading, declaration } = useSelector(selectDeclaration);
-  const [selectedDeclarationDetailId, setSelectedDeclarationDetailId] = useState(null);
-  const [selectedDeclarationDetail, setSelectedDeclarationDetail] = useState(null);
+  const { isError, error, loading, declaration } =
+    useSelector(selectDeclaration);
+  const [selectedDeclarationDetailId, setSelectedDeclarationDetailId] =
+    useState(null);
+  const [selectedDeclarationDetail, setSelectedDeclarationDetail] =
+    useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
@@ -49,8 +55,6 @@ const DeclarationDetail = () => {
     handleMenuClose();
   };
 
-
-  
   const openConfirmationModal = () => {
     setConfirmationModalOpen(true);
   };
@@ -63,29 +67,29 @@ const DeclarationDetail = () => {
     handleConfirmDelete();
     closeConfirmationModal();
   };
-  
+
   const handleConfirmDelete = () => {
     handleMenuClose();
-    if(selectedDeclarationDetailId != null){
-    dispatch(deleteDeclarationDetail(selectedDeclarationDetailId))
-      .then(() => {
-        setIsDeleteSubmitted(true);
-      })
-      .catch(() => {
-        setIsDeleteSubmitted(true);
-      });
-    setConfirmationModalOpen(false); 
-    setSelectedDeclarationDetail(null);
-    setSelectedDeclarationDetailId(null);
-    }// Close the confirmation modal after confirming delete
+    if (selectedDeclarationDetailId != null) {
+      dispatch(deleteDeclarationDetail(selectedDeclarationDetailId))
+        .then(() => {
+          setIsDeleteSubmitted(true);
+        })
+        .catch(() => {
+          setIsDeleteSubmitted(true);
+        });
+      setConfirmationModalOpen(false);
+      setSelectedDeclarationDetail(null);
+      setSelectedDeclarationDetailId(null);
+    } // Close the confirmation modal after confirming delete
   };
 
   useEffect(() => {
     if (!loading && isDeleteSubmitted) {
       if (isError) {
-        showSnackbar(error || 'An error occurred', 'error');
+        showSnackbar(error || "An error occurred", "error");
       } else {
-        showSnackbar('Declaration detail deleted successfully', 'success');
+        showSnackbar("Declaration detail deleted successfully", "success");
         // Redirect to the declarations list after successful deletion
       }
       setIsDeleteSubmitted(false);
@@ -132,18 +136,24 @@ const DeclarationDetail = () => {
 
   return (
     <div>
-      <div style={{display:"flex", justifyContent:'space-between', alignItems:'center' }}>
-      <div>
-      <Typography variant="h5" gutterBottom>
-              Declaration Number: {declaration.number}
-            </Typography>
-            <Typography variant="subtitle1" gutterBottom>
-              Declaration Date: {dayjs(declaration.date).format('YYYY-MM-DD')}
-            </Typography>
-      </div>
-      <Button variant="contained" color="primary" onClick={handleOpenModal}>
-        Add Product
-      </Button>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <div>
+          <Typography variant="h5" gutterBottom>
+            Declaration Number: {declaration.number}
+          </Typography>
+          <Typography variant="subtitle1" gutterBottom>
+            Declaration Date: {dayjs(declaration.date).format("YYYY-MM-DD")}
+          </Typography>
+        </div>
+        <Button variant="contained" color="primary" onClick={handleOpenModal}>
+          Add Product
+        </Button>
       </div>
       <TableContainer component={Paper}>
         <Table>
@@ -151,8 +161,8 @@ const DeclarationDetail = () => {
             <TableRow>
               <TableCell>Product Name</TableCell>
               <TableCell>Declaration Quantity</TableCell>
-              <TableCell>Total Income Tax</TableCell>
-              <TableCell>Unit Income Tax</TableCell>
+              <TableCell>Total Custom Tax</TableCell>
+              <TableCell>Unit Custom Tax</TableCell>
               <TableCell>Purchased Quantity</TableCell>
               <TableCell>Declaration Balance</TableCell>
               <TableCell>Action</TableCell>
@@ -162,11 +172,17 @@ const DeclarationDetail = () => {
             {declaration.declarationProducts.map((item: any) => (
               <TableRow key={item.id}>
                 <TableCell>{item.product.name}</TableCell>
-                <TableCell>{item.declarationQuantity.toLocaleString()}</TableCell>
-                <TableCell>{item.totalIncomeTax}</TableCell>
+                <TableCell>
+                  {item.declarationQuantity?.toLocaleString()}
+                </TableCell>
+                <TableCell>{item.totalIncomeTax?.toLocaleString()}</TableCell>
                 <TableCell>{item.unitIncomeTax.toFixed(2)}</TableCell>
-                <TableCell>{item.purchasedQuantity}</TableCell>
-                <TableCell>{item.declarationBalance}</TableCell>
+                <TableCell>
+                  {item.purchasedQuantity?.toLocaleString()}
+                </TableCell>
+                <TableCell>
+                  {item.declarationBalance?.toLocaleString()}
+                </TableCell>
                 <TableCell>
                   <IconButton
                     aria-label="Actions"
@@ -186,7 +202,7 @@ const DeclarationDetail = () => {
                     PaperProps={{
                       style: {
                         boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
-                        width: '20ch'
+                        width: "20ch",
                       },
                     }}
                   >
@@ -199,12 +215,16 @@ const DeclarationDetail = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <DeclarationDetailForm open={openModal} handleClose={handleCloseModal} initialValues={selectedDeclarationDetail}/>
+      <DeclarationDetailForm
+        open={openModal}
+        handleClose={handleCloseModal}
+        initialValues={selectedDeclarationDetail}
+      />
 
       <ConfirmationModal // Confirmation modal for delete
-         open={confirmationModalOpen}
-         onClose={closeConfirmationModal}
-         onConfirm={handleConfirmAction}
+        open={confirmationModalOpen}
+        onClose={closeConfirmationModal}
+        onConfirm={handleConfirmAction}
         title="Delete Declaration"
         content="Are you sure you want to delete this declaration detail?"
       />
@@ -213,12 +233,12 @@ const DeclarationDetail = () => {
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Alert
           onClose={handleCloseSnackbar}
           severity={snackbarSeverity as "success" | "error"}
-          sx={{ width: '100%' }}
+          sx={{ width: "100%" }}
         >
           {snackbarMessage}
         </Alert>

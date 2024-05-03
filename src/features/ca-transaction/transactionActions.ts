@@ -9,6 +9,8 @@ import {
   createTransactionSuccess,
   createTransitPaymentSuccess,
   getTransitPaymentsSuccess,
+  createJournalEntrySuccessSuccess,
+  deleteJournalEntrySuccess,
 } from "./transactionSlice";
 
 export const getCATransactions =
@@ -55,3 +57,32 @@ export const createTransitPayment =
     }
   };
 
+  export const createJournalEntry =
+  (data: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(createTransactionStart());
+      const response = await CATransactionService.registerJournalEntry(data);
+      if (response.success) {
+        dispatch(createJournalEntrySuccessSuccess(response.data));
+      } else {
+        dispatch(createTransactionFailure(response.error || "Unknown error"));
+      }
+    } catch (error) {
+      dispatch(createTransactionFailure("Unknown error"));
+    }
+  };
+
+  export const deleteJournalEntry =
+  (id: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(createTransactionStart());
+      const response = await CATransactionService.deleteJournalEntry(id);
+      if (response.success) {
+        dispatch(deleteJournalEntrySuccess(response.data));
+      } else {
+        dispatch(createTransactionFailure(response.error || "Unknown error"));
+      }
+    } catch (error) {
+      dispatch(createTransactionFailure("Unknown error"));
+    }
+  };

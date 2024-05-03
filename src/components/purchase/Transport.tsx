@@ -55,14 +55,16 @@ const Transport = () => {
 
   return (
     <div>
-      {hasPermission(PERMISSIONS.CreateTransportPayment) && <Button
-        variant="contained"
-        color="primary"
-        onClick={handleOpenModal}
-        style={{ marginLeft: "10px" }}
-      >
-        Add Transport Payment
-      </Button>}
+      {hasPermission(PERMISSIONS.CreateTransportPayment) && (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOpenModal}
+          style={{ marginLeft: "10px" }}
+        >
+          Add Transport Payment
+        </Button>
+      )}
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"

@@ -12,7 +12,7 @@ import {
   MenuItem
 } from '@mui/material';
 import { AppDispatch } from '../../app/store';
-import { createProduct, getProductCategories, updateProduct } from '../../features/product/productActions';
+import { createProduct, getProductCategories, getUnitOfMeasurements, updateProduct } from '../../features/product/productActions';
 import { selectProduct } from '../../features/product/productSlice';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
@@ -29,7 +29,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose, selectedPr
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const { isError, error, loading, successMessage, productCategories } = useSelector(selectProduct);
+  const { isError, error, loading, successMessage, productCategories, unitOfMeasurements } = useSelector(selectProduct);
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
@@ -44,6 +44,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose, selectedPr
   useEffect(() => {
     // Dispatch action to get product categories
     dispatch(getProductCategories());
+    dispatch(getUnitOfMeasurements());
   }, [dispatch]);
 
   const formik = useFormik({
@@ -51,7 +52,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose, selectedPr
       id: selectedProduct ? selectedProduct.id : '',
       name: selectedProduct ? selectedProduct.name : '',
       categoryId: selectedProduct ? selectedProduct.category.id : '', // Use categoryId as initial value
-      unitOfMeasurement: selectedProduct ? selectedProduct.unitOfMeasurement : '',
+      unitOfMeasurementId: selectedProduct ? selectedProduct.unitOfMeasurement.id : '',
       startingQuantity: selectedProduct ? selectedProduct.startingQuantity : '',
       startingQuantityUnitPrice: selectedProduct ? selectedProduct.startingQuantityUnitPrice : '',
       startingQuantityDate: selectedProduct ? selectedProduct.startingQuantityDate.split('T')[0] : '', // Extract date part
@@ -59,15 +60,16 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose, selectedPr
     validationSchema: Yup.object().shape({
       name: Yup.string().required('Name is required'),
       categoryId: Yup.string().required('Please select a category'),
-      unitOfMeasurement: Yup.string().required('Unit of measurement is required'),
+      unitOfMeasurementId: Yup.string().required('Unit of measurement is required'),
       startingQuantity: Yup.number().required('Starting quanitity is required').min(0, 'Starting quantity must be zero or positive'),
       startingQuantityUnitPrice: Yup.number().required('Unit price required').min(0, 'Unit price must be zero or positive'),
       startingQuantityDate: Yup.date().required('Starting quantity date is required'),
     }),
     onSubmit: (values, { setSubmitting }) => {
-      const { categoryId, startingQuantityDate, ...rest } = values;
+      const { categoryId, unitOfMeasurementId, startingQuantityDate, ...rest } = values;
       const selectedCategory = productCategories.find((category: any) => category.id === categoryId);
-      const formData = { ...rest, category: selectedCategory, startingQuantityDate: new Date(startingQuantityDate).toISOString() };
+      const selectedUnitOfMeasurement = unitOfMeasurements.find((item: any) => item.id === unitOfMeasurementId);
+      const formData = { ...rest, category: selectedCategory, unitOfMeasurement: selectedUnitOfMeasurement, startingQuantityDate: new Date(startingQuantityDate).toISOString() };
       
       if (values.id) {
         dispatch(updateProduct(formData));
@@ -86,7 +88,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose, selectedPr
         id: selectedProduct ? selectedProduct.id : '',
         name: selectedProduct ? selectedProduct.name : '',
         categoryId: selectedProduct ? selectedProduct.category.id : '',
-        unitOfMeasurement: selectedProduct ? selectedProduct.unitOfMeasurement : '',
+        unitOfMeasurementId: selectedProduct ? selectedProduct.unitOfMeasurement.id : '',
         startingQuantity: selectedProduct ? selectedProduct.startingQuantity : '',
         startingQuantityUnitPrice: selectedProduct ? selectedProduct.startingQuantityUnitPrice : '',
         startingQuantityDate: selectedProduct ? selectedProduct.startingQuantityDate.split('T')[0] : '',
@@ -171,7 +173,27 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose, selectedPr
                 </MenuItem>
               ))}
             </TextField>
+
             <TextField
+              select
+              name="unitOfMeasurementId"
+              label="Unit Of Measurement"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.unitOfMeasurementId && Boolean(formik.errors.unitOfMeasurementId)}
+              helperText={formik.touched.unitOfMeasurementId && formik.errors.unitOfMeasurementId as React.ReactNode}
+              value={formik.values.unitOfMeasurementId}
+            >
+              {unitOfMeasurements.map((item: any) => (
+                <MenuItem key={item.id} value={item.id}>
+                  {item.name}
+                </MenuItem>
+              ))}
+            </TextField>
+            {/* <TextField
               name="unitOfMeasurement"
               label="Unit of Measurement"
               variant="outlined"
@@ -182,7 +204,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleClose, selectedPr
               error={formik.touched.unitOfMeasurement && Boolean(formik.errors.unitOfMeasurement)}
               helperText={formik.touched.unitOfMeasurement && formik.errors.unitOfMeasurement as React.ReactNode}
               value={formik.values.unitOfMeasurement}
-            />
+            /> */}
             <TextField
               name="startingQuantity"
               label="Starting Quantity"

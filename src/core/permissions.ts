@@ -103,5 +103,11 @@ export const PERMISSIONS = {
     GenerateInventoryValuationReport:"GenerateInventoryValuationReport",
     GenerateProfitAndLossReport:"GenerateProfitAndLossReport",
     GenerateBalanceSheetReport:"GenerateBalanceSheetReport",
+    GetUnitOfMeasurements: "GetUnitOfMeasurements",
+    CreateUnitOfMeasurement: "CreateUnitOfMeasurement" ,
+    UpdateUnitOfMeasurement: "UpdateUnitOfMeasurement" ,
+    DeleteUnitOfMeasurement: "DeleteUnitOfMeasurement" ,
+    CreateJournalEntry: "CreateJournalEntry" ,
+    DeleteJournalEntry: "DeleteJournalEntry" ,
 };
   

@@ -40,7 +40,7 @@ const DeclarationDetailForm: React.FC<DeclarationDetailFormProps> = ({ open, ini
   const validationSchema = Yup.object().shape({
     productId: Yup.string().required('Product is required'),
     declarationQuantity: Yup.number().required('Declaration Quantity is required'),
-    totalIncomeTax: Yup.number().required('Total Income Tax is required'),
+    totalIncomeTax: Yup.number().required('Total Custom Tax is required'),
   });
 
   const formik = useFormik({
@@ -153,7 +153,7 @@ const DeclarationDetailForm: React.FC<DeclarationDetailFormProps> = ({ open, ini
         />
         <TextField
           name="totalIncomeTax"
-          label="Total Income Tax"
+          label="Total Custom Tax"
           variant="outlined"
           fullWidth
           margin="normal"

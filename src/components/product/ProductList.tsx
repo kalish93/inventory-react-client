@@ -28,6 +28,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { hasPermission } from '../../utils/checkPermission';
 import { PERMISSIONS } from '../../core/permissions';
 import CategoryList from './CategoryList';
+import UnitOfMeasurementList from './UnitOfMeasurementList';
 
 const TabPanel = (props: {
   [x: string]: any;
@@ -169,6 +170,7 @@ const ProductList = () => {
       >
         <Tab label="Products" />
         <Tab label="Product Categories" />
+        <Tab label="Unit Of Measurements" />
       </Tabs>
       <TabPanel value={value} index={0}>
         {/* Products Tab */}
@@ -202,7 +204,7 @@ const ProductList = () => {
                 <TableRow key={product.id}>
                   <TableCell>{product.name}</TableCell>
                   <TableCell>{product.category.name}</TableCell>
-                  <TableCell>{product.unitOfMeasurement}</TableCell>
+                  <TableCell>{product.unitOfMeasurement.name}</TableCell>
                   <TableCell>{product.startingQuantity}</TableCell>
                   <TableCell>{product.startingQuantityUnitPrice}</TableCell>
                   <TableCell>{new Date(product.startingQuantityDate).toLocaleDateString()}</TableCell>
@@ -263,6 +265,9 @@ const ProductList = () => {
       </TabPanel>
       <TabPanel value={value} index={1}>
         <CategoryList />
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <UnitOfMeasurementList />
       </TabPanel>
     </div>
   );

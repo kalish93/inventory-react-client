@@ -82,6 +82,32 @@ const transactionSlice = createSlice({
       state.error = action.payload;
       state.isError = true;
     },
+
+    createJournalEntrySuccessSuccess: (state, action) => {
+      const newTransactions = action.payload;
+      state.transactions = {
+        items: [newTransactions.firstTransaction, newTransactions.secondTransaction, ...(state.transactions?.items || [])],
+        totalCount: (state.transactions?.totalCount || 0) + 2,
+        pageSize: state.transactions?.pageSize || 10,
+        currentPage: state.transactions?.currentPage || 1,
+        totalPages: state.transactions?.totalPages || 1,
+      };
+      state.loading = false;
+    },
+
+
+    deleteJournalEntrySuccess: (state, action) => {
+      const deleted = action.payload;
+      const deletedIds = deleted.map((item: { id: any; }) => item.id);
+      state.transactions = {
+          items: state.transactions?.items.filter(transaction => !deletedIds.includes(transaction.id)) || [],
+          totalCount: (state.transactions?.totalCount || 0) - deletedIds.length,
+          pageSize: state.transactions?.pageSize || 10, 
+          currentPage: state.transactions?.currentPage || 1, 
+          totalPages: state.transactions?.totalPages || 1, 
+      };
+      state.loading = false;      
+    },
   },
 });
 
@@ -94,6 +120,8 @@ export const {
   createTransactionFailure,
   createTransitPaymentSuccess,
   getTransitPaymentsSuccess,
+  createJournalEntrySuccessSuccess,
+  deleteJournalEntrySuccess
 } = transactionSlice.actions;
 
 export const selectTransactions = (state: {

@@ -57,14 +57,16 @@ const Transit = () => {
 
   return (
     <div>
-      {hasPermission(PERMISSIONS.CreateTransitPayment) && <Button
-        variant="contained"
-        color="primary"
-        onClick={handleOpenModal}
-        style={{ marginLeft: "10px" }}
-      >
-        Add Transit Payment
-      </Button>}
+      {hasPermission(PERMISSIONS.CreateTransitPayment) && (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOpenModal}
+          style={{ marginLeft: "10px" }}
+        >
+          Add Transit Payment
+        </Button>
+      )}
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
@@ -79,7 +81,7 @@ const Transit = () => {
           <TableHead>
             <TableRow>
               <TableCell>Date</TableCell>
-              <TableCell>Tranist Fee</TableCell>
+              <TableCell>Transit Fee</TableCell>
               <TableCell>Truck Number</TableCell>
               <TableCell>Declaration Number</TableCell>
               <TableCell>Unit Transit Cost</TableCell>

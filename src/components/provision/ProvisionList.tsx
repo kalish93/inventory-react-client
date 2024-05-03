@@ -96,7 +96,7 @@ console.log(provisions)
                   {item.saleDetail.saleQuantity}
                 </TableCell>
                 <TableCell>
-                  {item.saleDetail.sale.invoiceNumber}
+                  {item.saleDetail?.sale?.invoiceNumber}
                 </TableCell>
               </TableRow>
             ))}

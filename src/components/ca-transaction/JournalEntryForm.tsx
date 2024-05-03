@@ -21,6 +21,7 @@ import InputBase from "@mui/material/InputBase";
 import { selectTransactions } from "../../features/ca-transaction/transactionSlice";
 import {
   createCATransaction,
+  createJournalEntry,
   getCATransactions,
 } from "../../features/ca-transaction/transactionActions";
 import { getCashOfAccounts } from "../../features/cash-of-account/cashOfAccountActions";
@@ -118,19 +119,39 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
   };
 
   const validationSchema = yup.object({
-    journalEntryNumber: yup
-      .string()
-      .required("Journal Entry Number is required"),
     chartofAccountId1: yup.string().required("Chart of Account is required"),
     chartofAccountId2: yup.string().required("Chart of Account is required"),
     date: yup.date().required("Date is required"),
-    credit: yup.number().required("Credit is required"),
-    debit: yup.number().required("Debit is required"),
+    credit: yup
+      .number()
+      .required("Credit is required")
+      .min(0, "Credit must be greater than 0")
+      .test(
+        "credit-not-zero",
+        "Credit must be greater than 0",
+        (value) => value > 0
+      ),
+    debit: yup
+      .number()
+      .required("Debit is required")
+      .min(0, "Debit must be greater than 0")
+      .test(
+        "debit-not-zero",
+        "Debit must be greater than 0",
+        (value) => value > 0
+      )
+      .test(
+        "debit-credit-equal",
+        "Debit and Credit must be equal",
+        function (value) {
+          const { credit } = this.parent;
+          return value === credit;
+        }
+      ),
   });
-
+  
   const formik = useFormik({
     initialValues: {
-      journalEntryNumber: "",
       chartofAccountId1: "",
       chartofAccountId2: "",
       date: null,
@@ -143,34 +164,18 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
     onSubmit: (values) => {
       const formDataToSend1 = {
         bankId: values.chartofAccountId1,
-        date: values.date,
-        debit: values.debit,
-        number: values.journalEntryNumber,
-        credit: null,
-        remark: values.transactionRemark,
-        type: "Journal Entry",
-        accountPayableRecievableDetail: values.accountPayableRecievableDetail,
-      };
-      const formDataToSend2 = {
         chartofAccountId: values.chartofAccountId2,
         date: values.date,
-        debit: null,
+        debit: values.debit,
         credit: values.credit,
-        number: values.journalEntryNumber,
         remark: values.transactionRemark,
         type: "Journal Entry",
         accountPayableRecievableDetail: values.accountPayableRecievableDetail,
-      };
-      const formDataToSend3 = {
-        bankId: values.chartofAccountId1,
-        type: "Journal Entry",
         deposit: flag ? null : values.debit,
         payment: flag ? values.credit : null,
       };
 
-      dispatch(createCATransaction(formDataToSend1));
-      dispatch(createCATransaction(formDataToSend2));
-      dispatch(createBankTransaction(formDataToSend3));
+      dispatch(createJournalEntry(formDataToSend1));
       handleClose();
       setIsFormSubmitted(true);
       formik.resetForm();
@@ -231,26 +236,6 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
                   minWidth: "47%",
                 }}
               >
-                <TextField
-                  name="journalEntryNumber"
-                  label="Journal Entry Number"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  onChange={formik.handleChange}
-                  value={formik.values.journalEntryNumber}
-                  required
-                  error={
-                    formik.touched.journalEntryNumber &&
-                    !formik.values.journalEntryNumber
-                  }
-                  onBlur={formik.handleBlur}
-                  helperText={
-                    formik.touched.journalEntryNumber &&
-                    (!formik.values.journalEntryNumber as React.ReactNode)
-                  }
-                />
-
                 <Typography
                   style={{ marginTop: "10px", marginBottom: "10px" }}
                 ></Typography>
@@ -410,12 +395,9 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
                   onChange={formik.handleChange}
                   value={formik.values.debit}
                   required
-                  error={formik.touched.debit && !formik.values.debit}
+                  error={formik.touched.debit && Boolean(formik.errors.debit)}
                   onBlur={formik.handleBlur}
-                  helperText={
-                    formik.touched.debit &&
-                    (!formik.values.debit as React.ReactNode)
-                  }
+                  helperText={formik.touched.debit && formik.errors.debit ? formik.errors.debit : ''}
                 />
 
                 <TextField
@@ -427,12 +409,9 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
                   onChange={formik.handleChange}
                   required
                   value={formik.values.credit}
-                  error={formik.touched.credit && !formik.values.credit}
+                  error={formik.touched.credit && Boolean(formik.errors.credit)}
                   onBlur={formik.handleBlur}
-                  helperText={
-                    formik.touched.credit &&
-                    (!formik.values.credit as React.ReactNode)
-                  }
+                  helperText={formik.touched.credit && formik.errors.credit ? formik.errors.credit : ''}
                 />
 
                 <TextField
