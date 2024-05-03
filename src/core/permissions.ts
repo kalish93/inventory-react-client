@@ -101,5 +101,6 @@ export const PERMISSIONS = {
     GenerateTransactionWithSplitSummary:"GenerateTransactionWithSplitSummary",
     GenerateTrialBalanceReport:"GenerateTrialBalanceReport",
     GenerateInventoryValuationReport:"GenerateInventoryValuationReport",
+    GenerateProfitAndLossReport:"GenerateProfitAndLossReport",
 };
   
