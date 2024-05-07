@@ -53,6 +53,53 @@ export const DeclarationService = {
       }
     },
 
+    registerCustomTaxPayment: async (DeclarationData: any) => {
+      try{
+        const response = await handleRequest(`${DECLARATIONS_URL}/custom-tax-payment`, {
+          method: "POST",
+          body: JSON.stringify(DeclarationData),
+        });
+  
+      if (!response.ok) {
+        let errorMessage = `Bad Request: ${response.statusText}`;
+
+          const data = await response.json();
+          errorMessage = data.error || errorMessage;
+
+        return { success: false, error: errorMessage };
+      }
+
+      const data = await response.json();
+      return { success: true, data };
+    } catch (error) {
+      console.error("Error in registerdriver service:", error);
+      return { success: false, error: "Unexpected error occurred" };
+    }
+  },
+
+    deleteCustomTaxPayment: async (id: any) => {
+      try{
+        const response = await handleRequest(`${DECLARATIONS_URL}/custom-tax-payment/${id}`, {
+          method: "DELETE",
+        });
+  
+      if (!response.ok) {
+        let errorMessage = `Bad Request: ${response.statusText}`;
+
+          const data = await response.json();
+          errorMessage = data.error || errorMessage;
+
+        return { success: false, error: errorMessage };
+      }
+
+      const data = await response.json();
+      return { success: true, data };
+    } catch (error) {
+      console.error("Error in registerdriver service:", error);
+      return { success: false, error: "Unexpected error occurred" };
+    }
+  },
+
   getDeclarationById: async (declarationId: string) => {
     try {
       const url = `${DECLARATIONS_URL}/${declarationId}`;
