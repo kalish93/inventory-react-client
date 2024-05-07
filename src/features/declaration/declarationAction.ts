@@ -29,6 +29,36 @@ export const createDeclaration = (data: CreateDeclaration) => async (dispatch: A
     }
   };
 
+export const createCustomTaxPayment = (data: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(registerDeclarationStart());
+  
+      const response = await DeclarationService.registerCustomTaxPayment(data);
+      if (response.success) {
+        dispatch(registerDeclarationSuccess(response.data));
+      } else {
+        dispatch(registerDeclarationFailure(response.error || 'Unknown error'));
+      }
+    } catch (error) {
+      dispatch(registerDeclarationFailure('Unknown error'));
+    }
+  };
+
+export const deleteCustomTaxPayment = (data: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(registerDeclarationStart());
+  
+      const response = await DeclarationService.deleteCustomTaxPayment(data);
+      if (response.success) {
+        dispatch(deleteDeclarationSuccess(response.data));
+      } else {
+        dispatch(registerDeclarationFailure(response.error || 'Unknown error'));
+      }
+    } catch (error) {
+      dispatch(registerDeclarationFailure('Unknown error'));
+    }
+  };
+
 export const getDeclaration = (id:any) => async (dispatch: AppDispatch) => {
     try {
       dispatch(getDeclarationByIdStart());

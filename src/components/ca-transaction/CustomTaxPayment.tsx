@@ -28,6 +28,7 @@ import {
 } from "../../features/purchase/purchaseActions";
 import { getSuppliers } from "../../features/supplier/supplierActions";
 import {
+  createCustomTaxPayment,
   createDeclaration,
   getDeclarations,
 } from "../../features/declaration/declarationAction";
@@ -125,48 +126,23 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      const formDataToSend1 = {
+      const formDataToSend = {
         bankId: values.chartofAccountId1,
         date: values.date,
         remark: values.transactionRemark,
         credit: values.amount,
-        debit: null,
-        supplierId: customIncomeTaxSupplier.id,
-        type: "Supplier Payment",
-      };
-
-      const formDataToSend2 = {
-        chartofAccountId: accountsPayable.id,
-        date: values.date,
-        remark: values.transactionRemark,
-        credit: null,
         debit: values.amount,
         supplierId: customIncomeTaxSupplier.id,
         type: "Supplier Payment",
-      };
-
-      const formDataToSend3 = {
+        chartofAccountId: accountsPayable.id,
         number: selectedDeclaration.number,
         paidAmount: values.amount,
-        date: values.date,
-        declarationProducts: [],
-      };
-      const formDataToSend4 = {
-        bankId: values.chartofAccountId1,
         payee: customIncomeTaxSupplier.id,
         payment: values.amount,
         deposit: null,
-        type: "Supplier Payment",
-        chartofAccountId: accountsPayable.id,
-        date: values.date
       };
 
-      Promise.all([
-        dispatch(createCATransaction(formDataToSend1)),
-        dispatch(createCATransaction(formDataToSend2)),
-        dispatch(createDeclaration(formDataToSend3)),
-        dispatch(createBankTransaction(formDataToSend4)),
-      ]);
+      dispatch(createCustomTaxPayment(formDataToSend))
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
@@ -406,7 +382,7 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
               variant="contained"
               color="primary"
               type="submit"
-              disabled={!formik.isValid || formik.isSubmitting}
+              disabled={!formik.isValid || formik.isSubmitting || amountBefore - Number(formik.values.amount) < 0}
             >
               Submit
             </Button>
