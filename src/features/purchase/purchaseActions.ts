@@ -1,5 +1,7 @@
 import { AppDispatch } from "../../app/store";
 import { CreatePurchase } from "../../models/purchase";
+import { createCATransaction } from "../ca-transaction/transactionActions";
+import { createTransactionSuccess } from "../ca-transaction/transactionSlice";
 import { PurchaseService } from "./purchaseService";
 import {
   getPurchaseByIdFailure,
@@ -104,7 +106,22 @@ export const createTransportCost =
       dispatch(registerPurchaseStart());
       const response = await PurchaseService.createTransportCost(data);
       if (response.success) {
-        dispatch(registerTransportCostSuccess(response.data));
+        dispatch(createTransactionSuccess(response.data));
+      } else {
+        dispatch(registerPurchaseFailure(response.error || "Unknown error"));
+      }
+    } catch (error) {
+      dispatch(registerPurchaseFailure("Unknown error"));
+    }
+  };
+
+  export const deleteTransportCost =
+  (id: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(registerPurchaseStart());
+      const response = await PurchaseService.deleteTransportCost(id);
+      if (response.success) {
+        dispatch(createTransactionSuccess(response.data));
       } else {
         dispatch(registerPurchaseFailure(response.error || "Unknown error"));
       }
@@ -144,7 +161,7 @@ export const createESLPayment =
       dispatch(registerPurchaseStart());
       const response = await PurchaseService.createESLPayment(eslPaymentData);
       if (response.success) {
-        dispatch(createEslCustomCostSuccess(response.data));
+        dispatch(createTransactionSuccess(response.data));
       } else {
         dispatch(registerPurchaseFailure(response.error || "Unknown error"));
       }
@@ -170,7 +187,7 @@ export const createTransitFee =
       dispatch(registerPurchaseStart());
       const response = await PurchaseService.createTransitFee(data);
       if (response.success) {
-        dispatch(createTransitFeeSuccess(response.data));
+        dispatch(createTransactionSuccess(response.data));
       } else {
         dispatch(registerPurchaseFailure(response.error || "Unknown error"));
       }
@@ -186,6 +203,36 @@ export const createSupplierPayment =
       const response = await PurchaseService.createSupplierPayment(data);
       if (response.success) {
         dispatch(registerPurchaseSuccess(response.data));
+      } else {
+        dispatch(registerPurchaseFailure(response.error || "Unknown error"));
+      }
+    } catch (error) {
+      dispatch(registerPurchaseFailure("Unknown error"));
+    }
+  };
+
+  export const deleteTransitCost =
+  (id: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(registerPurchaseStart());
+      const response = await PurchaseService.deleteTransitPayment(id);
+      if (response.success) {
+        dispatch(createTransactionSuccess(response.data));
+      } else {
+        dispatch(registerPurchaseFailure(response.error || "Unknown error"));
+      }
+    } catch (error) {
+      dispatch(registerPurchaseFailure("Unknown error"));
+    }
+  };
+
+  export const deleteEslCost =
+  (id: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(registerPurchaseStart());
+      const response = await PurchaseService.deleteEslPayment(id);
+      if (response.success) {
+        dispatch(createTransactionSuccess(response.data));
       } else {
         dispatch(registerPurchaseFailure(response.error || "Unknown error"));
       }

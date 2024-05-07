@@ -148,7 +148,7 @@ const CATransactionsList = () => {
   };
 
   const handleConfirmAction = () => {
-    handleDeletePurchase();
+    handleDeleteJournalEntry();
     closeConfirmationModal();
   };
 
@@ -162,7 +162,7 @@ const CATransactionsList = () => {
     setSnackbarOpen(true);
   };
 
-  const handleDeletePurchase = () => {
+  const handleDeleteJournalEntry = () => {
     handleMenuClose();
     if (selectedCAId !== null) {
       dispatch(deleteJournalEntry(selectedCAId))
