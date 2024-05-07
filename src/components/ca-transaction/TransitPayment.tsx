@@ -26,10 +26,6 @@ import {
 
 import { getSuppliers } from "../../features/supplier/supplierActions";
 import {
-  createDeclaration,
-  getDeclarations,
-} from "../../features/declaration/declarationAction";
-import {
   getPurchases,
   getTransitFee,
 } from "../../features/purchase/purchaseActions";
@@ -109,6 +105,7 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
       }
       setIsFormSubmitted(false);
     }
+    dispatch(getTransitFee(1, 10));
   }, [error, isError, loading, isFormSubmitted]);
 
   const handleCloseSnackbar = () => {
@@ -131,48 +128,22 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      const formDataToSend1 = {
+      const formDataToSend = {
         bankId: values.chartofAccountId1,
         date: values.date,
         remark: values.transactionRemark,
         credit: values.amount,
-        debit: null,
-        supplierId: transitSupplier.id,
-        type: "Supplier Payment",
-      };
-
-      const formDataToSend2 = {
-        chartofAccountId: accountsPayable.id,
-        date: values.date,
-        remark: values.transactionRemark,
-        credit: null,
         debit: values.amount,
         supplierId: transitSupplier.id,
         type: "Supplier Payment",
-      };
-
-      const formDataToSend3 = {
-        amount: values.amount,
-        date: values.date,
+        chartofAccountId: accountsPayable.id,
         transits: paidforTransits,
-      };
-      const formDataToSend4 = {
-        bankId: values.chartofAccountId1,
         payee: transitSupplier.id,
         payment: values.amount,
         deposit: null,
-        type: "Supplier Payment",
-        chartofAccountId: accountsPayable.id,
-        date: values.date,
-      };
+      }
 
-
-      Promise.all([
-        dispatch(createCATransaction(formDataToSend1)),
-        dispatch(createCATransaction(formDataToSend2)),
-        dispatch(createTransitPayment(formDataToSend3)),
-        dispatch(createBankTransaction(formDataToSend4)),
-      ]);
+      dispatch(createTransitPayment(formDataToSend))
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();

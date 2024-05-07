@@ -109,5 +109,8 @@ export const PERMISSIONS = {
     DeleteUnitOfMeasurement: "DeleteUnitOfMeasurement" ,
     CreateJournalEntry: "CreateJournalEntry" ,
     DeleteJournalEntry: "DeleteJournalEntry" ,
+    DeleteTransportPayment: "DeleteTransportPayment",
+    DeleteTransitPayment: "DeleteTransitPayment",
+    DeleteEslPayment: "DeleteEslPayment",
 };
   

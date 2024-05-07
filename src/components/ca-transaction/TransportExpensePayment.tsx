@@ -12,12 +12,10 @@ import {
 } from "@mui/material";
 import { AppDispatch } from "../../app/store";
 import { selectTransactions } from "../../features/ca-transaction/transactionSlice";
-import { createCATransaction } from "../../features/ca-transaction/transactionActions";
 import { getCashOfAccounts } from "../../features/cash-of-account/cashOfAccountActions";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import {
-  createBankTransaction,
   getBanks,
 } from "../../features/bank/bankActions";
 import {
@@ -132,6 +130,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
       }
       setIsFormSubmitted(false);
     }
+    dispatch(getTransportCost());
   }, [error, isError, loading, isFormSubmitted]);
 
   const handleCloseSnackbar = () => {
@@ -157,55 +156,33 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      const formDataToSend1 = {
+   
+      const formDataToSend = {
         bankId: values.chartofAccountId1,
         date: values.date,
         remark: values.transactionRemark,
         credit: values.amount,
-        debit: null,
-        supplierId: TransporterSupplier?.id,
-        purchaseId: values.chartofAccountId2,
-        type: "Supplier Payment",
-        transactionRemark: values.transactionRemark,
-      };
-
-      const formDataToSend2 = {
-        chartofAccountId: accountsPayable?.id,
-        date: values.date,
-        remark: values.transactionRemark,
-        credit: null,
         debit: values.amount,
         supplierId: TransporterSupplier?.id,
         purchaseId: values.chartofAccountId2,
         type: "Supplier Payment",
         transactionRemark: values.transactionRemark,
-      };
-
-      const formDataToSend3 = {
-        date: values.date,
+        chartofAccountId: accountsPayable?.id,
         transports: paidforTransports,
-      };
-
-      const formDataToSend4 = {
-        bankId: values.chartofAccountId1,
         payee: TransporterSupplier?.id,
         payment: values.amount,
-        deposit: null,
-        type: "Supplier Payment",
-        chartofAccountId: accountsPayable?.id,
-        date: values.date,
-      };
+        deposit: null
+      }
 
       Promise.all([
-        dispatch(createCATransaction(formDataToSend1)),
-        dispatch(createCATransaction(formDataToSend2)),
-        dispatch(createTransportCost(formDataToSend3)),
-        dispatch(createBankTransaction(formDataToSend4)),
+        
+        dispatch(createTransportCost(formDataToSend)),
+        dispatch(getTransportCost(1, 10))
+
       ]);
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
-      dispatch(getTransportCost(1, 10));
     },
   });
 
@@ -270,6 +247,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
     handleClose();
     formik.resetForm();
   };
+  
 
   return (
     <div>
@@ -288,7 +266,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 900,
+            width: 1000,
             maxHeight: "80vh",
             overflowY: "auto",
             bgcolor: "background.paper",
@@ -303,7 +281,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
             <div
               style={{
                 display: "flex",
-                justifyContent: "space-between",
+                justifyContent: "space-arround",
                 margin: "20px",
               }}
             >
@@ -312,7 +290,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
                   display: "flex",
                   flexDirection: "column",
                   gap: "1.5rem",
-                  minWidth: "33%",
+                  minWidth: "48%",
                 }}
               >
                 <Autocomplete
@@ -352,7 +330,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
                   )}
                 />
 
-                <Autocomplete
+                {/* <Autocomplete
                   options={realPurchases}
                   getOptionLabel={(option) => option.number.toString()}
                   value={
@@ -387,7 +365,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
                       }
                     />
                   )}
-                />
+                /> */}
                 <Autocomplete
                   options={transportTypes}
                   getOptionLabel={(option) => option.name}
@@ -425,7 +403,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
                 />
               </div>
 
-              <div style={{ maxWidth: "33%" }}>
+              <div style={{ maxWidth: "48%" }}>
                 <TextField
                 style={{ marginTop: "0rem"}}
                   name="date"
@@ -472,7 +450,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
                 />
               </div>
 
-              <div style={{ maxWidth: "33%" }}>
+              {/* <div style={{ maxWidth: "33%" }}>
                 <Typography variant="subtitle1" component="div">
                   Truck Number: {selectedPurchase?.truckNumber}
                 </Typography>
@@ -482,7 +460,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
                 <Typography variant="subtitle1" component="div">
                   Balance After: {amountBefore - Number(formik.values.amount)}
                 </Typography>
-              </div>
+              </div> */}
             </div>
 
             <Button

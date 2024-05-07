@@ -102,6 +102,7 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
       }
       setIsFormSubmitted(false);
     }
+    dispatch(getEslCosts(1, 10));
   }, [error, isError, loading, isFormSubmitted]);
 
   const handleCloseSnackbar = () => {
@@ -124,7 +125,8 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      const formDataToSend1 = {
+
+      const formDataToSend = {
         bankId: values.chartofAccountId1,
         date: values.date,
         remark: values.transactionRemark,
@@ -132,38 +134,14 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
         debit: null,
         supplierId: eslSupplier.id,
         type: "Supplier Payment",
-      };
-
-      const formDataToSend2 = {
         chartofAccountId: accountsPayable.id,
-        date: values.date,
-        remark: values.transactionRemark,
-        credit: null,
-        debit: values.amount,
-        supplierId: eslSupplier.id,
-        type: "Supplier Payment",
-      };
-
-      const formDataToSend3 = {
-        date: values.date,
         esls: paidforEsls,
-      };
-      const formDataToSend4 = {
-        bankId: values.chartofAccountId1,
         payee: eslSupplier.id,
         payment: values.amount,
         deposit: null,
-        type: "Supplier Payment",
-        chartofAccountId: accountsPayable.id,
-        date: values.date,
       };
 
-      Promise.all([
-        dispatch(createCATransaction(formDataToSend1)),
-        dispatch(createCATransaction(formDataToSend2)),
-        dispatch(createESLPayment(formDataToSend3)),
-        dispatch(createBankTransaction(formDataToSend4)),
-      ]);
+      dispatch(createESLPayment(formDataToSend))
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
