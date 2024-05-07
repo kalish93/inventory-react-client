@@ -330,7 +330,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
                   )}
                 />
 
-                {/* <Autocomplete
+                <Autocomplete
                   options={realPurchases}
                   getOptionLabel={(option) => option.number.toString()}
                   value={
@@ -365,7 +365,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
                       }
                     />
                   )}
-                /> */}
+                />
                 <Autocomplete
                   options={transportTypes}
                   getOptionLabel={(option) => option.name}
@@ -450,7 +450,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
                 />
               </div>
 
-              {/* <div style={{ maxWidth: "33%" }}>
+              <div style={{ maxWidth: "33%" }}>
                 <Typography variant="subtitle1" component="div">
                   Truck Number: {selectedPurchase?.truckNumber}
                 </Typography>
@@ -460,7 +460,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
                 <Typography variant="subtitle1" component="div">
                   Balance After: {amountBefore - Number(formik.values.amount)}
                 </Typography>
-              </div> */}
+              </div>
             </div>
 
             <Button
