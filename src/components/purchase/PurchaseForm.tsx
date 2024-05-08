@@ -19,8 +19,6 @@ import {
 } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { AppDispatch } from "../../app/store";
-
-import dayjs from "dayjs";
 import { CreateProductPurchase } from "../../models/purchase";
 import { getProducts } from "../../features/product/productActions";
 import { createPurchase } from "../../features/purchase/purchaseActions";
@@ -68,8 +66,12 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
     setSnackbarOpen(false);
   };
 
+  const generatewaybill = ()=> {
+    return Math.floor(100000 + Math.random() * 900000);
+  }
+
   const [formData, setFormData] = useState<any>({
-    number: null,
+    number: generatewaybill(),
     date: null,
     truckNumber: "",
     exchangeRate: null,
@@ -213,7 +215,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
 
     dispatch(createPurchase(formDataToSend));
     setFormData({
-      number: null,
+      number: generatewaybill(),
       date: null,
       truckNumber: "",
       exchangeRate: null,
@@ -349,6 +351,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
                 fullWidth
                 margin="normal"
                 onChange={handleChange}
+                value = {formData.number}
                 required
                 error={touched.number && !formData.number}
                 onBlur={() => setTouched({ ...touched, number: true })}

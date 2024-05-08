@@ -16,7 +16,6 @@ import {
 import { AppDispatch } from "../../app/store";
 import { getProducts } from "../../features/product/productActions";
 import { createSale } from "../../features/sales/salesActions";
-import dayjs from "dayjs";
 import { getCustomers } from "../../features/customer/customerActions";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { selectSale } from "../../features/sales/salseSlice";
@@ -57,8 +56,12 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
     setSnackbarOpen(false);
   };
 
+  const generateInvoiceNumber = ()=> {
+    return Math.floor(100000 + Math.random() * 900000);  
+  }
+
   const [formData, setFormData] = useState({
-    invoiceNumber: 0,
+    invoiceNumber: generateInvoiceNumber(),
     invoiceDate: null,
     customerId: "",
     productId: "",
@@ -223,6 +226,7 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
                 fullWidth
                 margin="normal"
                 onChange={handleChange}
+                value = {formData.invoiceNumber}
                 required
                 error={touched.invoiceNumber && !formData.invoiceNumber}
                 onBlur={() => handleBlur("invoiceNumber")}
