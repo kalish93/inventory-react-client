@@ -24,6 +24,25 @@ export const CATransactionService = {
     }
   },
 
+  getTransactionsByMonth: async (month: number, year: number) => {
+    try {
+      const response = await handleRequest(
+        `${CATRANSACTIONS_URL}?month=${month}&year=${year}`,
+        {
+          method: "GET",
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Error retrieving CA Transactions");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error in getTransactionsByMonth service:", error);
+      throw error;
+    }
+  },
   registerCATransactions: async (CATransactionData: CreateCATransaction) => {
     try {
       const response = await handleRequest(CATRANSACTIONS_URL, {

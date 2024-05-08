@@ -31,6 +31,7 @@ import { styled, alpha } from "@mui/material/styles";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ConfirmationModal from "../common/confirmationModal";
+import MonthlyReallocation from "./MonthlyReallocationForm";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -83,23 +84,17 @@ const CATransactionsList = () => {
     currentPage,
     totalCount,
   } = CATransactionState.transactions;
-  const {error} = useSelector(selectTransactions);
+  const { error } = useSelector(selectTransactions);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selectedCAId, setSelectedCAId] = useState(null);
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
-  const [deleteSubmitted, setDeleteSubmitted] = useState(false); 
+  const [deleteSubmitted, setDeleteSubmitted] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [openModal, setOpenModal] = useState({
     1: false,
-    2: false,
-    3: false,
-    4: false,
-    5: false,
-    6: false,
-    7: false,
     8: false,
   });
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -206,13 +201,23 @@ const CATransactionsList = () => {
   return (
     <div>
       {hasPermission(PERMISSIONS.CreateCaTransaction) && (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => handleOpenModal(8)}
-        >
-          Add Journal Enty
-        </Button>
+        <div>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleOpenModal(8)}
+          >
+            Add Journal Enty
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleOpenModal(1)}
+            sx={{marginLeft: "2rem"}}
+          >
+            Add Monthly Reallocation
+          </Button>
+        </div>
       )}
 
       {hasPermission(PERMISSIONS.GetCaTransactions) && (
@@ -311,17 +316,18 @@ const CATransactionsList = () => {
                           },
                         }}
                       >
-                        {hasPermission(PERMISSIONS.DeletePurchase)  && (
-                          <MenuItem
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              event.preventDefault();
-                              openConfirmationModal();
-                            }}
-                          >
-                            Delete
-                          </MenuItem>
-                        )}
+                        {hasPermission(PERMISSIONS.DeletePurchase) &&
+                          ca.type === "Journal Entry" && (
+                            <MenuItem
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                event.preventDefault();
+                                openConfirmationModal();
+                              }}
+                            >
+                              Delete
+                            </MenuItem>
+                          )}
                       </Menu>
                     </TableCell>}
                   </TableRow>
@@ -334,28 +340,32 @@ const CATransactionsList = () => {
         open={openModal[8]}
         handleClose={() => handleCloseModal(8)}
       />
+      <MonthlyReallocation
+        open={openModal[1]}
+        handleClose={() => handleCloseModal(1)}
+      />
 
       <ConfirmationModal
-          open={confirmationModalOpen}
-          onClose={closeConfirmationModal}
-          onConfirm={handleConfirmAction}
-          title="Delete Journal Entry"
-          content="Are you sure you want to delete this Transaction?"
-        />
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
+        open={confirmationModalOpen}
+        onClose={closeConfirmationModal}
+        onConfirm={handleConfirmAction}
+        title="Delete Journal Entry"
+        content="Are you sure you want to delete this Journal Entry?"
+      />
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
           onClose={handleCloseSnackbar}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          severity={snackbarSeverity as "success" | "error"}
+          sx={{ width: "100%" }}
         >
-          <Alert
-            onClose={handleCloseSnackbar}
-            severity={snackbarSeverity as "success" | "error"}
-            sx={{ width: "100%" }}
-          >
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

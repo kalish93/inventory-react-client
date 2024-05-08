@@ -11,6 +11,7 @@ import {
   getTransitPaymentsSuccess,
   createJournalEntrySuccessSuccess,
   deleteJournalEntrySuccess,
+  getMonthlyTransactionsSuccess,
 } from "./transactionSlice";
 
 export const getCATransactions =
@@ -22,6 +23,20 @@ export const getCATransactions =
         pageSize
       );
       dispatch(getTransactionsSuccess(response));
+    } catch (error) {
+      dispatch(getTransactionsFailure(error));
+    }
+  };
+
+export const getTransactionsByMonth =
+  (month: number, year: number) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(getTransactionsStart());
+      const response = await CATransactionService.getTransactionsByMonth(
+        month,
+        year
+      );
+      dispatch(getMonthlyTransactionsSuccess(response));
     } catch (error) {
       dispatch(getTransactionsFailure(error));
     }
