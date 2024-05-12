@@ -86,3 +86,33 @@ export const createTransitPayment =
       dispatch(createTransactionFailure("Unknown error"));
     }
   };
+
+  export const createExpensesPayment =
+  (data: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(createTransactionStart());
+      const response = await CATransactionService.createExpensesPayment(data);
+      if (response.success) {
+        dispatch(createTransactionSuccess(response.data));
+      } else {
+        dispatch(createTransactionFailure(response.error || "Unknown error"));
+      }
+    } catch (error) {
+      dispatch(createTransactionFailure("Unknown error"));
+    }
+  };
+
+  export const deleteExpensesPayment =
+  (id: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(createTransactionStart());
+      const response = await CATransactionService.deleteExpensesPayment(id);
+      if (response.success) {
+        dispatch(deleteJournalEntrySuccess(response.data));
+      } else {
+        dispatch(createTransactionFailure(response.error || "Unknown error"));
+      }
+    } catch (error) {
+      dispatch(createTransactionFailure("Unknown error"));
+    }
+  };

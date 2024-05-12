@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { AppDispatch } from "../../app/store";
 import { selectTransactions } from "../../features/ca-transaction/transactionSlice";
-import { createCATransaction } from "../../features/ca-transaction/transactionActions";
+import { createCATransaction, createExpensesPayment } from "../../features/ca-transaction/transactionActions";
 import {
   getCashOfAccounts,
   getCashOfAccountExpenses,
@@ -94,41 +94,22 @@ const ExpensesPaymentForm = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      const formDataToSend1 = {
+      const formDataToSend = {
         bankId: values.chartofAccountId1,
-        date: values.date,
-        remark: values.transactionRemark,
-        credit: null,
-        debit: values.amount,
-        type: "Expense",
-      };
-
-      const formDataToSend2 = {
-        chartofAccountId: values.chartofAccountId2,
         date: values.date,
         remark: values.transactionRemark,
         credit: values.amount,
-        debit: null,
+        debit: values.amount,
         type: "Expense",
-      };
-
-      const formDataToSend4 = {
-        bankId: values.chartofAccountId1,
+        chartofAccountId: values.chartofAccountId2,
         payee: null,
         foreignCurrency: null,
         payment: values.amount,
         deposit: null,
-        type: "Expense",
         exchangeRate: null,
-        chartofAccountId: values.chartofAccountId2,
-        date: values.date,
       };
 
-      Promise.all([
-        dispatch(createCATransaction(formDataToSend1)),
-        dispatch(createCATransaction(formDataToSend2)),
-        dispatch(createBankTransaction(formDataToSend4)),
-      ]);
+      dispatch(createExpensesPayment(formDataToSend));
       setIsFormSubmitted(true);
       formik.resetForm();
       navigate("/ca-transactions");
