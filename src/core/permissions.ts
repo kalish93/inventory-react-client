@@ -112,5 +112,7 @@ export const PERMISSIONS = {
     DeleteTransportPayment: "DeleteTransportPayment",
     DeleteTransitPayment: "DeleteTransitPayment",
     DeleteEslPayment: "DeleteEslPayment",
+    CreateExpensesPayment: "CreateExpensesPayment",
+    DeleteExpensesPayment: "DeleteExpensesPayment",
 };
   

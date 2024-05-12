@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../app/store";
 import { selectTransactions } from "../../features/ca-transaction/transactionSlice";
 import {
+  deleteExpensesPayment,
   deleteJournalEntry,
   getCATransactions,
 } from "../../features/ca-transaction/transactionActions";
@@ -84,7 +85,7 @@ const CATransactionsList = () => {
   } = CATransactionState.transactions;
   const {error} = useSelector(selectTransactions);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(100);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selectedCAId, setSelectedCAId] = useState(null);
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
   const [deleteSubmitted, setDeleteSubmitted] = useState(false); 
@@ -165,23 +166,38 @@ const CATransactionsList = () => {
   const handleDeleteJournalEntry = () => {
     handleMenuClose();
     if (selectedCAId !== null) {
-      dispatch(deleteJournalEntry(selectedCAId))
-        .then(() => {
-          setDeleteSubmitted(true);
-        })
-        .catch(() => {
-          setDeleteSubmitted(true);
-        });
+      const selectedTransaction = CATransactions.find(
+        (transaction) => transaction.id === selectedCAId
+      );
+      if (selectedTransaction) {
+        if ('type' in selectedTransaction && selectedTransaction.type === 'Expense') {
+          dispatch(deleteExpensesPayment(selectedCAId))
+            .then(() => {
+              setDeleteSubmitted(true);
+            })
+            .catch(() => {
+              setDeleteSubmitted(true);
+            });
+        } else {
+          dispatch(deleteJournalEntry(selectedCAId))
+            .then(() => {
+              setDeleteSubmitted(true);
+            })
+            .catch(() => {
+              setDeleteSubmitted(true);
+            });
+        }
+      }
     }
     dispatch(getCATransactions(1, 10));
-  };
+  };  
 
   useEffect(() => {
     if (deleteSubmitted) {
       if (error) {
         showSnackbar(error, "error");
       } else {
-        showSnackbar("Journal Entry deleted successfully", "success");
+        showSnackbar("Transaction deleted successfully", "success");
       }
       setDeleteSubmitted(false);
     }
@@ -201,7 +217,7 @@ const CATransactionsList = () => {
 
       {hasPermission(PERMISSIONS.GetCaTransactions) && (
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[5, 10, 25, 50, 100, 250, 500]}
           component="div"
           count={totalCount || 0}
           rowsPerPage={rowsPerPage}
@@ -268,7 +284,7 @@ const CATransactionsList = () => {
                     <TableCell>{ca.USDAmount}</TableCell>
                     <TableCell>{ca.accountPayableRecievableDetail}</TableCell>
 
-                    <TableCell>
+                    {(ca.type === 'Expense' || ca.type === 'Journal Entry') && <TableCell>
                       <IconButton
                         aria-label="Actions"
                         onClick={(event) => {
@@ -295,7 +311,7 @@ const CATransactionsList = () => {
                           },
                         }}
                       >
-                        {hasPermission(PERMISSIONS.DeletePurchase) && ca.type === "Journal Entry" && (
+                        {hasPermission(PERMISSIONS.DeletePurchase)  && (
                           <MenuItem
                             onClick={(event) => {
                               event.stopPropagation();
@@ -307,7 +323,7 @@ const CATransactionsList = () => {
                           </MenuItem>
                         )}
                       </Menu>
-                    </TableCell>
+                    </TableCell>}
                   </TableRow>
                 ))}
             </TableBody>
@@ -324,7 +340,7 @@ const CATransactionsList = () => {
           onClose={closeConfirmationModal}
           onConfirm={handleConfirmAction}
           title="Delete Journal Entry"
-          content="Are you sure you want to delete this Journal Entry?"
+          content="Are you sure you want to delete this Transaction?"
         />
         <Snackbar
           open={snackbarOpen}
