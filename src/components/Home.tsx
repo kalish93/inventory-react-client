@@ -29,6 +29,7 @@ import ProvisionList from "./provision/ProvisionList";
 import ExpensesPaymentForm from "./ca-transaction/ExpensesPaymentForm";
 import CustomerPaymentList from "./customer/CustomerPaymentList";
 import SupplierPaymentList from "./supplier/SupplierPaymentList";
+import DriverPaymentList from "./drivers/DriverPaymentList";
 
 const drawerWidth = 240;
 
@@ -320,6 +321,15 @@ const Home = () => {
               <ProtectedRoute
                 element={<SupplierPaymentList />}
                 permission={PERMISSIONS.GetSupplierById}
+              />
+            }
+          />
+          <Route
+            path="/drivers/:id"
+            element={
+              <ProtectedRoute
+                element={<DriverPaymentList />}
+                permission={PERMISSIONS.GetDriverById}
               />
             }
           />

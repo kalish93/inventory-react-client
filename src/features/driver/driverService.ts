@@ -94,4 +94,68 @@ export const DriverService = {
           return { success: false, error: "Unexpected error occurred" };
         }
     },
+
+    getDriverPayments: async (driverId: any,page?: number, pageSize?: number) => {
+      try {
+        let url = DRIVER_URL;
+    
+        if (page && pageSize) {
+          url += `/payment/${driverId}?page=${page}&pageSize=${pageSize}`;
+        }
+        
+        const response = await handleRequest(url, {
+          method: "GET",
+        });
+    
+        if (!response.ok) {
+          throw new Error("Failed to get drivers");
+        }
+    
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        throw error;
+      }
+    },
+
+    getDriverTransports: async (driverId: any,page?: number, pageSize?: number) => {
+      try {
+        let url = DRIVER_URL;
+    
+        if (page && pageSize) {
+          url += `/transport/${driverId}?page=${page}&pageSize=${pageSize}`;
+        }
+        
+        const response = await handleRequest(url, {
+          method: "GET",
+        });
+    
+        if (!response.ok) {
+          throw new Error("Failed to get drivers");
+        }
+    
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        throw error;
+      }
+    },
+    
+    getDriverById: async (driverId: any) => {
+      try {
+        const response = await handleRequest(`${DRIVER_URL}/${driverId}`, {
+          method: "GET",
+        });
+    
+        if (!response.ok) {
+          throw new Error("Failed to get drivers");
+        }
+    
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        throw error;
+      }
+    },
+    
 };

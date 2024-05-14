@@ -11,6 +11,9 @@ import {
   deleteDriverFailure,
   deleteDriverStart,
   deleteDriverSuccess,
+  getDriverPaymentsSuccess,
+  getDriverTransportsSuccess,
+  getDriverSuccess,
 } from "./driverSlice";
 import { DriverService } from "./driverService";
 import { AppDispatch } from "../../app/store";
@@ -68,5 +71,38 @@ export const deleteDriver =
       }
     } catch (error) {
       dispatch(deleteDriverFailure('Unknown error'));
+    }
+  };
+
+  export const getDriverPayments =
+  (id: any, page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(getDriversStart());
+      const response = await DriverService.getDriverPayments(id, page, pageSize);
+      dispatch(getDriverPaymentsSuccess(response));
+    } catch (error) {
+      dispatch(getDriversFailure(error));
+    }
+  };
+
+  export const getDriverTransports =
+  (id: any, page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(getDriversStart());
+      const response = await DriverService.getDriverTransports(id, page, pageSize);
+      dispatch(getDriverTransportsSuccess(response));
+    } catch (error) {
+      dispatch(getDriversFailure(error));
+    }
+  };
+
+  export const getDriver =
+  (id: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(getDriversStart());
+      const response = await DriverService.getDriverById(id);
+      dispatch(getDriverSuccess(response));
+    } catch (error) {
+      dispatch(getDriversFailure(error));
     }
   };

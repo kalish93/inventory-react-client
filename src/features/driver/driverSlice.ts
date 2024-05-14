@@ -4,10 +4,13 @@ import { PaginatedList } from "../../models/commons/paginatedList";
 
 interface DriverState {
   drivers: PaginatedList<Driver>;
+  driverPayments: PaginatedList<any>;
+  driverTransports: PaginatedList<any>;
   loading: boolean;
   error: any | null;
   isError: boolean;
   successMessage: any;
+  driver: any;
 }
 
 const initialState: DriverState = {
@@ -18,10 +21,25 @@ const initialState: DriverState = {
     currentPage: 1,
     totalPages: 1,
   },
+  driverPayments: {
+    items: [],
+    totalCount: 0,
+    pageSize: 0,
+    currentPage: 1,
+    totalPages: 1,
+  },
+  driverTransports: {
+    items: [],
+    totalCount: 0,
+    pageSize: 0,
+    currentPage: 1,
+    totalPages: 1,
+  },
   loading: false,
   error: null,
   isError:false,
   successMessage: null,
+  driver: null
 };
 
 const driverSlice = createSlice({
@@ -118,6 +136,21 @@ const driverSlice = createSlice({
       state.isError = true;
       state.error = action.payload;
     },
+
+    getDriverPaymentsSuccess: (state, action: PayloadAction<any>) => {
+      state.driverPayments = action.payload;
+      state.loading = false;
+    },
+
+    getDriverTransportsSuccess: (state, action: PayloadAction<any>) => {
+      state.driverTransports = action.payload;
+      state.loading = false;
+    },
+
+    getDriverSuccess: (state, action: PayloadAction<any>) => {
+      state.driver = action.payload;
+      state.loading = false;
+    },
   },
 });
 
@@ -134,6 +167,9 @@ export const {
   updateDriverStart,
   updateDriverSuccess,
   updateDriverFailure,
+  getDriverPaymentsSuccess,
+  getDriverTransportsSuccess,
+  getDriverSuccess
 } = driverSlice.actions;
 
 export const selectDrivers = (state: {driver: DriverState}) => state.driver;
