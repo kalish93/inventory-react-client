@@ -94,5 +94,74 @@ export const SupplierService = {
       return { success: false, error: "Unexpected error occurred" };
     }
   },
+
+
+  getSupplierPayments: async (supplierId: any, page?: any, pageSize?: any) => {
+    try {
+      let url = SUPPLIERS_URL;
+
+      if (page && pageSize) {
+        url += `/payment/${supplierId}?page=${page}&pageSize=${pageSize}`;
+      }
+      const response = await handleRequest(url, {
+        method: "GET",
+      });
+  
+        if (!response.ok) {
+          throw new Error('Error retrieving users');
+        }
+  
+        const data = await response.json();
+        return data;
+      
+      } catch (error) {
+        console.error('Error in getCustomers service:', error);
+        throw error;
+      }
+    },
+
+  getSupplierPurchases: async (supplierId: any, page?: any, pageSize?: any) => {
+    try {
+      let url = SUPPLIERS_URL;
+
+      if (page && pageSize) {
+        url += `/purchase/${supplierId}?page=${page}&pageSize=${pageSize}`;
+      }
+      const response = await handleRequest(url, {
+        method: "GET",
+      });
+  
+        if (!response.ok) {
+          throw new Error('Error retrieving users');
+        }
+  
+        const data = await response.json();
+        return data;
+      
+      } catch (error) {
+        console.error('Error in getCustomers service:', error);
+        throw error;
+      }
+    },
+
+  getSupplierById: async (supplierId: any) => {
+    try {
+
+      const response = await handleRequest(`${SUPPLIERS_URL}/${supplierId}`, {
+        method: "GET",
+      });
+  
+        if (!response.ok) {
+          throw new Error('Error retrieving users');
+        }
+  
+        const data = await response.json();
+        return data;
+      
+      } catch (error) {
+        console.error('Error in getCustomers service:', error);
+        throw error;
+      }
+    },
 };
   

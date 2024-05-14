@@ -1,7 +1,7 @@
 import { AppDispatch } from "../../app/store";
 import { CreateSupplier } from "../../models/supplier";
 import { SupplierService } from "./supplierService";
-import { deleteSupplierFailure, deleteSupplierStart, deleteSupplierSuccess, getSuppliersFailure, getSuppliersStart, getSuppliersSuccess, registerSupplierFailure, registerSupplierStart, registerSupplierSuccess, updateSupplierFailure, updateSupplierStart, updateSupplierSuccess } from "./supplierSlice";
+import { deleteSupplierFailure, deleteSupplierStart, deleteSupplierSuccess, getSupplierPaymentsSuccess, getSupplierPurchasesSuccess, getSupplierSuccess, getSuppliersFailure, getSuppliersStart, getSuppliersSuccess, registerSupplierFailure, registerSupplierStart, registerSupplierSuccess, updateSupplierFailure, updateSupplierStart, updateSupplierSuccess } from "./supplierSlice";
 
 export const getSuppliers = (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
@@ -52,5 +52,35 @@ export const updateSupplier = (data: any) => async (dispatch: AppDispatch) => {
     }
   } catch (error) {
     dispatch(updateSupplierFailure('Unknown error'));
+  }
+};
+
+export const getSupplierPayments = (id: any, page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
+  try {
+    dispatch(getSuppliersStart());
+    const response = await SupplierService.getSupplierPayments(id, page, pageSize);
+    dispatch(getSupplierPaymentsSuccess(response));
+  } catch (error) {
+    dispatch(getSuppliersFailure(error));
+  }
+};
+
+export const getSupplierPurchases = (id: any, page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
+  try {
+    dispatch(getSuppliersStart());
+    const response = await SupplierService.getSupplierPurchases(id, page, pageSize);
+    dispatch(getSupplierPurchasesSuccess(response));
+  } catch (error) {
+    dispatch(getSuppliersFailure(error));
+  }
+};
+
+export const getSupplier = (id: any) => async (dispatch: AppDispatch) => {
+  try {
+    dispatch(getSuppliersStart());
+    const response = await SupplierService.getSupplierById(id);
+    dispatch(getSupplierSuccess(response));
+  } catch (error) {
+    dispatch(getSuppliersFailure(error));
   }
 };

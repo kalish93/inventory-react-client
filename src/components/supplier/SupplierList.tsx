@@ -25,6 +25,7 @@ import ConfirmationModal from '../common/confirmationModal';
 import { hasPermission } from '../../utils/checkPermission';
 import { PERMISSIONS } from '../../core/permissions';
 import SupplierPaymentForm from '../ca-transaction/SupplierPaymentForm';
+import { Link } from 'react-router-dom';
 
 const SupplierList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -155,14 +156,22 @@ const SupplierList = () => {
           </TableHead>
           <TableBody>
             {suppliers.map((supplier: any) => (
-              <TableRow key={supplier.id}>
+               <TableRow
+               key={supplier.id}
+               component={Link}
+               to={`/suppliers/${supplier.id}`}
+               style={{ textDecoration: "none" }}
+             >
                 <TableCell>{supplier.name }</TableCell>
                 <TableCell>{supplier.address}</TableCell>
                 <TableCell>{supplier.currency}</TableCell>
                 <TableCell>
                 <IconButton
                     aria-label="Actions"
-                    onClick={(event) => handleMenuOpen(event, supplier.id, supplier)}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      event.preventDefault(); // Prevent default behavior
+                      handleMenuOpen(event, supplier.id, supplier)}}
                     style={{ margin: 0, padding: 0 }}
                   >
                    <MoreVertIcon/>
@@ -182,8 +191,14 @@ const SupplierList = () => {
                       },
                     }}
                   >
-                    {hasPermission(PERMISSIONS.UpdateSupplier) && <MenuItem onClick={handleUpdateSupplier}>Update</MenuItem>}
-                    {hasPermission(PERMISSIONS.DeleteSupplier) && <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>}
+                    {hasPermission(PERMISSIONS.UpdateSupplier) && <MenuItem onClick={(event) => {
+                       event.stopPropagation();
+                       event.preventDefault(); // Prevent default behavior
+                       handleUpdateSupplier()}}>Update</MenuItem>}
+                    {hasPermission(PERMISSIONS.DeleteSupplier) && <MenuItem onClick={(event) => {
+                       event.stopPropagation();
+                       event.preventDefault(); // Prevent default behavior
+                      openConfirmationModal()}}>Delete</MenuItem>}
                   </Menu>
                   </TableCell>
               </TableRow>
