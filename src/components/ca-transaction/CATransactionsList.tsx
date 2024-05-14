@@ -32,6 +32,7 @@ import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ConfirmationModal from "../common/confirmationModal";
 import MonthlyReallocation from "./MonthlyReallocationForm";
+import MonthlyVentillation from "./MonthlyVentillationForm";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -96,6 +97,7 @@ const CATransactionsList = () => {
   const [openModal, setOpenModal] = useState({
     1: false,
     8: false,
+    9: false,
   });
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -213,9 +215,17 @@ const CATransactionsList = () => {
             variant="contained"
             color="primary"
             onClick={() => handleOpenModal(1)}
-            sx={{marginLeft: "2rem"}}
+            sx={{ marginLeft: "2rem" }}
           >
             Add Monthly Reallocation
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleOpenModal(9)}
+            sx={{ marginLeft: "2rem" }}
+          >
+            Add Monthly Ventillation
           </Button>
         </div>
       )}
@@ -343,6 +353,11 @@ const CATransactionsList = () => {
       <MonthlyReallocation
         open={openModal[1]}
         handleClose={() => handleCloseModal(1)}
+      />
+
+      <MonthlyVentillation
+        open={openModal[9]}
+        handleClose={() => handleCloseModal(9)}
       />
 
       <ConfirmationModal

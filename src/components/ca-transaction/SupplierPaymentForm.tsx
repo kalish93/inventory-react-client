@@ -87,9 +87,9 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
     (ca: any) => ca.name === "Accounts Payable (A/P) - ETB"
   );
 
-  const osmaSupplier = suppliers.find(
-    (supplier: any) => supplier.name === "OSMA GROUP FZE"
-  );
+  // const osmaSupplier = suppliers.find(
+  //   (supplier: any) => supplier.name === "OSMA GROUP FZE"
+  // );
 
   const unpaidPurchases = purchases.filter(
     (purchase: any) =>
@@ -316,11 +316,12 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                     />
                   )}
                 />
+
                 <Autocomplete
-                  options={foringnCurrencySupplier}
+                  options={suppliers}
                   getOptionLabel={(option) => option.name}
                   value={
-                    foringnCurrencySupplier.find(
+                    suppliers.find(
                       (d: { id: string }) =>
                         d.id === formik.values.chartofAccountId2
                     ) || null
@@ -356,7 +357,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
 
                 <TextField
                   name="date"
-                  sx={{ marginTop: 0}}
+                  sx={{ marginTop: 0 }}
                   label="Transaction Date"
                   variant="outlined"
                   fullWidth
@@ -393,7 +394,9 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                   }
                   required
                 />
-                <TextField
+                {
+                  
+                  <TextField
                   name="exchangeRate"
                   label="Exchange Rate"
                   variant="outlined"
@@ -412,7 +415,9 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                     (formik.errors.exchangeRate as React.ReactNode)
                   }
                   required
-                />
+                />}
+                
+
                 <TextField
                   name="transactionRemark"
                   label="Transaction Remark"

@@ -24,7 +24,6 @@ import { selectTransactions } from "../../features/ca-transaction/transactionSli
 import {
   createJournalEntry,
   getCATransactions,
-  getTransactionsByMonth,
 } from "../../features/ca-transaction/transactionActions";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -32,23 +31,22 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { selectProvision } from "../../features/provision/provisionSlice";
+import { getMonthlyProvisions } from "../../features/provision/provisionActions";
 
 interface ProductFormProps {
   open: boolean;
   handleClose: () => void;
 }
 
-const MonthlyReallocation: React.FC<ProductFormProps> = ({
+const MonthlyVentillation: React.FC<ProductFormProps> = ({
   open,
   handleClose,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const cashOfAccounts = useSelector(
-    (state: any) => state.cashOfAccount.cashOfAccounts.items
-  );
-  const CATransactionState = useSelector(selectTransactions);
-  const { items: monthlyTransactions = [] } =
-    CATransactionState.monthlyTransactions;
+  const provisionState = useSelector(selectProvision);
+  const { items: monthlyProvisions = [] } = provisionState.monthlyProvisions;
+
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -80,28 +78,28 @@ const MonthlyReallocation: React.FC<ProductFormProps> = ({
     // Fetch transactions for the selected month and year
     const month = dayjs(currentDate).month() + 1;
     const year = dayjs(currentDate).year();
-    dispatch(getTransactionsByMonth(month, year));
-  }, [currentDate, dispatch]);
+    dispatch(getMonthlyProvisions(month, year));
+  }, [dispatch, currentDate]);
 
   useEffect(() => {
-
     let incomeTaxExpenseTotal = 0;
     let eslCustomWarehouseFeeTotal = 0;
     let importTransportCostTotal = 0;
     let transitFeesTotal = 0;
 
-    monthlyTransactions.forEach((transaction) => {
-      if (transaction.type === "Journal Entry") {
-        return;
-      } else if (transaction.chartofAccountId === incomeTaxExpense?.id) {
-        incomeTaxExpenseTotal += transaction.debit ?? 0;
-      } else if (transaction.chartofAccountId === eSLCustomWarehouse?.id) {
-        eslCustomWarehouseFeeTotal += transaction.debit ?? 0;
-      } else if (transaction.chartofAccountId === importTransportCost?.id) {
-        importTransportCostTotal += transaction.debit ?? 0;
-      } else if (transaction.chartofAccountId === transitFees?.id) {
-        transitFeesTotal += transaction.debit ?? 0;
-      }
+    monthlyProvisions.forEach((provision: any) => {
+      incomeTaxExpenseTotal +=
+        provision.productDeclaration?.unitIncomeTax *
+        provision.saleDetail?.saleQuantity;
+      eslCustomWarehouseFeeTotal +=
+        provision.saleDetail?.esl?.unitEslCost *
+        provision.saleDetail?.saleQuantity;
+      importTransportCostTotal +=
+        provision.saleDetail?.productPurchase?.transport?.unitTransportCost *
+        provision.saleDetail?.saleQuantity;
+      transitFeesTotal +=
+        provision.saleDetail?.productPurchase?.transit?.unitTransitCost *
+        provision.saleDetail?.saleQuantity;
     });
 
     // Update state with accumulated values
@@ -109,24 +107,13 @@ const MonthlyReallocation: React.FC<ProductFormProps> = ({
     setESLCustomWarehouseFee(eslCustomWarehouseFeeTotal);
     setImportTransportCost(importTransportCostTotal);
     setTransitFees(transitFeesTotal);
-  }, [dispatch, monthlyTransactions]);
+
+    console.log("monthlyProvisions", monthlyProvisions);
+  }, [monthlyProvisions]); // Only run this effect when monthlyProvisions changes
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
-
-  const incomeTaxExpense = cashOfAccounts.find(
-    (ca: any) => ca.name === "Income tax expense"
-  );
-  const eSLCustomWarehouse = cashOfAccounts.find(
-    (ca: any) => ca.name === "ESL Custom Warehouse"
-  );
-  const importTransportCost = cashOfAccounts.find(
-    (ca: any) => ca.name === "Import Transport Cost"
-  );
-  const transitFees = cashOfAccounts.find(
-    (ca: any) => ca.name === "Transit fees"
-  );
 
   const validationSchema = yup.object({
     date: yup.date().required("Date is required"),
@@ -190,7 +177,7 @@ const MonthlyReallocation: React.FC<ProductFormProps> = ({
         >
           <form onSubmit={formik.handleSubmit}>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Provison Monthly Re-allaocation
+              Provison Monthly Ventilation as per Sales
             </Typography>
             <div
               style={{
@@ -335,4 +322,4 @@ const MonthlyReallocation: React.FC<ProductFormProps> = ({
   );
 };
 
-export default MonthlyReallocation;
+export default MonthlyVentillation;

@@ -11,6 +11,8 @@ export interface CreateCATransaction {
 export interface CATransaction{
     id: string;
     chartofAccount: string;
+    chartofAccountId: string;
+    type: string;
     date: Date;
     remark?: string;
     debit?: number;

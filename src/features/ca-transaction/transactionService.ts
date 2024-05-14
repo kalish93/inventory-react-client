@@ -1,6 +1,10 @@
 import { CreateCATransaction } from "../../models/ca-transaction";
 import { handleRequest } from "../../utils/apiService";
-import { BASE_URL, CATRANSACTIONS_URL, JOURNAL_ENTRY_URL } from "../../core/api-routes";
+import {
+  BASE_URL,
+  CATRANSACTIONS_URL,
+  JOURNAL_ENTRY_URL,
+} from "../../core/api-routes";
 
 export const CATransactionService = {
   getCATransactions: async (page = 1, pageSize = 10) => {
@@ -27,7 +31,7 @@ export const CATransactionService = {
   getTransactionsByMonth: async (month: number, year: number) => {
     try {
       const response = await handleRequest(
-        `${CATRANSACTIONS_URL}?month=${month}&year=${year}`,
+        `${CATRANSACTIONS_URL}-summary?month=${month}&year=${year}`,
         {
           method: "GET",
         }
@@ -90,7 +94,6 @@ export const CATransactionService = {
     }
   },
 
-
   registerJournalEntry: async (CATransactionData: any) => {
     try {
       const response = await handleRequest(JOURNAL_ENTRY_URL, {
@@ -121,8 +124,8 @@ export const CATransactionService = {
     if (!response.ok) {
       let errorMessage = `Bad Request: ${response.statusText}`;
 
-        const data = await response.json();
-        errorMessage = data.error || errorMessage;
+      const data = await response.json();
+      errorMessage = data.error || errorMessage;
 
       return { success: false, error: errorMessage };
     }

@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { PaginatedList } from "../../models/commons/paginatedList";
+import { List, PaginatedList } from "../../models/commons/paginatedList";
 import { CATransaction } from "../../models/ca-transaction";
 
 interface CATransactionState {
-  monthlyTransactions: PaginatedList<CATransaction>;
+  monthlyTransactions: List<CATransaction>;
   transactions: PaginatedList<CATransaction>;
   transitPayments: PaginatedList<any>;
   loading: boolean;
@@ -14,10 +14,6 @@ interface CATransactionState {
 const initialState: CATransactionState = {
   monthlyTransactions: {
     items: [],
-    totalCount: 0,
-    pageSize: 0,
-    currentPage: 1,
-    totalPages: 1,
   },
   transactions: {
     items: [],
