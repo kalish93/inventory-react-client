@@ -36,19 +36,21 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
 }>(({ theme, open }) => ({
   flexGrow: 1,
-  padding: theme.spacing(3),
   transition: theme.transitions.create("margin", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   marginLeft: `-${drawerWidth}px`,
   marginTop: "78px",
+  maxWidth: "99%",
   ...(open && {
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
     marginLeft: 0,
+    padding: 0,
+    maxWidth: "80%",
   }),
 }));
 
@@ -129,7 +131,7 @@ const Home = () => {
     <div style={{ display: "flex" }}>
       <Sidebar showDrawer={showDrawer} setShowDrawer={setShowDrawer} />
       <Main open={showDrawer}>
-        <Container>
+        <Container sx={{margin: 0, maxWidth: "unset"}} maxWidth={false}> 
         <Routes>
           <Route
             path="/users"

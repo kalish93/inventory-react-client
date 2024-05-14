@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { PaginatedList } from "../../models/commons/paginatedList";
+import { List, PaginatedList } from "../../models/commons/paginatedList";
 import { CATransaction } from "../../models/ca-transaction";
 
 interface CATransactionState {
+  monthlyTransactions: List<CATransaction>;
   transactions: PaginatedList<CATransaction>;
   transitPayments: PaginatedList<any>;
   loading: boolean;
@@ -11,6 +12,9 @@ interface CATransactionState {
 }
 
 const initialState: CATransactionState = {
+  monthlyTransactions: {
+    items: [],
+  },
   transactions: {
     items: [],
     totalCount: 0,
@@ -40,6 +44,10 @@ const transactionSlice = createSlice({
     },
     getTransactionsSuccess: (state, action) => {
       state.transactions = action.payload;
+      state.loading = false;
+    },
+    getMonthlyTransactionsSuccess: (state, action) => {
+      state.monthlyTransactions = action.payload;
       state.loading = false;
     },
     getTransitPaymentsSuccess: (state, action) => {
@@ -86,7 +94,11 @@ const transactionSlice = createSlice({
     createJournalEntrySuccessSuccess: (state, action) => {
       const newTransactions = action.payload;
       state.transactions = {
-        items: [newTransactions.firstTransaction, newTransactions.secondTransaction, ...(state.transactions?.items || [])],
+        items: [
+          newTransactions.firstTransaction,
+          newTransactions.secondTransaction,
+          ...(state.transactions?.items || []),
+        ],
         totalCount: (state.transactions?.totalCount || 0) + 2,
         pageSize: state.transactions?.pageSize || 10,
         currentPage: state.transactions?.currentPage || 1,
@@ -95,18 +107,20 @@ const transactionSlice = createSlice({
       state.loading = false;
     },
 
-
     deleteJournalEntrySuccess: (state, action) => {
       const deleted = action.payload;
-      const deletedIds = deleted.map((item: { id: any; }) => item.id);
+      const deletedIds = deleted.map((item: { id: any }) => item.id);
       state.transactions = {
-          items: state.transactions?.items.filter(transaction => !deletedIds.includes(transaction.id)) || [],
-          totalCount: (state.transactions?.totalCount || 0) - deletedIds.length,
-          pageSize: state.transactions?.pageSize || 10, 
-          currentPage: state.transactions?.currentPage || 1, 
-          totalPages: state.transactions?.totalPages || 1, 
+        items:
+          state.transactions?.items.filter(
+            (transaction) => !deletedIds.includes(transaction.id)
+          ) || [],
+        totalCount: (state.transactions?.totalCount || 0) - deletedIds.length,
+        pageSize: state.transactions?.pageSize || 10,
+        currentPage: state.transactions?.currentPage || 1,
+        totalPages: state.transactions?.totalPages || 1,
       };
-      state.loading = false;      
+      state.loading = false;
     },
   },
 });
@@ -114,6 +128,7 @@ const transactionSlice = createSlice({
 export const {
   getTransactionsStart,
   getTransactionsSuccess,
+  getMonthlyTransactionsSuccess,
   getTransactionsFailure,
   createTransactionStart,
   createTransactionSuccess,
@@ -121,7 +136,7 @@ export const {
   createTransitPaymentSuccess,
   getTransitPaymentsSuccess,
   createJournalEntrySuccessSuccess,
-  deleteJournalEntrySuccess
+  deleteJournalEntrySuccess,
 } = transactionSlice.actions;
 
 export const selectTransactions = (state: {

@@ -41,6 +41,7 @@ const BanksList = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
+  const [isDeleteSubmitted, setIsDeleteSubmitted] = useState(false);
   const { isError, error, loading } = useSelector(selectBank);
   const [selectedBank, setSelectedBank] = useState(null);
 
@@ -65,17 +66,29 @@ const BanksList = () => {
   const handleDeleteBank = () => {
     handleMenuClose();
     if (selectedBankId !== null) {
-      dispatch(deleteBank(selectedBankId)).then(() => {
-        if (!isError && !loading) {
-          showSnackbar("Bank deleted successfully", "success");
-        } else {
-          showSnackbar(error, "error");
-        }
-      });
+      dispatch(deleteBank(selectedBankId))
+        .then(() => {
+          setIsDeleteSubmitted(true);
+        })
+        .catch(() => {
+          setIsDeleteSubmitted(true);
+        });
     }
   };
 
+  useEffect(() => {
+    if (!loading && isDeleteSubmitted) {
+      if (isError) {
+        showSnackbar(error || "An error occurred", "error");
+      } else {
+        showSnackbar("Bank deleted successfully", "success");
+      }
+      setIsDeleteSubmitted(true);
+    }
+  }, [isError, error, isDeleteSubmitted, loading]);
+
   const handleMenuOpen = (event: any, bankId: any, bank: any) => {
+    event.preventDefault();
     setAnchorEl(event.currentTarget);
     setSelectedBankId(bankId);
     setSelectedBank(bank);

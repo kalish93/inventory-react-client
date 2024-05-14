@@ -4,6 +4,7 @@ import { Product } from "../../models/product";
 
 interface ProvisionState {
   provisions: PaginatedList<Product>;
+  monthlyProvisions: any;
   loading: boolean;
   error: any | null;
   isError: boolean;
@@ -12,18 +13,21 @@ interface ProvisionState {
 }
 
 const initialState: ProvisionState = {
+  monthlyProvisions: {
+    items: [],
+  },
   provisions: {
     items: [],
     totalCount: 0,
     pageSize: 0,
     currentPage: 1,
-    totalPages: 1
+    totalPages: 1,
   },
   loading: false,
   error: null,
   isError: false,
   successMessage: null,
-  productCategories: []
+  productCategories: [],
 };
 
 const provisionSlice = createSlice({
@@ -31,26 +35,32 @@ const provisionSlice = createSlice({
   initialState,
   reducers: {
     getProvisionsStart: (state) => {
-        state.loading = true;
-        state.error = null;
-      },
-    getProvisionsSuccess: (state, action) => {
-        state.provisions = action.payload;
-        state.loading = false;
-      },
-    getProvisionsFailure: (state, action) => {
-    state.loading = false;
-    state.error = action.payload;
+      state.loading = true;
+      state.error = null;
     },
-  }
+    getProvisionsSuccess: (state, action) => {
+      state.provisions = action.payload;
+      state.loading = false;
+    },
+    getMonthlyProvisionsSuccess: (state, action) => {
+      state.monthlyProvisions = action.payload;
+      state.loading = false;
+    },
+    getProvisionsFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+  },
 });
 
 export const {
   getProvisionsStart,
   getProvisionsSuccess,
   getProvisionsFailure,
+  getMonthlyProvisionsSuccess
 } = provisionSlice.actions;
 
-export const selectProvision = (state: { provision: ProvisionState }) => state.provision;
+export const selectProvision = (state: { provision: ProvisionState }) =>
+  state.provision;
 
 export default provisionSlice.reducer;

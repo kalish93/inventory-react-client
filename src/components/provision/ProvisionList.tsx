@@ -52,7 +52,7 @@ console.log(provisions)
               <TableCell>Unit Cost Of Transport</TableCell>
               <TableCell>Unit Cost Of ESL</TableCell>
               <TableCell>Unit Cost Of Transit</TableCell>
-              <TableCell>Unit Cost Of Tax</TableCell>
+              <TableCell>Unit Cost Of Income Tax</TableCell>
               <TableCell>Purchase Number</TableCell>
               <TableCell>Declaration Number</TableCell>
               <TableCell>Sale Quantity</TableCell>
