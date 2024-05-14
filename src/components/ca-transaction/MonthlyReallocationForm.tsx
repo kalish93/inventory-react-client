@@ -22,6 +22,7 @@ import { styled } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import { selectTransactions } from "../../features/ca-transaction/transactionSlice";
 import {
+  createCATransaction,
   createJournalEntry,
   getCATransactions,
   getTransactionsByMonth,
@@ -118,14 +119,26 @@ const MonthlyReallocation: React.FC<ProductFormProps> = ({
   const incomeTaxExpense = cashOfAccounts.find(
     (ca: any) => ca.name === "Income tax expense"
   );
+  const provisionIncomeTaxExpense = cashOfAccounts.find(
+  (ca: any) => ca.name === "Provision for Import Taxes"
+  )
   const eSLCustomWarehouse = cashOfAccounts.find(
     (ca: any) => ca.name === "ESL Custom Warehouse"
+  );
+  const provisionESLCustomWarehouse = cashOfAccounts.find(
+    (ca: any) => ca.name === "Provision for ESL Fees"
   );
   const importTransportCost = cashOfAccounts.find(
     (ca: any) => ca.name === "Import Transport Cost"
   );
+  const provisionImportTransportCost = cashOfAccounts.find(
+    (ca: any) => ca.name === "Provision for Transport Fees"
+  );
   const transitFees = cashOfAccounts.find(
     (ca: any) => ca.name === "Transit fees"
+  );
+  const provisionTransitFees = cashOfAccounts.find(
+    (ca: any) => ca.name === "Provision for Transit Fees"
   );
 
   const validationSchema = yup.object({
@@ -139,19 +152,73 @@ const MonthlyReallocation: React.FC<ProductFormProps> = ({
     validationSchema: validationSchema,
     onSubmit: (values) => {
       const formDataToSend1 = {
-        // bankId: values.chartofAccountId1,
-        // chartofAccountId: values.chartofAccountId2,
-        // date: values.date,
-        // debit: values.debit,
-        // credit: values.credit,
-        // remark: values.transactionRemark,
-        // type: "Journal Entry",
-        // accountPayableRecievableDetail: values.accountPayableRecievableDetail,
-        // deposit: flag ? null : values.debit,
-        // payment: flag ? values.credit : null,
+        chartofAccountId: incomeTaxExpense?.id,
+        date: values.date,
+        debit: null,
+        credit: IncomeTaxExpense,
+        type: "Journal Entry",
+      };
+      const formDataToSend2 = {
+        chartofAccountId: provisionIncomeTaxExpense?.id,
+        date: values.date,
+        debit: IncomeTaxExpense,
+        credit: null,
+        type: "Journal Entry",
+      };
+      const formDataToSend3 = {
+        chartofAccountId: eSLCustomWarehouse?.id,
+        date: values.date,
+        debit: null,
+        credit: ESLCustomWarehouseFee,
+        type: "Journal Entry",
+      };
+      const formDataToSend4 = {
+        chartofAccountId: provisionESLCustomWarehouse?.id,
+        date: values.date,
+        debit: ESLCustomWarehouseFee,
+        credit: null,
+        type: "Journal Entry",
+      };
+      const formDataToSend5 = {
+        chartofAccountId: importTransportCost?.id,
+        date: values.date,
+        debit: null,
+        credit: ImportTransportCost,
+        type: "Journal Entry",
+      };
+      const formDataToSend6 = {
+        chartofAccountId: provisionImportTransportCost?.id,
+        date: values.date,
+        debit: ImportTransportCost,
+        credit: null,
+        type: "Journal Entry",
+      };
+      const formDataToSend7 = {
+        chartofAccountId: transitFees?.id,
+        date: values.date,
+        debit: null,
+        credit: TransitFees,
+        type: "Journal Entry",
+      };
+      const formDataToSend8 = {
+        chartofAccountId: provisionTransitFees?.id,
+        date: values.date,
+        debit: TransitFees,
+        credit: null,
+        type: "Journal Entry",
       };
 
-      dispatch(createJournalEntry(formDataToSend1));
+
+      Promise.all([
+        dispatch(createCATransaction(formDataToSend1)),
+        dispatch(createCATransaction(formDataToSend2)),
+        dispatch(createCATransaction(formDataToSend3)),
+        dispatch(createCATransaction(formDataToSend4)),
+        dispatch(createCATransaction(formDataToSend5)),
+        dispatch(createCATransaction(formDataToSend6)),
+        dispatch(createCATransaction(formDataToSend7)),
+        dispatch(createCATransaction(formDataToSend8)),        
+      ])
       handleClose();
       setIsFormSubmitted(true);
       formik.resetForm();
