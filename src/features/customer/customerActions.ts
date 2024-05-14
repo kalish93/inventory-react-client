@@ -1,7 +1,7 @@
 import { AppDispatch } from "../../app/store";
 import { CreateCustomer } from "../../models/customer";
 import { CustomerService } from "./customerService";
-import { deleteCustomerFailure, deleteCustomerStart, deleteCustomerSuccess, getCustomerPaymentsSuccess, getCustomerSalesSuccess, getCustomersFailure, getCustomersStart, getCustomersSuccess, registerCustomerFailure, registerCustomerStart, registerCustomerSuccess, updateCustomerFailure, updateCustomerStart, updateCustomerSuccess } from "./customerSlice";
+import { deleteCustomerFailure, deleteCustomerStart, deleteCustomerSuccess, getCustomerPaymentsSuccess, getCustomerSalesSuccess, getCustomerSuccess, getCustomersFailure, getCustomersStart, getCustomersSuccess, registerCustomerFailure, registerCustomerStart, registerCustomerSuccess, updateCustomerFailure, updateCustomerStart, updateCustomerSuccess } from "./customerSlice";
 
 export const getCustomers = (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
@@ -73,6 +73,16 @@ export const updateCustomer = (data: any) => async (dispatch: AppDispatch) => {
       dispatch(getCustomersStart());
       const response = await CustomerService.getCustomerSales(customerId,page, pageSize);
       dispatch(getCustomerSalesSuccess(response));
+    } catch (error) {
+      dispatch(getCustomersFailure(error));
+    }
+  };
+
+  export const getCustomer = (customerId:any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(getCustomersStart());
+      const response = await CustomerService.getCustomerById(customerId);
+      dispatch(getCustomerSuccess(response));
     } catch (error) {
       dispatch(getCustomersFailure(error));
     }

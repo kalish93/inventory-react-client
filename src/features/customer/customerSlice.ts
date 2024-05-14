@@ -10,6 +10,7 @@ interface CustomerState {
   successMessage: string | null;
   customerPayments: PaginatedList<any>;
   customerSales: PaginatedList<any>;
+  customer: any;
 }
 
 const initialState: CustomerState = {
@@ -38,6 +39,7 @@ const initialState: CustomerState = {
   error: null,
   isError: false,
   successMessage: null,
+  customer: null
 };
 
 const customerSlice = createSlice({
@@ -137,6 +139,11 @@ const customerSlice = createSlice({
         state.customerSales = action.payload;
         state.loading = false;
       },
+
+      getCustomerSuccess: (state, action) => {
+        state.customer = action.payload;
+        state.loading = false;
+      },
   },
 });
 
@@ -154,7 +161,8 @@ export const {
   updateCustomerStart,
   updateCustomerSuccess,
   getCustomerPaymentsSuccess,
-  getCustomerSalesSuccess
+  getCustomerSalesSuccess,
+  getCustomerSuccess
 } = customerSlice.actions;
 
 export const selectCustomer = (state: { customer: CustomerState }) => state.customer;

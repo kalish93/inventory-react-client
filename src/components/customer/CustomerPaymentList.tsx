@@ -17,7 +17,7 @@ import CustomerSaleList from "./CustomerSaleList";
 import { AppDispatch } from "../../app/store";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCustomer } from "../../features/customer/customerSlice";
-import { getCustomerPayments } from "../../features/customer/customerActions";
+import { getCustomer, getCustomerPayments } from "../../features/customer/customerActions";
 import { PERMISSIONS } from "../../core/permissions";
 import { hasPermission } from "../../utils/checkPermission";
 import dayjs from "dayjs";
@@ -55,6 +55,11 @@ const CustomerPaymentList = () => {
     currentPage,
     totalCount,
   } = customerState.customerPayments;
+  const customer = customerState.customer;
+
+  useEffect(()=>{
+    dispatch(getCustomer(id));
+  },[dispatch, id]);
 
   useEffect(() => {
     dispatch(getCustomerPayments(id, page + 1, rowsPerPage));
@@ -74,6 +79,7 @@ const CustomerPaymentList = () => {
   };
   return (
     <div>
+    <h2 style={{textAlign:'center'}}>Customer Name: {customer?.firstName} {customer?.lastName}</h2>
       <Tabs value={value} onChange={handleChange} centered>
         <Tab label="Payments" />
         <Tab label="Sales" />
@@ -97,7 +103,6 @@ const CustomerPaymentList = () => {
                   <TableCell>Invoice Date</TableCell>
                   <TableCell>Customer Name</TableCell>
                   <TableCell>Paid Amount</TableCell>
-                  <TableCell>Payment Status</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -111,7 +116,6 @@ const CustomerPaymentList = () => {
                       {sale.customer?.firstName + " " + sale.customer?.lastName}
                     </TableCell>
                     <TableCell>{sale.paidAmount}</TableCell>
-                    <TableCell>{sale.paymentStatus}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

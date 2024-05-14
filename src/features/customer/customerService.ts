@@ -27,6 +27,25 @@ export const CustomerService = {
         }
       },
 
+      getCustomerById: async (id: any) => {
+        try {
+          const response = await handleRequest(`${CUSTOMERS_URL}/${id}`, {
+            method: "GET",
+          });
+      
+            if (!response.ok) {
+              throw new Error('Error retrieving users');
+            }
+      
+            const data = await response.json();
+            return data;
+          
+          } catch (error) {
+            console.error('Error in getCustomers service:', error);
+            throw error;
+          }
+        },
+
       registerCustomer: async (customerData: CreateCustomer) => {
         const response = await handleRequest(CUSTOMERS_URL, {
           method: "POST",

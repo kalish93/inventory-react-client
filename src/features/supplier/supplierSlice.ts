@@ -8,6 +8,9 @@ interface SupplierState {
   error: any | null;
   isError: boolean;
   successMessage: string | null;
+  supplierPayments: PaginatedList<any>;
+  supplierPurchases: PaginatedList<any>;
+  supplier: any;
 }
 
 const initialState: SupplierState = {
@@ -18,10 +21,25 @@ const initialState: SupplierState = {
     currentPage: 1,
     totalPages: 1
   },
+  supplierPayments: {
+    items: [],
+    totalCount: 0,
+    pageSize: 0,
+    currentPage: 1,
+    totalPages: 1
+  },
+  supplierPurchases: {
+    items: [],
+    totalCount: 0,
+    pageSize: 0,
+    currentPage: 1,
+    totalPages: 1
+  },
   loading: false,
   error: null,
   isError: false,
   successMessage: null,
+  supplier: null
 };
 
 const supplierSlice = createSlice({
@@ -118,6 +136,18 @@ const supplierSlice = createSlice({
         state.isError = true;
         state.error = action.payload;
       },
+      getSupplierPaymentsSuccess: (state, action) => {
+        state.loading = false;
+        state.supplierPayments = action.payload;
+      },
+      getSupplierPurchasesSuccess: (state, action) => {
+        state.loading = false;
+        state.supplierPurchases = action.payload;
+      },
+      getSupplierSuccess: (state, action) => {
+        state.loading = false;
+        state.supplier = action.payload;
+      },
   },
 });
 
@@ -133,7 +163,10 @@ export const {
   deleteSupplierSuccess,
   updateSupplierFailure,
   updateSupplierStart,
-  updateSupplierSuccess
+  updateSupplierSuccess,
+  getSupplierPaymentsSuccess,
+  getSupplierPurchasesSuccess,
+  getSupplierSuccess
 } = supplierSlice.actions;
 
 export const selectSupplier = (state: { supplier: SupplierState }) => state.supplier;
