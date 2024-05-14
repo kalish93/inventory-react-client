@@ -281,7 +281,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
             <div
               style={{
                 display: "flex",
-                justifyContent: "space-arround",
+                justifyContent: "space-between",
                 margin: "20px",
               }}
             >
@@ -290,7 +290,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
                   display: "flex",
                   flexDirection: "column",
                   gap: "1.5rem",
-                  minWidth: "48%",
+                  minWidth: "33%",
                 }}
               >
                 <Autocomplete
@@ -403,7 +403,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
                 />
               </div>
 
-              <div style={{ maxWidth: "48%" }}>
+              <div style={{ maxWidth: "33%" }}>
                 <TextField
                 style={{ marginTop: "0rem"}}
                   name="date"

@@ -25,6 +25,7 @@ import ConfirmationModal from '../common/confirmationModal';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { hasPermission } from '../../utils/checkPermission';
 import { PERMISSIONS } from '../../core/permissions';
+import { Link } from 'react-router-dom';
 
 const DriversList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -151,7 +152,11 @@ const DriversList = () => {
           </TableHead>
           <TableBody>
             {drivers.map((driver: any) => (
-              <TableRow key={driver.id}>
+              <TableRow  key={driver.id}
+              component={Link}
+              to={`/drivers/${driver.id}`}
+              style={{ textDecoration: "none" }}
+              >
                 <TableCell>{driver.name}</TableCell>
                 <TableCell>{driver.truckNumber}</TableCell>
                 <TableCell>{driver.djboutiPhone}</TableCell>
@@ -164,7 +169,10 @@ const DriversList = () => {
                 <TableCell>
                 <IconButton
                     aria-label="Actions"
-                    onClick={(event) => handleMenuOpen(event, driver.id, driver)}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      event.preventDefault(); // Prevent default behavior
+                      handleMenuOpen(event, driver.id, driver)}}
                     style={{ margin: 0, padding: 0 }}
                   >
                    <MoreVertIcon/>
@@ -184,8 +192,14 @@ const DriversList = () => {
                       },
                     }}
                   >
-                    {hasPermission(PERMISSIONS.UpdateDriver) && <MenuItem onClick={handleUpdateDriver}>Update</MenuItem>}
-                    {hasPermission(PERMISSIONS.DeleteDriver) && <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>}
+                    {hasPermission(PERMISSIONS.UpdateDriver) && <MenuItem onClick={(event) => {
+                     event.stopPropagation();
+                     event.preventDefault(); // Prevent default behavior
+                      handleUpdateDriver()}}>Update</MenuItem>}
+                    {hasPermission(PERMISSIONS.DeleteDriver) && <MenuItem onClick={(event) =>{
+                       event.stopPropagation();
+                       event.preventDefault(); // Prevent default behavior 
+                      openConfirmationModal()}}>Delete</MenuItem>}
                   </Menu>
                   </TableCell>              
               </TableRow>
