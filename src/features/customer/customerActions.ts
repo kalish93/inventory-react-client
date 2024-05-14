@@ -1,7 +1,7 @@
 import { AppDispatch } from "../../app/store";
 import { CreateCustomer } from "../../models/customer";
 import { CustomerService } from "./customerService";
-import { deleteCustomerFailure, deleteCustomerStart, deleteCustomerSuccess, getCustomersFailure, getCustomersStart, getCustomersSuccess, registerCustomerFailure, registerCustomerStart, registerCustomerSuccess, updateCustomerFailure, updateCustomerStart, updateCustomerSuccess } from "./customerSlice";
+import { deleteCustomerFailure, deleteCustomerStart, deleteCustomerSuccess, getCustomerPaymentsSuccess, getCustomerSalesSuccess, getCustomersFailure, getCustomersStart, getCustomersSuccess, registerCustomerFailure, registerCustomerStart, registerCustomerSuccess, updateCustomerFailure, updateCustomerStart, updateCustomerSuccess } from "./customerSlice";
 
 export const getCustomers = (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
@@ -55,5 +55,25 @@ export const updateCustomer = (data: any) => async (dispatch: AppDispatch) => {
       }
     } catch (error) {
       dispatch(updateCustomerFailure('Unknown error'));
+    }
+  };
+
+  export const getCustomerPayments = (customerId:any,page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(getCustomersStart());
+      const response = await CustomerService.getCustomerPayments(customerId,page, pageSize);
+      dispatch(getCustomerPaymentsSuccess(response));
+    } catch (error) {
+      dispatch(getCustomersFailure(error));
+    }
+  };
+
+  export const getCustomerSales = (customerId:any,page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(getCustomersStart());
+      const response = await CustomerService.getCustomerSales(customerId,page, pageSize);
+      dispatch(getCustomerSalesSuccess(response));
+    } catch (error) {
+      dispatch(getCustomersFailure(error));
     }
   };

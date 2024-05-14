@@ -24,6 +24,7 @@ import BanksList from "../components/bank/bankList";
 import BankDetail from "../components/bank/bankDetail";
 import ProvisionList from "../components/provision/ProvisionList";
 import ExpensesPaymentForm from "../components/ca-transaction/ExpensesPaymentForm";
+import CustomerPaymentList from "../components/customer/CustomerPaymentList";
 
 const routes = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ const routes = createBrowserRouter([
       {
         path: "customers",
         element: <CustomerList />,
+      },
+      {
+        path: "customers/:id",
+        element: <CustomerPaymentList />,
       },
       {
         path: "drivers",
