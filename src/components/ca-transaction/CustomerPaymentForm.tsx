@@ -114,49 +114,25 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      const formDataToSend1 = {
-        bankId: values.chartofAccountId1,
-        date: values.date,
-        remark: values.transactionRemark,
-        credit: null,
-        debit: values.amount,
-        customerId: values.chartofAccountId2,
-        type: "Customer Payment",
-      };
 
-      const formDataToSend2 = {
-        chartofAccountId: accountReceivable.id,
+      const formDataToSend = {
+        bankId: values.chartofAccountId1,
         date: values.date,
         remark: values.transactionRemark,
         credit: values.amount,
-        debit: null,
+        debit: values.amount,
         customerId: values.chartofAccountId2,
         type: "Customer Payment",
-      };
-
-      const formDataToSend4 = {
-        bankId: values.chartofAccountId1,
+        chartofAccountId: accountReceivable.id,
         payee: values.chartofAccountId2,
         foreignCurrency: null,
         payment: null,
         deposit: values.amount,
-        type: "Customer Payment",
         exchangeRate: null,
-        chartofAccountId: accountReceivable.id,
-        date: values.date,
-      };
-
-      const formDataToSend5 = {
-        date: values.date,
         sales: paidforSales,
       };
 
-      Promise.all([
-        dispatch(createCATransaction(formDataToSend1)),
-        dispatch(createCATransaction(formDataToSend2)),
-        dispatch(createCustomerPayment(formDataToSend5)),
-        dispatch(createBankTransaction(formDataToSend4)),
-      ]);
+      dispatch(createCustomerPayment(formDataToSend))
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();

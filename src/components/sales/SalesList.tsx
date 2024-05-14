@@ -69,6 +69,7 @@ const SalesList = () => {
     if (selectedSaleId !== null) {
       dispatch(deleteSale(selectedSaleId))
         .then(() => {
+          dispatch(getSales(1,10))
           setDeleteSubmitted(true);
         })
         .catch(() => {
@@ -86,6 +87,7 @@ const SalesList = () => {
       }
       setDeleteSubmitted(false);
     }
+    dispatch(getSales(1,10));
   }, [deleteSubmitted, error]);
 
   const handleMenuOpen = (event: any, saleId: any, sale: any) => {

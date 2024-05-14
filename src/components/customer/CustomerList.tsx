@@ -25,6 +25,7 @@ import ConfirmationModal from '../common/confirmationModal';
 import { hasPermission } from '../../utils/checkPermission';
 import { PERMISSIONS } from '../../core/permissions';
 import CustomerPaymentForm from '../ca-transaction/CustomerPaymentForm';
+import { Link } from "react-router-dom";
 
 const CustomerList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -159,7 +160,12 @@ const CustomerList = () => {
           </TableHead>
           <TableBody>
             {customers.map((customer: any) => (
-              <TableRow key={customer.id}>
+              <TableRow
+              key={customer.id}
+              component={Link}
+              to={`/customers/${customer.id}`}
+              style={{ textDecoration: "none" }}
+            >
                 <TableCell>{customer.firstName + " " + customer.lastName }</TableCell>
                 <TableCell>{customer.tinNumber}</TableCell>
                 <TableCell>{customer.phone}</TableCell>
@@ -167,7 +173,11 @@ const CustomerList = () => {
                 <TableCell>
                 <IconButton
                     aria-label="Actions"
-                    onClick={(event) => handleMenuOpen(event, customer.id, customer)}
+                    onClick={(event) =>{ 
+                      event.stopPropagation();
+                      event.preventDefault(); // Prevent default behavior
+                      handleMenuOpen(event, customer.id, customer)
+                    }}
                     style={{ margin: 0, padding: 0 }}
                   >
                    <MoreVertIcon/>
@@ -187,8 +197,16 @@ const CustomerList = () => {
                       },
                     }}
                   >
-                    {hasPermission(PERMISSIONS.UpdateCustomer) && <MenuItem onClick={ () =>handleUpdateCustomer()}>Update</MenuItem>}
-                    {hasPermission(PERMISSIONS.DeleteCustomer) && <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>}
+                    {hasPermission(PERMISSIONS.UpdateCustomer) && 
+                    <MenuItem onClick={ (event) =>{
+                        event.stopPropagation();
+                        event.preventDefault(); // Prevent default behavior
+                      handleUpdateCustomer()}}>Update</MenuItem>}
+                    {hasPermission(PERMISSIONS.DeleteCustomer) && 
+                    <MenuItem onClick={(event)=>{
+                      event.stopPropagation();
+                      event.preventDefault(); // Prevent default behavior
+                      openConfirmationModal()}}>Delete</MenuItem>}
                   </Menu>
                   </TableCell>
               </TableRow>

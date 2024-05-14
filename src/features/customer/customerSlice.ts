@@ -8,10 +8,26 @@ interface CustomerState {
   error: any | null;
   isError: boolean;
   successMessage: string | null;
+  customerPayments: PaginatedList<any>;
+  customerSales: PaginatedList<any>;
 }
 
 const initialState: CustomerState = {
   customers: {
+    items: [],
+    totalCount: 0,
+    pageSize: 0,
+    currentPage: 1,
+    totalPages: 1
+  },
+  customerPayments: {
+    items: [],
+    totalCount: 0,
+    pageSize: 0,
+    currentPage: 1,
+    totalPages: 1
+  },
+  customerSales: {
     items: [],
     totalCount: 0,
     pageSize: 0,
@@ -112,7 +128,15 @@ const customerSlice = createSlice({
         state.isError = true
       },
   
-  
+      getCustomerPaymentsSuccess: (state, action) => {
+        state.customerPayments = action.payload;
+        state.loading = false;
+      },
+
+      getCustomerSalesSuccess: (state, action) => {
+        state.customerSales = action.payload;
+        state.loading = false;
+      },
   },
 });
 
@@ -128,7 +152,9 @@ export const {
   deleteCustomerSuccess,
   updateCustomerFailure,
   updateCustomerStart,
-  updateCustomerSuccess
+  updateCustomerSuccess,
+  getCustomerPaymentsSuccess,
+  getCustomerSalesSuccess
 } = customerSlice.actions;
 
 export const selectCustomer = (state: { customer: CustomerState }) => state.customer;

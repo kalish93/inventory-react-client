@@ -82,6 +82,53 @@ export const CustomerService = {
         const data = await response.json();
         return { success: true, data };
       },
-  
+
+      getCustomerPayments: async (customerId: any, page?: any, pageSize?: any) => {
+        try {
+          let url = CUSTOMERS_URL;
+    
+          if (page && pageSize) {
+            url += `/payments/${customerId}?page=${page}&pageSize=${pageSize}`;
+          }
+          const response = await handleRequest(url, {
+            method: "GET",
+          });
+      
+            if (!response.ok) {
+              throw new Error('Error retrieving users');
+            }
+      
+            const data = await response.json();
+            return data;
+          
+          } catch (error) {
+            console.error('Error in getCustomers service:', error);
+            throw error;
+          }
+        },
+
+      getCustomerSales: async (customerId: any, page?: any, pageSize?: any) => {
+        try {
+          let url = CUSTOMERS_URL;
+    
+          if (page && pageSize) {
+            url += `/sales/${customerId}?page=${page}&pageSize=${pageSize}`;
+          }
+          const response = await handleRequest(url, {
+            method: "GET",
+          });
+      
+            if (!response.ok) {
+              throw new Error('Error retrieving users');
+            }
+      
+            const data = await response.json();
+            return data;
+          
+          } catch (error) {
+            console.error('Error in getCustomers service:', error);
+            throw error;
+          }
+        },
 };
   
