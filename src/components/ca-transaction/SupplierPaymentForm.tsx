@@ -75,10 +75,6 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
     dispatch(getBanks());
   }, [dispatch]);
 
-  const foringnCurrencySupplier = suppliers.filter(
-    (supplier: any) => supplier.currency === "USD"
-  );
-
   const accountsPayableUSD = cashOfAccounts.find(
     (ca: any) => ca.name === "Accounts Payable (A/P) - USD"
   );
@@ -87,9 +83,9 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
     (ca: any) => ca.name === "Accounts Payable (A/P) - ETB"
   );
 
-  const osmaSupplier = suppliers.find(
-    (supplier: any) => supplier.name === "OSMA GROUP FZE"
-  );
+  // const osmaSupplier = suppliers.find(
+  //   (supplier: any) => supplier.name === "OSMA GROUP FZE"
+  // );
 
   const unpaidPurchases = purchases.filter(
     (purchase: any) =>
@@ -118,7 +114,6 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
     chartofAccountId1: yup.string().required("Bank name is required"),
     date: yup.string().required("Transaction date is required"),
     amount: yup.number().required("Transaction amount is required"),
-    exchangeRate: yup.number().required("Exchange rate is required"),
   });
 
   const formik = useFormik({
@@ -133,61 +128,33 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      const formDataToSend1 = {
+      const formDataToSend  = {
         bankId: values.chartofAccountId1,
         date: values.date,
         remark: values.transactionRemark,
-        credit: null,
+        credit: values.exchangeRate
+        ? values.amount! * values.exchangeRate
+        : values.amount,
         debit: values.exchangeRate
           ? values.amount! * values.exchangeRate
           : values.amount,
         supplierId: values.chartofAccountId2,
         type: "Supplier Payment",
-      };
-
-      const formDataToSend2 = {
         chartofAccountId: values.exchangeRate
-          ? accountsPayableUSD.id
-          : accountsPayable.id,
-        date: values.date,
-        remark: values.transactionRemark,
-        exchangeRate: values.exchangeRate,
-        credit: values.exchangeRate
-          ? values.amount! * values.exchangeRate
-          : values.amount,
-        debit: null,
-        supplierId: values.chartofAccountId2,
-        type: "Supplier Payment",
-        USDAmount: values.amount,
+        ? accountsPayableUSD.id
+        : accountsPayable.id,
+      exchangeRate: values.exchangeRate,
+      USDAmount: values.amount,
+      purchases: paidforPurchases,
+      payee: values.chartofAccountId2,
+      foreignCurrency: values.exchangeRate ? -values.amount! : null,
+      payment: values.exchangeRate
+        ? values.amount! * values.exchangeRate
+        : values.amount,
+      deposit: null,
       };
 
-      const formDataToSend3 = {
-        date: values.date,
-        purchases: paidforPurchases,
-      };
-
-      const formDataToSend4 = {
-        bankId: values.chartofAccountId1,
-        payee: values.chartofAccountId2,
-        foreignCurrency: values.exchangeRate ? -values.amount! : null,
-        payment: values.exchangeRate
-          ? values.amount! * values.exchangeRate
-          : values.amount,
-        deposit: null,
-        type: "Supplier Payment",
-        exchangeRate: values.exchangeRate,
-        chartofAccountId: values.exchangeRate
-          ? accountsPayableUSD.id
-          : accountsPayable.id,
-        date: values.date,
-      };
-
-      Promise.all([
-        dispatch(createCATransaction(formDataToSend1)),
-        dispatch(createCATransaction(formDataToSend2)),
-        dispatch(createSupplierPayment(formDataToSend3)),
-        dispatch(createBankTransaction(formDataToSend4)),
-      ]);
+      dispatch(createSupplierPayment(formDataToSend))
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
@@ -202,6 +169,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
   useEffect(() => {
     const updatedPaidforPurchases = [];
     let remainingAmount = formik.values.amount as unknown as number;
+    if(formik.values.exchangeRate !== null){
     let i = 0;
     while (remainingAmount > 0 && i < unpaidPurchases.length) {
       const purchase = unpaidPurchases[i];
@@ -231,9 +199,40 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
 
       if (remainingAmount <= 0) break; // Exit the loop if remaining amount is <= 0
     }
+  }else{
+    let i = 0;
+    while (remainingAmount > 0 && i < unpaidPurchases.length) {
+      const purchase = unpaidPurchases[i];
+      let totalAmount = 0;
+      for (let productPurchase of purchase.products) {
+        totalAmount +=
+          productPurchase.purchaseUnitPriceETB *
+          productPurchase.purchaseQuantity;
+      }
+      //
+      remainingAmount -= totalAmount - Number(purchase.paidAmountETB);
+      updatedPaidforPurchases.push({
+        ...purchase,
+        paidAmountUSD:
+         0,
+        paidAmountETB:
+          remainingAmount >= 0
+            ? (totalAmount - Number(purchase.paidAmountETB)) 
+            : (totalAmount - Number(purchase.paidAmountETB) + remainingAmount),
+        paymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
+      });
+      i++;
 
+      if (remainingAmount <= 0) break;
+  }
+}
     setPaidforPurchases(updatedPaidforPurchases);
   }, [formik.values.amount, formik.values.exchangeRate, dispatch]);
+
+  const selectedSupplier = suppliers.find(
+    (s: any) => s.id === formik.values.chartofAccountId2
+  );
+  const supplierCurrency = selectedSupplier ? selectedSupplier.currency : "";
 
   return (
     <div>
@@ -317,10 +316,10 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                   )}
                 />
                 <Autocomplete
-                  options={foringnCurrencySupplier}
+                  options={suppliers}
                   getOptionLabel={(option) => option.name}
                   value={
-                    foringnCurrencySupplier.find(
+                    suppliers.find(
                       (d: { id: string }) =>
                         d.id === formik.values.chartofAccountId2
                     ) || null
@@ -378,7 +377,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                 <TextField
                   style={{ marginTop: "0" }}
                   name="amount"
-                  label="Amount (USD)"
+                  label="Amount"
                   variant="outlined"
                   fullWidth
                   margin="normal"
@@ -393,6 +392,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                   }
                   required
                 />
+                {supplierCurrency === 'USD' &&
                 <TextField
                   name="exchangeRate"
                   label="Exchange Rate"
@@ -411,8 +411,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                     formik.touched.exchangeRate &&
                     (formik.errors.exchangeRate as React.ReactNode)
                   }
-                  required
-                />
+                />}
                 <TextField
                   name="transactionRemark"
                   label="Transaction Remark"
