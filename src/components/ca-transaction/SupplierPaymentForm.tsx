@@ -315,6 +315,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                     />
                   )}
                 />
+
                 <Autocomplete
                   options={suppliers}
                   getOptionLabel={(option) => option.name}
@@ -355,7 +356,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
 
                 <TextField
                   name="date"
-                  sx={{ marginTop: 0}}
+                  sx={{ marginTop: 0 }}
                   label="Transaction Date"
                   variant="outlined"
                   fullWidth
