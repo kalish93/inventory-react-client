@@ -10,14 +10,18 @@ import { CreatePurchase } from "../../models/purchase";
 import { handleRequest } from "../../utils/apiService";
 
 export const PurchaseService = {
-  getPurchases: async (page = 1, pageSize = 10) => {
+  getPurchases: async (
+    page: number | undefined,
+    pageSize: number | undefined
+  ) => {
     try {
-      const response = await handleRequest(
-        `${PURCHASES_URL}?page=${page}&pageSize=${pageSize}`,
-        {
-          method: "GET",
-        }
-      );
+      const url =
+        page && pageSize
+          ? `${PURCHASES_URL}?page=${page}&pageSize=${pageSize}`
+          : PURCHASES_URL;
+      const response = await handleRequest(url, {
+        method: "GET",
+      });
 
       if (!response.ok) {
         throw new Error("Error retrieving users");
@@ -375,5 +379,4 @@ export const PurchaseService = {
       return { success: false, error: "Unexpected error occurred" };
     }
   },
-
 };

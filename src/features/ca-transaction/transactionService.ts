@@ -7,7 +7,7 @@ import {
 } from "../../core/api-routes";
 
 export const CATransactionService = {
-  getCATransactions: async (page = 1, pageSize = 10) => {
+  getCATransactions: async (page?: number | undefined, pageSize?: number | undefined) => {
     try {
       const url =
         page && pageSize
