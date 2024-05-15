@@ -165,7 +165,7 @@ const SupplierList = () => {
                 <TableCell>{supplier.name }</TableCell>
                 <TableCell>{supplier.address}</TableCell>
                 <TableCell>{supplier.currency}</TableCell>
-                <TableCell>
+               {!supplier.isSeeded && <TableCell>
                 <IconButton
                     aria-label="Actions"
                     onClick={(event) => {
@@ -200,7 +200,7 @@ const SupplierList = () => {
                        event.preventDefault(); // Prevent default behavior
                       openConfirmationModal()}}>Delete</MenuItem>}
                   </Menu>
-                  </TableCell>
+                  </TableCell>}
               </TableRow>
             ))}
           </TableBody>
