@@ -76,7 +76,7 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
   const unpaidSales = sales.filter(
     (sale: any) =>
       sale.paymentStatus === "Incomplete" ||
-      sale.paymentStatus === "Partially Complete"
+      sale.paymentStatus === "Partially Complete" 
   );
 
   unpaidSales.reverse();
@@ -144,11 +144,10 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
     const customerUnpaidSales = unpaidSales.filter(
       (sale: any) => sale.customer.id === formik.values.chartofAccountId2
     );
-    console.log(unpaidSales, customerUnpaidSales);
     let remainingAmount = formik.values.amount as unknown as number;
     let i = 0;
     while (remainingAmount > 0 && i < customerUnpaidSales.length) {
-      const sale = unpaidSales[i];
+      const sale = customerUnpaidSales[i];
       let totalAmount = 0;
       for (let productsale of sale.sales) {
         totalAmount += productsale.totalSales;

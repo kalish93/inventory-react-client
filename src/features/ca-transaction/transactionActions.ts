@@ -15,7 +15,7 @@ import {
 } from "./transactionSlice";
 
 export const getCATransactions =
-  (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
+  (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
       dispatch(getTransactionsStart());
       const response = await CATransactionService.getCATransactions(
