@@ -108,6 +108,7 @@ const PurchaseList = () => {
     if (selectedPurchaseId !== null) {
       dispatch(deletePurchase(selectedPurchaseId))
         .then(() => {
+          dispatch(getPurchases(1,10));
           setDeleteSubmitted(true);
         })
         .catch(() => {
@@ -125,6 +126,7 @@ const PurchaseList = () => {
       }
       setDeleteSubmitted(false);
     }
+    dispatch(getPurchases(1,10));
   }, [deleteSubmitted, error]);
 
   const handleMenuOpen = (event: any, purchaseId: any, purchase: any) => {
