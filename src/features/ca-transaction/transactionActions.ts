@@ -72,7 +72,7 @@ export const createTransitPayment =
     }
   };
 
-  export const createJournalEntry =
+export const createJournalEntry =
   (data: any) => async (dispatch: AppDispatch) => {
     try {
       dispatch(createTransactionStart());
@@ -87,7 +87,7 @@ export const createTransitPayment =
     }
   };
 
-  export const deleteJournalEntry =
+export const deleteJournalEntry =
   (id: any) => async (dispatch: AppDispatch) => {
     try {
       dispatch(createTransactionStart());
@@ -102,7 +102,21 @@ export const createTransitPayment =
     }
   };
 
-  export const createExpensesPayment =
+export const deleteCaTransaction =
+  (id: any) => async (dispatch: AppDispatch) => {
+    try {
+      const response = await CATransactionService.deleteCaTransaction(id);
+      if (response.success) {
+        dispatch(deleteJournalEntrySuccess(response.data));
+      } else {
+        dispatch(createTransactionFailure(response.error || "Unknown error"));
+      }
+    } catch (error) {
+      dispatch(createTransactionFailure("Unknown error"));
+    }
+  };
+
+export const createExpensesPayment =
   (data: any) => async (dispatch: AppDispatch) => {
     try {
       dispatch(createTransactionStart());
@@ -117,7 +131,7 @@ export const createTransitPayment =
     }
   };
 
-  export const deleteExpensesPayment =
+export const deleteExpensesPayment =
   (id: any) => async (dispatch: AppDispatch) => {
     try {
       dispatch(createTransactionStart());

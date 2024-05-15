@@ -132,42 +132,65 @@ export const CATransactionService = {
 
     const data = await response.json();
     return { success: true, data };
-  },  
+  },
 
-  createExpensesPayment: async (expensesData: any) => {
-    const response = await handleRequest(`${CATRANSACTIONS_URL}/expenses-payment`, {
-      method: "POST",
-      body: JSON.stringify(expensesData)
-    });
-
-    if (!response.ok) {
-      let errorMessage = `Bad Request: ${response.statusText}`;
-
-        const data = await response.json();
-        errorMessage = data.error || errorMessage;
-
-      return { success: false, error: errorMessage };
-    }
-
-    const data = await response.json();
-    return { success: true, data };
-  },  
-
-  deleteExpensesPayment: async (id: any) => {
-    const response = await handleRequest(`${CATRANSACTIONS_URL}/expenses-payment/${id}`, {
+  deleteCaTransaction: async (id: any) => {
+    const response = await handleRequest(`${CATRANSACTIONS_URL}/${id}`, {
       method: "DELETE",
     });
 
     if (!response.ok) {
       let errorMessage = `Bad Request: ${response.statusText}`;
 
-        const data = await response.json();
-        errorMessage = data.error || errorMessage;
+      const data = await response.json();
+      errorMessage = data.error || errorMessage;
+
+      return { success: false, error: errorMessage };
+    }
+    const data = await response.json();
+    return { success: true, data };
+  },
+
+  createExpensesPayment: async (expensesData: any) => {
+    const response = await handleRequest(
+      `${CATRANSACTIONS_URL}/expenses-payment`,
+      {
+        method: "POST",
+        body: JSON.stringify(expensesData),
+      }
+    );
+
+    if (!response.ok) {
+      let errorMessage = `Bad Request: ${response.statusText}`;
+
+      const data = await response.json();
+      errorMessage = data.error || errorMessage;
 
       return { success: false, error: errorMessage };
     }
 
     const data = await response.json();
     return { success: true, data };
-  },  
+  },
+
+  deleteExpensesPayment: async (id: any) => {
+    const response = await handleRequest(
+      `${CATRANSACTIONS_URL}/expenses-payment/${id}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    if (!response.ok) {
+      let errorMessage = `Bad Request: ${response.statusText}`;
+
+      const data = await response.json();
+      errorMessage = data.error || errorMessage;
+
+      return { success: false, error: errorMessage };
+    }
+
+    const data = await response.json();
+    return { success: true, data };
+  },
 };
