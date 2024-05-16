@@ -23,6 +23,8 @@ import {
   registerTransportCostSuccess,
   createEslCustomCostSuccess,
   createTransitFeeSuccess,
+  getWaybillNumberFailure,
+  getWaybillNumberSuccess,
 } from "./purchaseSlice";
 
 export const getPurchases =
@@ -240,3 +242,16 @@ export const createSupplierPayment =
       dispatch(registerPurchaseFailure("Unknown error"));
     }
   };
+
+  export const getWaybillNumber = () => async (dispatch: AppDispatch) => {
+    try {
+      const response = await PurchaseService.getWaybillNumber();
+      if (response) {
+        dispatch(getWaybillNumberSuccess(response));
+      } else {
+        dispatch(getWaybillNumberFailure(response.error || "Unknown error"));
+      }
+    } catch (error) {
+      dispatch(getWaybillNumberFailure("Unknown error"));
+    }
+  }

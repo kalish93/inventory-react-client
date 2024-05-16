@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { AppDispatch } from "../../app/store";
 import { getProducts } from "../../features/product/productActions";
-import { createSale } from "../../features/sales/salesActions";
+import { createSale, getInvoiceNumber } from "../../features/sales/salesActions";
 import { getCustomers } from "../../features/customer/customerActions";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { selectSale } from "../../features/sales/salseSlice";
@@ -28,6 +28,9 @@ interface SaleFormProps {
 const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
   const dispatch = useDispatch<AppDispatch>();
   const products = useSelector((state: any) => state.product.products.items);
+  const SalesState = useSelector(selectSale);
+  let {invoiceNumber} = SalesState;
+  
   const customers = useSelector((state: any) => state.customer.customers.items);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -55,19 +58,18 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
+  
 
-  const generateInvoiceNumber = ()=> {
-    return Math.floor(100000 + Math.random() * 900000);  
-  }
 
   const [formData, setFormData] = useState({
-    invoiceNumber: generateInvoiceNumber(),
+    invoiceNumber: invoiceNumber,
     invoiceDate: null,
     customerId: "",
     productId: "",
     saleQuantity: 0,
     saleUnitPrice: 0,
   });
+
   const [touched, setTouched] = useState<{
     invoiceNumber?: boolean;
     invoiceDate?: boolean;
@@ -81,12 +83,26 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
   >([]);
 
   useEffect(() => {
+    dispatch(getInvoiceNumber());
+    setFormData({
+      invoiceNumber: invoiceNumber,
+      invoiceDate: null,
+      customerId: "",
+      productId: "",
+      saleQuantity: 0,
+      saleUnitPrice: 0,
+    })
+
+  }, [dispatch, invoiceNumber]);
+
+  useEffect(() => {
     dispatch(getCustomers());
   }, [dispatch]);
 
   useEffect(() => {
     dispatch(getProducts());
-  }, [dispatch]);
+  }, [dispatch]); 
+  
 
   const handleChange = (e: { target: { name: any; value: any } }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -138,7 +154,7 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
     dispatch(createSale(combinedData));
     setIsFormSubmitted(true);
     setFormData({
-      invoiceNumber: 0,
+      invoiceNumber: ++ invoiceNumber,
       invoiceDate: null,
       customerId: "",
       productId: "",
@@ -184,7 +200,7 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
   };
 
   return (
-    <div>
+    <div>  
       <Modal
         open={open}
         onClose={(e, reason) => {

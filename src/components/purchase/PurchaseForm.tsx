@@ -21,7 +21,7 @@ import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { AppDispatch } from "../../app/store";
 import { CreateProductPurchase } from "../../models/purchase";
 import { getProducts } from "../../features/product/productActions";
-import { createPurchase } from "../../features/purchase/purchaseActions";
+import { createPurchase, getWaybillNumber } from "../../features/purchase/purchaseActions";
 import { getDeclarations } from "../../features/declaration/declarationAction";
 import { getDrivers } from "../../features/driver/driverActions";
 import { selectPurchase } from "../../features/purchase/purchaseSlice";
@@ -43,6 +43,8 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const purchaseState  = useSelector(selectPurchase)
+  let {waybillNumber} = purchaseState;
   const { isError, error, loading } = useSelector(selectPurchase);
 
   const showSnackbar = (message: string, severity: "success" | "error") => {
@@ -66,12 +68,8 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
     setSnackbarOpen(false);
   };
 
-  const generatewaybill = ()=> {
-    return Math.floor(100000 + Math.random() * 900000);
-  }
-
   const [formData, setFormData] = useState<any>({
-    number: generatewaybill(),
+    number: waybillNumber,
     date: null,
     truckNumber: "",
     exchangeRate: null,
@@ -103,6 +101,25 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
     []
   );
   const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
+
+  useEffect(() => {
+    dispatch(getWaybillNumber());
+    setFormData({
+      number: waybillNumber,
+      date: null,
+      truckNumber: "",
+      exchangeRate: null,
+      transportCost: null,
+      eslCustomCost: null,
+      supplierId: null,
+      transitFees: null,
+      productId: "",
+      declarationId: "",
+      purchaseQuantity: null,
+      purchaseUnitPrice: null,
+    })
+
+  }, [dispatch, waybillNumber]);
 
   useEffect(() => {
     dispatch(getProducts());
@@ -163,6 +180,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
         setAddedProducts((prevProducts) => [...prevProducts, newProduct]);
         setFormData((prevData: any) => ({
           ...prevData,
+          number:++ waybillNumber,
           productId: "",
           declarationId: "",
           purchaseQuantity: null,
@@ -215,7 +233,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
 
     dispatch(createPurchase(formDataToSend));
     setFormData({
-      number: generatewaybill(),
+      number: ++ waybillNumber,
       date: null,
       truckNumber: "",
       exchangeRate: null,
