@@ -114,5 +114,7 @@ export const PERMISSIONS = {
     DeleteEslPayment: "DeleteEslPayment",
     CreateExpensesPayment: "CreateExpensesPayment",
     DeleteExpensesPayment: "DeleteExpensesPayment",
+    GetSalesInvoiceNumber: "GetSalesInvoiceNumber",
+    GetPurchaseWaybillNumber: "GetPurchaseWaybillNumber"
 };
   
