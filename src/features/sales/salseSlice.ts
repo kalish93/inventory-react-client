@@ -8,6 +8,7 @@ interface SalesState {
   sale: any;
   isError: boolean;
   successMessage: any;
+  invoiceNumber:number
 }
 
 const initialState: SalesState = {
@@ -22,7 +23,8 @@ const initialState: SalesState = {
   error: null,
   sale: null,
   isError: false,
-  successMessage: null
+  successMessage: null,
+  invoiceNumber: 0
 };
 
 const salesSlice = createSlice({
@@ -144,6 +146,12 @@ const salesSlice = createSlice({
         state.error = action.payload;
         state.isError = true;
       },
+      getInvoiceNumberSuccess: (state,action) => {
+        state.invoiceNumber = action.payload;
+      },
+      getInvoiceNumberFailure: (state,action) => {
+        state.error = action.payload;
+      },
   },
 });
 
@@ -163,7 +171,9 @@ export const {
   saleFailure,
   updateSaleDetailSuccess,
   deleteSaleDetailSuccess,
-  createSaleDetailSuccess
+  createSaleDetailSuccess,
+  getInvoiceNumberSuccess,
+  getInvoiceNumberFailure
 } = salesSlice.actions;
 
 export const selectSale = (state: { sale: SalesState }) => state.sale;

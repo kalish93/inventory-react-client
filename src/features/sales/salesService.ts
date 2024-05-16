@@ -195,30 +195,44 @@ export const SalesService = {
     }
   },
 
-  createCustomerPayment: async (payment: any) => {
-    try {
-      const response = await handleRequest(
-        `${CATRANSACTIONS_URL}/customer-payment`,
-        {
-          method: "POST",
-          body: JSON.stringify(payment),
+      createCustomerPayment: async (payment: any) => {
+        try{
+          const response = await handleRequest(`${CATRANSACTIONS_URL}/customer-payment`, {
+            method: "POST",
+            body: JSON.stringify(payment),
+          });
+    
+        if (!response.ok) {
+          let errorMessage = `Bad Request: ${response.statusText}`;
+    
+            const data = await response.json();
+            errorMessage = data.error || errorMessage;
+    
+          return { success: false, error: errorMessage };
         }
-      );
-
-      if (!response.ok) {
-        let errorMessage = `Bad Request: ${response.statusText}`;
-
+    
         const data = await response.json();
-        errorMessage = data.error || errorMessage;
-
-        return { success: false, error: errorMessage };
+        return { success: true, data };
+      } catch (error) {
+        console.error("Error in create customer payment service:", error);
+        return { success: false, error: "Unexpected error occurred" };
       }
-
-      const data = await response.json();
-      return { success: true, data };
-    } catch (error) {
-      console.error("Error in create customer payment service:", error);
-      return { success: false, error: "Unexpected error occurred" };
-    }
-  },
+      },
+      getInvoiceNumber: async () => {
+        try {
+          const response = await handleRequest(`${SALES_URL}/invoice-number/latest`, {
+            method: "GET",
+          });
+    
+          if (!response.ok) {
+            throw new Error('Error retrieving retrieving invoice number');
+          }
+          const data = await response.json();
+          return data;
+        
+        } catch (error) {
+          console.error('Error in getInvoiceNumber service:', error);
+          throw error;
+        }
+      },
 };

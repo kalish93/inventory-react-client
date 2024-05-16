@@ -379,4 +379,22 @@ export const PurchaseService = {
       return { success: false, error: "Unexpected error occurred" };
     }
   },
+  getWaybillNumber: async () => {
+    try {
+      const response = await handleRequest(`${PURCHASES_URL}/waybill-number/latest`, {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        throw new Error('Error retrieving retrieving waybill number');
+      }
+      const data = await response.json();
+      return data;
+    
+    } catch (error) {
+      console.error('Error in getWaybillNumber service:', error);
+      throw error;
+    }
+  },
+
 };

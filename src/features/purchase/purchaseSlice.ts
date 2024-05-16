@@ -11,6 +11,7 @@ interface PurchaseState {
   error: any | null;
   purchase: any;
   isError: boolean;
+  waybillNumber: number;
 }
 
 const initialState: PurchaseState = {
@@ -46,6 +47,7 @@ const initialState: PurchaseState = {
   error: null,
   purchase: undefined,
   isError: false,
+  waybillNumber: 0
 };
 
 const purchaseSlice = createSlice({
@@ -186,6 +188,12 @@ const purchaseSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    getWaybillNumberSuccess: (state,action) => {
+      state.waybillNumber = action.payload;
+    },
+    getWaybillNumberFailure: (state,action) => {
+      state.error = action.payload;
+    },
   },
 });
 
@@ -209,6 +217,8 @@ export const {
   registerTransportCostSuccess,
   createEslCustomCostSuccess,
   createTransitFeeSuccess,
+  getWaybillNumberSuccess,
+  getWaybillNumberFailure
 } = purchaseSlice.actions;
 
 export const selectPurchase = (state: { purchase: PurchaseState }) =>

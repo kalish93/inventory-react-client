@@ -1,5 +1,4 @@
 import { AppDispatch } from "../../app/store";
-import { CreateSales } from "../../models/sales";
 import { SalesService } from "./salesService";
 import {
   getSaleByIdFailure,
@@ -17,6 +16,8 @@ import {
   saleFailure,
   deleteSaleDetailSuccess,
   createSaleDetailSuccess,
+  getInvoiceNumberSuccess,
+  getInvoiceNumberFailure,
 } from "./salseSlice";
 
 export const getSales =
@@ -127,6 +128,19 @@ export const createCustomerPayment = (data: any) => async (dispatch: AppDispatch
       dispatch(registerSaleSuccess(response.data));
     } else {
       dispatch(registerSaleFailure(response.error || "Unknown error"));
+    }
+  } catch (error) {
+    dispatch(saleFailure("Unknown error"));
+  }
+}
+
+export const getInvoiceNumber = () => async (dispatch: AppDispatch) => {
+  try {
+    const response = await SalesService.getInvoiceNumber();
+    if (response) {
+      dispatch(getInvoiceNumberSuccess(response));
+    } else {
+      dispatch(getInvoiceNumberFailure(response.error || "Unknown error"));
     }
   } catch (error) {
     dispatch(saleFailure("Unknown error"));
