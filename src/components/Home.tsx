@@ -30,6 +30,7 @@ import ExpensesPaymentForm from "./ca-transaction/ExpensesPaymentForm";
 import CustomerPaymentList from "./customer/CustomerPaymentList";
 import SupplierPaymentList from "./supplier/SupplierPaymentList";
 import DriverPaymentList from "./drivers/DriverPaymentList";
+import AppLogout from "./AppLogout";
 
 const drawerWidth = 240;
 
@@ -126,6 +127,7 @@ const Home = () => {
   const [showDrawer, setShowDrawer] = useState(true);
 
   return (
+    <AppLogout>
     <>
       <CssBaseline />
       <Navbar showDrawer={showDrawer} setShowDrawer={setShowDrawer} />
@@ -340,6 +342,7 @@ const Home = () => {
       </Main>
     </div>
     </>
+    </AppLogout>
   );
 };
 
