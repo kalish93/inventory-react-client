@@ -20,6 +20,7 @@ import { selectTransactions } from "../../features/ca-transaction/transactionSli
 import {
   deleteExpensesPayment,
   deleteJournalEntry,
+  deleteMonthlyJournalEntry,
   getCATransactions,
 } from "../../features/ca-transaction/transactionActions";
 import dayjs from "dayjs";
@@ -167,8 +168,22 @@ const CATransactionsList = () => {
         (transaction) => transaction.id === selectedCAId
       );
       if (selectedTransaction) {
-        if ('type' in selectedTransaction && selectedTransaction.type === 'Expense') {
+        if (
+          "type" in selectedTransaction &&
+          selectedTransaction.type === "Expense"
+        ) {
           dispatch(deleteExpensesPayment(selectedCAId))
+            .then(() => {
+              setDeleteSubmitted(true);
+            })
+            .catch(() => {
+              setDeleteSubmitted(true);
+            });
+        } else if (
+          "type" in selectedTransaction &&
+          selectedTransaction.bankTransactionId === null
+        ) {
+          dispatch(deleteMonthlyJournalEntry(selectedCAId))
             .then(() => {
               setDeleteSubmitted(true);
             })
@@ -187,7 +202,7 @@ const CATransactionsList = () => {
       }
     }
     dispatch(getCATransactions(1, 10));
-  };  
+  };
 
   useEffect(() => {
     if (deleteSubmitted) {
@@ -299,47 +314,49 @@ const CATransactionsList = () => {
                     <TableCell>{ca.USDAmount}</TableCell>
                     <TableCell>{ca.accountPayableRecievableDetail}</TableCell>
 
-                    {(ca.type === 'Expense' || ca.type === 'Journal Entry') && <TableCell>
-                      <IconButton
-                        aria-label="Actions"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          event.preventDefault(); // Prevent default behavior
-                          handleMenuOpen(event, ca.id, ca);
-                        }}
-                        style={{ margin: 0, padding: 0 }}
-                      >
-                        <MoreVertIcon />
-                      </IconButton>
-                      <Menu
-                        id="actions-menu"
-                        MenuListProps={{
-                          "aria-labelledby": "long-button",
-                        }}
-                        anchorEl={anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={handleMenuClose}
-                        PaperProps={{
-                          style: {
-                            width: "20ch",
-                            boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
-                          },
-                        }}
-                      >
-                        {hasPermission(PERMISSIONS.DeletePurchase) &&
-                          ca.type === "Journal Entry" && (
-                            <MenuItem
-                              onClick={(event) => {
-                                event.stopPropagation();
-                                event.preventDefault();
-                                openConfirmationModal();
-                              }}
-                            >
-                              Delete
-                            </MenuItem>
-                          )}
-                      </Menu>
-                    </TableCell>}
+                    {(ca.type === "Expense" || ca.type === "Journal Entry") && (
+                      <TableCell>
+                        <IconButton
+                          aria-label="Actions"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            event.preventDefault(); // Prevent default behavior
+                            handleMenuOpen(event, ca.id, ca);
+                          }}
+                          style={{ margin: 0, padding: 0 }}
+                        >
+                          <MoreVertIcon />
+                        </IconButton>
+                        <Menu
+                          id="actions-menu"
+                          MenuListProps={{
+                            "aria-labelledby": "long-button",
+                          }}
+                          anchorEl={anchorEl}
+                          open={Boolean(anchorEl)}
+                          onClose={handleMenuClose}
+                          PaperProps={{
+                            style: {
+                              width: "20ch",
+                              boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
+                            },
+                          }}
+                        >
+                          {hasPermission(PERMISSIONS.DeletePurchase) &&
+                            ca.type === "Journal Entry" && (
+                              <MenuItem
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  event.preventDefault();
+                                  openConfirmationModal();
+                                }}
+                              >
+                                Delete
+                              </MenuItem>
+                            )}
+                        </Menu>
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))}
             </TableBody>

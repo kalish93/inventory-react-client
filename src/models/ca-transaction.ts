@@ -10,6 +10,7 @@ export interface CreateCATransaction {
 
 export interface CATransaction{
     id: string;
+    bankTransactionId: string;
     chartofAccount: string;
     chartofAccountId: string;
     type: string;

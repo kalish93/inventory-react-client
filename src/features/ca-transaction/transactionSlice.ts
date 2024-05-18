@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { List, PaginatedList } from "../../models/commons/paginatedList";
 import { CATransaction } from "../../models/ca-transaction";
+import { createMonthlyJournalEntry } from "./transactionActions";
 
 interface CATransactionState {
   monthlyTransactions: List<CATransaction>;
@@ -107,15 +108,32 @@ const transactionSlice = createSlice({
       state.loading = false;
     },
 
+    createMonthlyJournalEntrySuccess: (state, action) => {
+      const newTransactions = action.payload;
+      state.transactions = {
+        items: [...newTransactions, ...(state.transactions?.items || [])],
+        totalCount: (state.transactions?.totalCount || 0) + 2,
+        pageSize: state.transactions?.pageSize || 10,
+        currentPage: state.transactions?.currentPage || 1,
+        totalPages: state.transactions?.totalPages || 1,
+      };
+      state.loading = false;
+    },
+
     deleteJournalEntrySuccess: (state, action) => {
       const deleted = action.payload;
-      const deletedIds = deleted.map((item: { id: any }) => item.id);
+      const deletedIds = deleted.map((item: { id: any; }) => item.id);
+
       state.transactions = {
-        items:
-          state.transactions?.items.filter(
-            (transaction) => !deletedIds.includes(transaction.id)
-          ) || [],
-        totalCount: (state.transactions?.totalCount || 0) - deletedIds.length,
+        items: state.transactions?.items
+          ? state.transactions.items.filter(
+              (transaction) => !deletedIds.includes(transaction.id)
+            )
+          : [],
+        totalCount: Math.max(
+          (state.transactions?.totalCount || 0) - deletedIds.length,
+          0
+        ),
         pageSize: state.transactions?.pageSize || 10,
         currentPage: state.transactions?.currentPage || 1,
         totalPages: state.transactions?.totalPages || 1,
@@ -137,6 +155,7 @@ export const {
   getTransitPaymentsSuccess,
   createJournalEntrySuccessSuccess,
   deleteJournalEntrySuccess,
+  createMonthlyJournalEntrySuccess,
 } = transactionSlice.actions;
 
 export const selectTransactions = (state: {
