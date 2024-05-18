@@ -24,6 +24,7 @@ import { selectTransactions } from "../../features/ca-transaction/transactionSli
 import {
   createCATransaction,
   createJournalEntry,
+  createMonthlyJournalEntry,
   getCATransactions,
 } from "../../features/ca-transaction/transactionActions";
 import { useFormik } from "formik";
@@ -82,7 +83,15 @@ const MonthlyVentillation: React.FC<ProductFormProps> = ({
     // Fetch transactions for the selected month and year
     const month = dayjs(currentDate).month() + 1;
     const year = dayjs(currentDate).year();
-    dispatch(getMonthlyProvisions(month, year));
+    console.log(month, year);
+    if (
+      month !== null &&
+      year !== null &&
+      Number.isFinite(month) &&
+      Number.isFinite(year)
+    ) {
+      dispatch(getMonthlyProvisions(month, year));
+    }
   }, [dispatch, currentDate]);
 
   useEffect(() => {
@@ -96,8 +105,8 @@ const MonthlyVentillation: React.FC<ProductFormProps> = ({
         provision.productDeclaration?.unitIncomeTax *
         provision.saleDetail?.saleQuantity;
       eslCustomWarehouseFeeTotal +=
-        provision.saleDetail?.esl?.unitEslCost *
-        provision.saleDetail?.saleQuantity;
+        provision.saleDetail.productPurchase.esl.unitEslCost *
+          provision.saleDetail?.saleQuantity ?? 0;
       importTransportCostTotal +=
         provision.saleDetail?.productPurchase?.transport?.unitTransportCost *
         provision.saleDetail?.saleQuantity;
@@ -111,8 +120,6 @@ const MonthlyVentillation: React.FC<ProductFormProps> = ({
     setESLCustomWarehouseFee(eslCustomWarehouseFeeTotal);
     setImportTransportCost(importTransportCostTotal);
     setTransitFees(transitFeesTotal);
-
-    console.log("monthlyProvisions", monthlyProvisions);
   }, [monthlyProvisions]); // Only run this effect when monthlyProvisions changes
 
   const handleCloseSnackbar = () => {
@@ -151,76 +158,29 @@ const MonthlyVentillation: React.FC<ProductFormProps> = ({
   const formik = useFormik({
     initialValues: {
       date: null,
+      remark: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
       const formDataToSend1 = {
-        chartofAccountId: incomeTaxExpense?.id,
+        chartofAccountId1: incomeTaxExpense.id,
+        chartofAccountId2: provisionIncomeTaxExpense.id,
+        chartofAccountId3: eSLCustomWarehouse.id,
+        chartofAccountId4: provisionESLCustomWarehouse.id,
+        chartofAccountId5: importTransportCost.id,
+        chartofAccountId6: provisionImportTransportCost.id,
+        chartofAccountId7: transitFees.id,
+        chartofAccountId8: provisionTransitFees.id,
         date: values.date,
-        debit: IncomeTaxExpense,
-        credit: null,
+        amount1: IncomeTaxExpense,
+        amount2: ESLCustomWarehouseFee,
+        amount3: ImportTransportCost,
+        amount4: TransitFees,
         type: "Journal Entry",
-      };
-      const formDataToSend2 = {
-        chartofAccountId: provisionIncomeTaxExpense?.id,
-        date: values.date,
-        debit: null,
-        credit: IncomeTaxExpense,
-        type: "Journal Entry",
-      };
-      const formDataToSend3 = {
-        chartofAccountId: eSLCustomWarehouse?.id,
-        date: values.date,
-        debit: ESLCustomWarehouseFee,
-        credit: null,
-        type: "Journal Entry",
-      };
-      const formDataToSend4 = {
-        chartofAccountId: provisionESLCustomWarehouse?.id,
-        date: values.date,
-        debit: null,
-        credit: ESLCustomWarehouseFee,
-        type: "Journal Entry",
-      };
-      const formDataToSend5 = {
-        chartofAccountId: importTransportCost?.id,
-        date: values.date,
-        debit: ImportTransportCost,
-        credit: null,
-        type: "Journal Entry",
-      };
-      const formDataToSend6 = {
-        chartofAccountId: provisionImportTransportCost?.id,
-        date: values.date,
-        debit: null,
-        credit: ImportTransportCost,
-        type: "Journal Entry",
-      };
-      const formDataToSend7 = {
-        chartofAccountId: transitFees?.id,
-        date: values.date,
-        debit: TransitFees,
-        credit: null,
-        type: "Journal Entry",
-      };
-      const formDataToSend8 = {
-        chartofAccountId: provisionTransitFees?.id,
-        date: values.date,
-        debit: null,
-        credit: TransitFees,
-        type: "Journal Entry",
+        remark: values.remark,
       };
 
-      Promise.all([
-        dispatch(createCATransaction(formDataToSend1)),
-        dispatch(createCATransaction(formDataToSend2)),
-        dispatch(createCATransaction(formDataToSend3)),
-        dispatch(createCATransaction(formDataToSend4)),
-        dispatch(createCATransaction(formDataToSend5)),
-        dispatch(createCATransaction(formDataToSend6)),
-        dispatch(createCATransaction(formDataToSend7)),
-        dispatch(createCATransaction(formDataToSend8)),        
-      ])      
+      dispatch(createMonthlyJournalEntry(formDataToSend1));
       handleClose();
       setIsFormSubmitted(true);
       formik.resetForm();
@@ -300,6 +260,18 @@ const MonthlyVentillation: React.FC<ProductFormProps> = ({
                 </LocalizationProvider>
               </div>
               <div>
+                <TextField
+                  name="remark"
+                  label="Transaction Remark"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  sx={{ marginBottom: 2 }}
+                  value={formik.values.remark}
+                  onChange={formik.handleChange}
+                  error={formik.touched.remark && !formik.values.remark}
+                  onBlur={formik.handleBlur}
+                />
                 <TableContainer component={Paper}>
                   <Table sx={{ minWidth: 500 }} size="small">
                     <TableHead>

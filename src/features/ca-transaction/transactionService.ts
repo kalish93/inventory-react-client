@@ -116,6 +116,49 @@ export const CATransactionService = {
     }
   },
 
+  registerMonthlyJournalEntry: async (CATransactionData: any) => {
+    try {
+      const response = await handleRequest(`${JOURNAL_ENTRY_URL}/montly-summary`, {
+        method: "POST",
+        body: JSON.stringify(CATransactionData),
+      });
+
+      if (!response.ok) {
+        let errorMessage = `Bad Request: ${response.statusText}`;
+        const data = await response.json();
+        errorMessage = data.error || errorMessage;
+        return { success: false, error: errorMessage };
+      }
+
+      const data = await response.json();
+      return { success: true, data };
+    } catch (error) {
+      console.error("Error in registerMonthlyJournalEntry service:", error);
+      return { success: false, error: "Unexpected error occurred" };
+    }
+  },
+
+  deleteMonthlyJournalEntry: async (id: any) => {
+    try {
+      const response = await handleRequest(`${JOURNAL_ENTRY_URL}/montly-summary/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        let errorMessage = `Bad Request: ${response.statusText}`;
+        const data = await response.json();
+        errorMessage = data.error || errorMessage;
+        return { success: false, error: errorMessage };
+      }
+
+      const data = await response.json();
+      return { success: true, data };
+    } catch (error) {
+      console.error("Error in deleteMonthlyJournalEntry service:", error);
+      return { success: false, error: "Unexpected error occurred" };
+    }
+  },
+
   deleteJournalEntry: async (id: any) => {
     const response = await handleRequest(`${JOURNAL_ENTRY_URL}/${id}`, {
       method: "DELETE",
