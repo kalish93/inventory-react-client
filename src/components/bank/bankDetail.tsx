@@ -62,11 +62,11 @@ const BankDetail = () => {
         Bank Start Date: {dayjs(bank.startingValueDate).format("MM/DD/YYYY")}
       </Typography>
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[5, 10, 25, 50, 100, 250]}
         component="div"
         count={totalCount || 0}
         rowsPerPage={rowsPerPage}
-        page={currentPage && currentPage > 0 ? currentPage - 1 : 0}
+        page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
