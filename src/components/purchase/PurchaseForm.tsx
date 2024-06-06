@@ -180,7 +180,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
         setAddedProducts((prevProducts) => [...prevProducts, newProduct]);
         setFormData((prevData: any) => ({
           ...prevData,
-          number:++ waybillNumber,
+          number: waybillNumber,
           productId: "",
           declarationId: "",
           purchaseQuantity: null,
@@ -233,7 +233,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
 
     dispatch(createPurchase(formDataToSend));
     setFormData({
-      number: ++ waybillNumber,
+      number: waybillNumber,
       date: null,
       truckNumber: "",
       exchangeRate: null,

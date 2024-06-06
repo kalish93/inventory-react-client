@@ -166,7 +166,6 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
             : esl.cost - Number(esl.paidAmount) + remainingAmount,
         paymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
       });
-      console.log(remainingAmount);
       i++;
 
       if (remainingAmount <= 0) break; // Exit the loop if remaining amount is <= 0

@@ -154,7 +154,7 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
     dispatch(createSale(combinedData));
     setIsFormSubmitted(true);
     setFormData({
-      invoiceNumber: ++ invoiceNumber,
+      invoiceNumber: invoiceNumber,
       invoiceDate: null,
       customerId: "",
       productId: "",
