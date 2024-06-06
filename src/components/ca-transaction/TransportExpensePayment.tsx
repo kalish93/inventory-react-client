@@ -222,7 +222,6 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
     let remainingAmount = formik.values.amount as unknown as number;
     let i = 0;
     const updatedPaidforTransports = [];
-    console.log(currentUnpaidTransports);
     while (remainingAmount > 0 && i < currentUnpaidTransports.length) {
       const transport = currentUnpaidTransports[i];
       remainingAmount -= transport.cost - Number(transport.paidAmount);

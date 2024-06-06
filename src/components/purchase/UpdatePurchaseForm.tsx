@@ -110,7 +110,6 @@ const UpdatePurchaseForm: React.FC<UpdatePurchaseFormProps> = ({
 
   useEffect(() => {
     if (selectedPurchase) {
-      console.log(selectedPurchase);
       formik.setValues({
         number: selectedPurchase ? selectedPurchase.number : "",
         date: selectedPurchase ? selectedPurchase.date.split("T")[0] : "",

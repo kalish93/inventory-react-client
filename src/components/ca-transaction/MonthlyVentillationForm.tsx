@@ -83,7 +83,6 @@ const MonthlyVentillation: React.FC<ProductFormProps> = ({
     // Fetch transactions for the selected month and year
     const month = dayjs(currentDate).month() + 1;
     const year = dayjs(currentDate).year();
-    console.log(month, year);
     if (
       month !== null &&
       year !== null &&

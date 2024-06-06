@@ -75,7 +75,7 @@ const PurchaseList = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
-  const { error } = useSelector(selectPurchase);
+  const { error, isError } = useSelector(selectPurchase);
   const [selectedPurchase, setSelectedPurchase] = useState(null);
   const [value, setValue] = useState(0);
   const [openUpdateForm, setOpenUpdateForm] = useState(false); // State to control opening and closing of update form
@@ -119,15 +119,15 @@ const PurchaseList = () => {
 
   useEffect(() => {
     if (deleteSubmitted) {
-      if (error) {
-        showSnackbar(error, "error");
+      if (isError) {
+        showSnackbar('There are sales of this purchase. Please delete the sales first.', "error");
       } else {
         showSnackbar("Purchase deleted successfully", "success");
       }
       setDeleteSubmitted(false);
     }
     dispatch(getPurchases(1,10));
-  }, [deleteSubmitted, error]);
+  }, [deleteSubmitted, error, isError]);
 
   const handleMenuOpen = (event: any, purchaseId: any, purchase: any) => {
     setAnchorEl(event.currentTarget);
