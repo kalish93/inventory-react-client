@@ -131,7 +131,7 @@ const MonthlyReallocation: React.FC<ProductFormProps> = ({
     (ca: any) => ca.name === "Provision for Import Taxes"
   );
   const eSLCustomWarehouse = cashOfAccounts.find(
-    (ca: any) => ca.name === "ESL Custom Warehouse"
+    (ca: any) => ca.name === "ESL Cost"
   );
   const provisionESLCustomWarehouse = cashOfAccounts.find(
     (ca: any) => ca.name === "Provision for ESL Fees"
