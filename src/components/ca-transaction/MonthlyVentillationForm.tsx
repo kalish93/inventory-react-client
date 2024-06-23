@@ -283,55 +283,55 @@ const MonthlyVentillation: React.FC<ProductFormProps> = ({
                     <TableBody>
                       <TableRow>
                         <TableCell>Income Tax Expense</TableCell>
-                        <TableCell></TableCell>
                         <TableCell>
                           {IncomeTaxExpense.toLocaleString()}
                         </TableCell>
+                        <TableCell></TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>Provision for Import Taxes</TableCell>
+                        <TableCell></TableCell>
                         <TableCell>
                           {IncomeTaxExpense.toLocaleString()}
                         </TableCell>
-                        <TableCell></TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>ESL Custom Warehouse</TableCell>
-                        <TableCell></TableCell>
                         <TableCell>
                           {ESLCustomWarehouseFee.toLocaleString()}
                         </TableCell>
+                        <TableCell></TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>Provision for ESL Fees</TableCell>
+                        <TableCell></TableCell>
                         <TableCell>
                           {ESLCustomWarehouseFee.toLocaleString()}
                         </TableCell>
-                        <TableCell></TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>Import Transport Cost</TableCell>
-                        <TableCell></TableCell>
                         <TableCell>
                           {ImportTransportCost.toLocaleString()}
                         </TableCell>
+                        <TableCell></TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>Provision for Transport Cost</TableCell>
+                        <TableCell></TableCell>
                         <TableCell>
                           {ImportTransportCost.toLocaleString()}
                         </TableCell>
-                        <TableCell></TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>Transit fees</TableCell>
-                        <TableCell></TableCell>
                         <TableCell>{TransitFees.toLocaleString()}</TableCell>
+                        <TableCell></TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>Provision for Transit Fees</TableCell>
-                        <TableCell>{TransitFees.toLocaleString()}</TableCell>
                         <TableCell></TableCell>
+                        <TableCell>{TransitFees.toLocaleString()}</TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>
