@@ -86,31 +86,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
   // const osmaSupplier = suppliers.find(
   //   (supplier: any) => supplier.name === "OSMA GROUP FZE"
   // );
-
-  const unpaidPurchases = purchases.filter(
-    (purchase: any) =>
-      purchase.paymentStatus === "Incomplete" ||
-      purchase.paymentStatus === "Partially Complete" &&
-      purchase.supplierId === formik.values.chartofAccountId2
-  );
-
-  unpaidPurchases.reverse();
-
-  useEffect(() => {
-    if (isFormSubmitted && !loading) {
-      if (isError) {
-        showSnackbar(error || "Unknown error", "error");
-      } else {
-        showSnackbar("Transaction registered successfully.", "success");
-      }
-      setIsFormSubmitted(false);
-    }
-  }, [error, isError, loading, isFormSubmitted]);
-
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
-
+  
   const validationSchema = yup.object({
     chartofAccountId1: yup.string().required("Bank name is required"),
     date: yup.string().required("Transaction date is required"),
@@ -161,6 +137,29 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
       formik.resetForm();
     },
   });
+  const unpaidPurchases = purchases.filter(
+    (purchase: any) =>
+      purchase.paymentStatus === "Incomplete" ||
+      purchase.paymentStatus === "Partially Complete" &&
+      purchase.supplierId === formik.values.chartofAccountId2
+  );
+
+  unpaidPurchases.reverse();
+
+  useEffect(() => {
+    if (isFormSubmitted && !loading) {
+      if (isError) {
+        showSnackbar(error || "Unknown error", "error");
+      } else {
+        showSnackbar("Transaction registered successfully.", "success");
+      }
+      setIsFormSubmitted(false);
+    }
+  }, [error, isError, loading, isFormSubmitted]);
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
 
   const handleCancel = () => {
     handleClose();

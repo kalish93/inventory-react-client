@@ -20,7 +20,7 @@ import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { selectSale } from "../../features/sales/salseSlice";
 import { AppDispatch } from "../../app/store";
-import { getSales, deleteSale } from "../../features/sales/salesActions";
+import { getSales, deleteSale, getInvoiceNumber } from "../../features/sales/salesActions";
 import SaleForm from "./SaleForm";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ConfirmationModal from "../common/confirmationModal";
@@ -125,6 +125,7 @@ const SalesList = () => {
   };
 
   const handleOpenModal = () => {
+    dispatch(getInvoiceNumber());
     setOpenModal(true);
   };
 

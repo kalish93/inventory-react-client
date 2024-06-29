@@ -24,6 +24,7 @@ import { selectPurchase } from "../../features/purchase/purchaseSlice";
 import {
   deletePurchase,
   getPurchases,
+  getWaybillNumber,
 } from "../../features/purchase/purchaseActions";
 import PurchaseForm from "./PurchaseForm";
 import dayjs from "dayjs";
@@ -164,6 +165,7 @@ const PurchaseList = () => {
   };
 
   const handleOpenModal = () => {
+    dispatch(getWaybillNumber());
     setOpenModal(true);
   };
 
