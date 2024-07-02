@@ -13,6 +13,7 @@ export interface CATransaction{
     bankTransactionId: string;
     chartofAccount: string;
     chartofAccountId: string;
+    supplierId: string;
     type: string;
     date: Date;
     remark?: string;
