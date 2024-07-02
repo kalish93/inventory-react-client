@@ -163,11 +163,12 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
     });
     setAddedProducts([]);
     handleClose();
+    dispatch(getInvoiceNumber());
   };
 
   const handleCancel = () => {
     setFormData({
-      invoiceNumber: 0,
+      invoiceNumber: invoiceNumber,
       invoiceDate: null,
       customerId: "",
       productId: "",
@@ -178,7 +179,6 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
     setTouched({});
     handleClose();
   };
-
   const isAddProductButtonDisabled = () => {
     if (
       formData.productId === "" ||

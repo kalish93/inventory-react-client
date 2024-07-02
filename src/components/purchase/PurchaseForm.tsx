@@ -232,6 +232,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
     };
 
     dispatch(createPurchase(formDataToSend));
+    dispatch(getWaybillNumber());
     setFormData({
       number: waybillNumber,
       date: null,
@@ -254,7 +255,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
 
   const handleCancel = () => {
     setFormData({
-      number: null,
+      number: waybillNumber,
       date: null,
       truckNumber: "",
       exchangeRate: null,
@@ -270,6 +271,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
     setAddedProducts([]);
     setTouched({});
     handleClose();
+    dispatch(getWaybillNumber());
   };
 
   const isPurchaseFormValid = () => {
@@ -520,7 +522,7 @@ const PurchaseForm: React.FC<PurchaseFormProps> = ({ open, handleClose }) => {
               <div style={{ marginBottom: 15 }}>
                 <Autocomplete
                   options={declarations.filter((declaration: any) =>
-                    declaration.declarationProducts.some(
+                    declaration?.declarationProducts?.some(
                       (product: any) => product.declarationBalance !== 0
                     )
                   )}
