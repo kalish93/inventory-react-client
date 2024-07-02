@@ -131,14 +131,6 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
       formik.resetForm();
     },
   });
-  const unpaidPurchases = purchases.filter(
-    (purchase: any) =>
-      purchase.paymentStatus === "Incomplete" ||
-      purchase.paymentStatus === "Partially Complete" &&
-      purchase.supplierId === formik.values.chartofAccountId2
-  );
-
-  unpaidPurchases.reverse();
 
   useEffect(() => {
     if (isFormSubmitted && !loading) {
