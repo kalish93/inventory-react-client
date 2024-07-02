@@ -33,7 +33,7 @@ function BalanceSheetSummary() {
   return (
     <div>
       <Card style={{padding:'20px', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'10px'}}>
-        <h2>balance sheet</h2>
+        <h2>Balance Sheet</h2>
         <div style={{display: "flex", gap: "1.5rem" }}>
         <TextField
             id="endDate"

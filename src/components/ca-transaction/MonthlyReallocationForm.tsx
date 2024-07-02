@@ -34,6 +34,7 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { getSupplier, getSuppliers } from "../../features/supplier/supplierActions";
 
 interface ProductFormProps {
   open: boolean;
@@ -48,6 +49,7 @@ const MonthlyReallocation: React.FC<ProductFormProps> = ({
   const cashOfAccounts = useSelector(
     (state: any) => state.cashOfAccount.cashOfAccounts.items
   );
+  const suppliers = useSelector((state: any) => state.supplier.suppliers.items);
   const CATransactionState = useSelector(selectTransactions);
   const { items: monthlyTransactions = [] } =
     CATransactionState.monthlyTransactions;
@@ -68,6 +70,10 @@ const MonthlyReallocation: React.FC<ProductFormProps> = ({
   };
 
   useEffect(() => {
+    dispatch(getSuppliers());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (isFormSubmitted && !loading) {
       if (isError) {
         showSnackbar(error || "Unknown error", "error");
@@ -82,7 +88,7 @@ const MonthlyReallocation: React.FC<ProductFormProps> = ({
     // Fetch transactions for the selected month and year
     const month = dayjs(currentDate).month() + 1;
     const year = dayjs(currentDate).year();
-    
+
     if (
       month !== null &&
       year !== null &&
@@ -98,11 +104,13 @@ const MonthlyReallocation: React.FC<ProductFormProps> = ({
     let eslCustomWarehouseFeeTotal = 0;
     let importTransportCostTotal = 0;
     let transitFeesTotal = 0;
-
     monthlyTransactions.forEach((transaction) => {
       if (transaction.type === "Journal Entry") {
         return;
-      } else if (transaction.chartofAccountId === incomeTaxExpense?.id) {
+      } else if (
+        transaction.chartofAccountId === incomeTaxExpense?.id ||
+        transaction.supplierId === customTaxSupplier?.id
+      ) {
         incomeTaxExpenseTotal += transaction.debit ?? 0;
       } else if (transaction.chartofAccountId === eSLCustomWarehouse?.id) {
         eslCustomWarehouseFeeTotal += transaction.debit ?? 0;
@@ -123,6 +131,10 @@ const MonthlyReallocation: React.FC<ProductFormProps> = ({
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
+
+  const customTaxSupplier = suppliers.find(
+    (supplier: any) => supplier.name === "Custom Taxes"
+  );
 
   const incomeTaxExpense = cashOfAccounts.find(
     (ca: any) => ca.name === "Income tax expense"
