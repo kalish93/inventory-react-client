@@ -184,7 +184,7 @@ const SalesList = () => {
                   <TableCell>
                     {sale.customer?.firstName + " " + sale.customer?.lastName}
                   </TableCell>
-                  <TableCell>{sale.paidAmount}</TableCell>
+                  <TableCell>{sale.paidAmount.toLocaleString()}</TableCell>
                   <TableCell>{sale.paymentStatus}</TableCell>
                   <TableCell>
                     <IconButton

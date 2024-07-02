@@ -189,6 +189,7 @@ const DeclarationList = () => {
                 <TableCell>Declaration Number</TableCell>
                 <TableCell>Declaration Date</TableCell>
                 <TableCell>Paid Amount</TableCell>
+                <TableCell>Type</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -208,6 +209,9 @@ const DeclarationList = () => {
                     {declaration.paidAmount !== 0
                       ? declaration.paidAmount?.toLocaleString()
                       : null}
+                  </TableCell>
+                  <TableCell>
+                    {declaration.paidAmount !== 0 ? "Payment" : null}
                   </TableCell>
                   <TableCell>
                     <IconButton

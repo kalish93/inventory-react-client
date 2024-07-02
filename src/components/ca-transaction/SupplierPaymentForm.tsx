@@ -12,22 +12,15 @@ import {
 } from "@mui/material";
 import { AppDispatch } from "../../app/store";
 import { selectTransactions } from "../../features/ca-transaction/transactionSlice";
-import { createCATransaction } from "../../features/ca-transaction/transactionActions";
 import {
   createSupplierPayment,
   getPurchases,
 } from "../../features/purchase/purchaseActions";
 import { getCashOfAccounts } from "../../features/cash-of-account/cashOfAccountActions";
 import { getSuppliers } from "../../features/supplier/supplierActions";
-import { getCustomers } from "../../features/customer/customerActions";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import {
-  createBank,
-  createBankTransaction,
-  getBanks,
-  updateBank,
-} from "../../features/bank/bankActions";
+import { getBanks } from "../../features/bank/bankActions";
 import { use } from "echarts";
 
 interface ProductFormProps {
@@ -52,6 +45,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const { isError, error, loading } = useSelector(selectTransactions);
   const [paidforPurchases, setPaidforPurchases] = useState<any>([]);
+  const [unpaidPurchases, setUnpaidPurchases] = useState<any>(purchases);
 
   const showSnackbar = (message: string, severity: "success" | "error") => {
     setSnackbarMessage(message);
@@ -87,15 +81,6 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
   //   (supplier: any) => supplier.name === "OSMA GROUP FZE"
   // );
 
-  const unpaidPurchases = purchases.filter(
-    (purchase: any) =>
-      purchase.paymentStatus === "Incomplete" ||
-      purchase.paymentStatus === "Partially Complete" &&
-      purchase.supplierId === formik.values.chartofAccountId2
-  );
-
-  unpaidPurchases.reverse();
-
   useEffect(() => {
     if (isFormSubmitted && !loading) {
       if (isError) {
@@ -129,39 +114,49 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      const formDataToSend  = {
+      const formDataToSend = {
         bankId: values.chartofAccountId1,
         date: values.date,
         remark: values.transactionRemark,
         credit: values.exchangeRate
-        ? values.amount! * values.exchangeRate
-        : values.amount,
+          ? values.amount! * values.exchangeRate
+          : values.amount,
         debit: values.exchangeRate
           ? values.amount! * values.exchangeRate
           : values.amount,
         supplierId: values.chartofAccountId2,
         type: "Supplier Payment",
         chartofAccountId: values.exchangeRate
-        ? accountsPayableUSD.id
-        : accountsPayable.id,
-      exchangeRate: values.exchangeRate,
-      USDAmount: values.amount,
-      purchases: paidforPurchases,
-      payee: values.chartofAccountId2,
-      foreignCurrency: values.exchangeRate ? -values.amount! : null,
-      payment: values.exchangeRate
-        ? values.amount! * values.exchangeRate
-        : values.amount,
-      deposit: null,
+          ? accountsPayableUSD.id
+          : accountsPayable.id,
+        exchangeRate: values.exchangeRate,
+        USDAmount: values.amount,
+        purchases: paidforPurchases,
+        payee: values.chartofAccountId2,
+        foreignCurrency: values.exchangeRate ? -values.amount! : null,
+        payment: values.exchangeRate
+          ? values.amount! * values.exchangeRate
+          : values.amount,
+        deposit: null,
       };
 
-      dispatch(createSupplierPayment(formDataToSend))
+      dispatch(createSupplierPayment(formDataToSend));
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
     },
   });
 
+  useEffect(() => {
+    const filteredPurchases = purchases.filter(
+      (purchase: any) =>
+        purchase.paymentStatus === "Incomplete" ||
+        (purchase.paymentStatus === "Partially Complete" &&
+          purchase.supplier.id === formik.values.chartofAccountId2)
+    );
+    filteredPurchases.reverse();
+    setUnpaidPurchases(filteredPurchases);
+  }, [purchases, formik.values.chartofAccountId2]);
   const handleCancel = () => {
     handleClose();
     formik.resetForm();
@@ -170,63 +165,67 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
   useEffect(() => {
     const updatedPaidforPurchases = [];
     let remainingAmount = formik.values.amount as unknown as number;
-    if(formik.values.exchangeRate !== null){
-    let i = 0;
-    while (remainingAmount > 0 && i < unpaidPurchases.length) {
-      const purchase = unpaidPurchases[i];
-      let totalAmount = 0;
-      for (let productPurchase of purchase.products) {
-        totalAmount +=
-          productPurchase.purchaseUnitPriceUSD *
-          productPurchase.purchaseQuantity;
-      }
-      //
-      remainingAmount -= totalAmount - Number(purchase.paidAmountUSD);
-      updatedPaidforPurchases.push({
-        ...purchase,
-        paidAmountUSD:
-          remainingAmount >= 0
-            ? totalAmount - Number(purchase.paidAmountUSD)
-            : totalAmount - Number(purchase.paidAmountUSD) + remainingAmount,
-        paidAmountETB:
-          remainingAmount >= 0
-            ? (totalAmount - Number(purchase.paidAmountUSD)) *
-              formik.values.exchangeRate!!
-            : (totalAmount - Number(purchase.paidAmountUSD) + remainingAmount) *
-              formik.values.exchangeRate!!,
-        paymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
-      });
-      i++;
+    if (formik.values.exchangeRate !== null) {
+      let i = 0;
+      while (remainingAmount > 0 && i < unpaidPurchases.length) {
+        const purchase = unpaidPurchases[i];
+        let totalAmount = 0;
+        for (let productPurchase of purchase.products) {
+          totalAmount +=
+            productPurchase.purchaseUnitPriceUSD *
+            productPurchase.purchaseQuantity;
+        }
+        const amountPaidAlready = Number(purchase.paidAmountUSD);
+        const amountPaidAlreadyETB = Number(purchase.paidAmountETB);
+        const amountToBePaid = totalAmount - amountPaidAlready;
+        remainingAmount -= amountToBePaid;
+        updatedPaidforPurchases.push({
+          ...purchase,
+          paidAmountUSD:
+            amountPaidAlready + remainingAmount >= 0
+              ? amountToBePaid
+              : amountToBePaid + remainingAmount,
+          paidAmountETB:
+            amountPaidAlreadyETB + remainingAmount >= 0
+              ? amountToBePaid * formik.values.exchangeRate!!
+              : (amountToBePaid + remainingAmount) *
+                formik.values.exchangeRate!!,
+          paymentStatus:
+            remainingAmount >= 0 ? "Complete" : "Partially Complete",
+        });
+        i++;
 
-      if (remainingAmount <= 0) break; // Exit the loop if remaining amount is <= 0
+        if (remainingAmount <= 0) break; // Exit the loop if remaining amount is <= 0
+      }
+    } else {
+      let i = 0;
+      while (remainingAmount > 0 && i < unpaidPurchases.length) {
+        const purchase = unpaidPurchases[i];
+        let totalAmount = 0;
+        for (let productPurchase of purchase.products) {
+          totalAmount +=
+            productPurchase.purchaseUnitPriceETB *
+            productPurchase.purchaseQuantity;
+        }
+        const amountPaidAlreadyETB = Number(purchase.paidAmountETB);
+        const amountToBePaid = totalAmount - amountPaidAlreadyETB;
+        remainingAmount -= amountToBePaid;
+        updatedPaidforPurchases.push({
+          ...purchase,
+          paidAmountUSD: 0,
+          paidAmountETB:
+           amountPaidAlreadyETB + remainingAmount >= 0
+              ? amountToBePaid
+              : amountToBePaid + remainingAmount,
+          paymentStatus:
+            remainingAmount >= 0 ? "Complete" : "Partially Complete",
+        });
+        i++;
+
+        if (remainingAmount <= 0) break;
+      }
     }
-  }else{
-    let i = 0;
-    while (remainingAmount > 0 && i < unpaidPurchases.length) {
-      const purchase = unpaidPurchases[i];
-      let totalAmount = 0;
-      for (let productPurchase of purchase.products) {
-        totalAmount +=
-          productPurchase.purchaseUnitPriceETB *
-          productPurchase.purchaseQuantity;
-      }
-      //
-      remainingAmount -= totalAmount - Number(purchase.paidAmountETB);
-      updatedPaidforPurchases.push({
-        ...purchase,
-        paidAmountUSD:
-         0,
-        paidAmountETB:
-          remainingAmount >= 0
-            ? (totalAmount - Number(purchase.paidAmountETB)) 
-            : (totalAmount - Number(purchase.paidAmountETB) + remainingAmount),
-        paymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
-      });
-      i++;
 
-      if (remainingAmount <= 0) break;
-  }
-}
     setPaidforPurchases(updatedPaidforPurchases);
   }, [formik.values.amount, formik.values.exchangeRate, dispatch]);
 
@@ -394,26 +393,27 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
                   }
                   required
                 />
-                {supplierCurrency === 'USD' &&
-                <TextField
-                  name="exchangeRate"
-                  label="Exchange Rate"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  onChange={formik.handleChange}
-                  value={formik.values.exchangeRate}
-                  type="number"
-                  error={
-                    formik.touched.exchangeRate &&
-                    Boolean(formik.errors.exchangeRate)
-                  }
-                  onBlur={formik.handleBlur}
-                  helperText={
-                    formik.touched.exchangeRate &&
-                    (formik.errors.exchangeRate as React.ReactNode)
-                  }
-                />}
+                {supplierCurrency === "USD" && (
+                  <TextField
+                    name="exchangeRate"
+                    label="Exchange Rate"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    onChange={formik.handleChange}
+                    value={formik.values.exchangeRate}
+                    type="number"
+                    error={
+                      formik.touched.exchangeRate &&
+                      Boolean(formik.errors.exchangeRate)
+                    }
+                    onBlur={formik.handleBlur}
+                    helperText={
+                      formik.touched.exchangeRate &&
+                      (formik.errors.exchangeRate as React.ReactNode)
+                    }
+                  />
+                )}
                 <TextField
                   name="transactionRemark"
                   label="Transaction Remark"

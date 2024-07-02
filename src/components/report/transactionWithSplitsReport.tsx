@@ -34,7 +34,7 @@ function TransactionWithSplitSummary() {
   return (
     <div>
       <Card style={{padding:'20px', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'10px'}}>
-        <h2>Transaction with split summary</h2>
+        <h2 style={{textAlign: 'center'}}>Transaction with Split Summary</h2>
         <div style={{display: "flex", gap: "1.5rem" }}>
         <TextField
             id="startDate"

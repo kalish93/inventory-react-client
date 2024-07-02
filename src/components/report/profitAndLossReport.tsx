@@ -34,7 +34,7 @@ function ProfitAndLossSummary() {
   return (
     <div>
       <Card style={{padding:'20px', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'10px'}}>
-        <h2>Profit and loss report</h2>
+        <h2>Profit and Loss Report</h2>
         <div style={{display: "flex", gap: "1.5rem" }}>
         <TextField
             id="startDate"
