@@ -307,7 +307,7 @@ const MonthlyReallocation: React.FC<ProductFormProps> = ({
                         <TableCell></TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell>ESL Custom Warehouse</TableCell>
+                        <TableCell>ESL Cost</TableCell>
                         <TableCell></TableCell>
                         <TableCell>
                           {ESLCustomWarehouseFee.toLocaleString()}
