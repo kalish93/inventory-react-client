@@ -265,7 +265,7 @@ const DeclarationList = () => {
         open={confirmationModalOpen}
         onClose={closeConfirmationModal}
         onConfirm={handleConfirmAction}
-        title="Delete Driver"
+        title="Delete Declaration"
         content="Are you sure you want to delete this declaration?"
       />
 
