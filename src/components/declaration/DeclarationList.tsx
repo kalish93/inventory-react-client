@@ -216,7 +216,7 @@ const DeclarationList = () => {
                       : null}
                   </TableCell>
                   <TableCell>
-                    {declaration.paidAmount !== 0 ? "Payment" : null}
+                    {declaration.paidAmount !== 0 || null ? "Payment" : null}
                   </TableCell>
                   <TableCell>
                     <IconButton
