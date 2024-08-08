@@ -124,7 +124,7 @@ const Esl = () => {
     setSnackbarOpen(true);
   };
 
-  if (loading) {
+  if (!esl) {
     return <CircularProgress />;
   }
 
