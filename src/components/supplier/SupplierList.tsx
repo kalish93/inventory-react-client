@@ -129,7 +129,7 @@ const SupplierList = () => {
     setOpenPaymentModal(false);
   };
 
-  if (loading) {
+  if (!suppliers) {
     return <CircularProgress />;
   }
 
