@@ -15,6 +15,7 @@ import {
   MenuItem,
   Snackbar,
   Alert,
+  CircularProgress,
 } from '@mui/material';
 
 import StoreForm from './StoreForm';
@@ -117,6 +118,10 @@ const StoresList = () => {
     setSelectedStoreId(null);
     setSelectedStore(null)
   };
+  
+  if (loading) {
+    return <CircularProgress />;
+  }
 
   return (
     <div>

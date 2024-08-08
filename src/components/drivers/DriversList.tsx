@@ -15,6 +15,7 @@ import {
   MenuItem,
   Snackbar,
   Alert,
+  CircularProgress,
 } from '@mui/material';
 
 import DriverForm from './DriverForm';
@@ -119,6 +120,10 @@ const DriversList = () => {
     setSelectedDriverId(null);
     setSelectedDriver(null)
   };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
 
   return (
     <div>

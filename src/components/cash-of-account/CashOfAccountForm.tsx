@@ -72,7 +72,7 @@ const CreateCashOfAccountForm: React.FC<CreateCashOfAccountFormProps> = ({
           }}
         >        
         <Form>
-          <DialogTitle>Create Cash of Account</DialogTitle>
+          <DialogTitle>Create Chart of Account</DialogTitle>
           <DialogContent>
             <Box display="flex" flexDirection="column" mt={2}>
               <Field
@@ -128,7 +128,7 @@ const CreateCashOfAccountForm: React.FC<CreateCashOfAccountFormProps> = ({
               Cancel
             </Button>
             <Button type="submit" variant="contained" color="primary">
-              Create Cash of Account
+              Create Chart of Account
             </Button>
           </DialogActions>
         </Form>

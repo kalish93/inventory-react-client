@@ -15,6 +15,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  CircularProgress,
 } from "@mui/material";
 import { AppDispatch } from "../../app/store";
 import { selectDeclaration } from "../../features/declaration/declarationSlice";
@@ -152,6 +153,10 @@ const DeclarationList = () => {
   const handleCloseTransactionModal = () => {
     setOpenTransactionForm(false);
   };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
 
   return (
     <div>

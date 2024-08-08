@@ -1,4 +1,5 @@
 import {
+  CircularProgress,
     Paper,
     Tab,
     Table,
@@ -56,6 +57,7 @@ import SupplierPurchaseList from "./SupplierPurchaseList";
       totalCount,
     } = supplierState.supplierPayments;
     const supplier = supplierState.supplier;
+    const loading = supplierState.loading;
   
     useEffect(()=>{
       dispatch(getSupplier(id));
@@ -77,6 +79,11 @@ import SupplierPurchaseList from "./SupplierPurchaseList";
     const handleChange = (event: any, newValue: any) => {
       setValue(newValue);
     };
+
+    if (loading) {
+      return <CircularProgress />;
+    }
+  
     return (
       <div>
       <h2 style={{textAlign:'center'}}>Supplier Name: {supplier?.name}</h2>

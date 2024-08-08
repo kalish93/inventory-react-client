@@ -15,6 +15,7 @@ import {
   MenuItem,
   Snackbar,
   Alert,
+  CircularProgress,
 } from '@mui/material';
 import { AppDispatch } from '../../app/store';
 import { selectSupplier } from '../../features/supplier/supplierSlice';
@@ -127,6 +128,11 @@ const SupplierList = () => {
   const handleClosePaymentModal = () => {
     setOpenPaymentModal(false);
   };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
+
   return (
     <div>
       {hasPermission(PERMISSIONS.CreateSupplier) && <Button variant="contained" color="primary" onClick={handleOpenModal}>

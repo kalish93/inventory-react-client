@@ -15,6 +15,7 @@ import {
   MenuItem,
   Snackbar,
   Alert,
+  CircularProgress,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useNavigate } from "react-router-dom";
@@ -36,6 +37,7 @@ const UnitOfMeasurementList = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
   const error = useSelector((state: any) => state.product.error);
+  const loading = useSelector((state: any) => state.product.loading);
   const [deleteSubmitted, setDeleteSubmitted] = useState(false);
 
 
@@ -109,6 +111,10 @@ const UnitOfMeasurementList = () => {
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
 
   return (
     <div>

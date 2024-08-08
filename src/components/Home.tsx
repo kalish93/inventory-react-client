@@ -263,7 +263,7 @@ const Home = () => {
             }
           />
           <Route
-            path="/cash-of-accounts"
+            path="/chart-of-accounts"
             element={<AuthenticatedRoute element={<CashOfAccountList />} />}
           />
           <Route

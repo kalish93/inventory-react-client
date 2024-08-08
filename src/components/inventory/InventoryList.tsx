@@ -9,6 +9,7 @@ import {
   TableRow,
   Paper,
   TablePagination,
+  CircularProgress,
 } from "@mui/material";
 
 import { AppDispatch } from "../../app/store";
@@ -26,6 +27,7 @@ const InventoryList = () => {
   } = inventoryState.inventories;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const { loading } = inventoryState;
 
   useEffect(() => {
     dispatch(getInventories(page + 1, rowsPerPage));
@@ -39,6 +41,10 @@ const InventoryList = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
 
   return (
     <div>

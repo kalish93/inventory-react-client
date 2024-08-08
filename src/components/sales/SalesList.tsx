@@ -15,6 +15,7 @@ import {
   MenuItem,
   Alert,
   Snackbar,
+  CircularProgress,
 } from "@mui/material";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
@@ -140,6 +141,10 @@ const SalesList = () => {
   const handleOpenUpdateModal = () => {
     setOpenUpdateModal(true);
   };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
 
   return (
     <div>

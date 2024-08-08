@@ -15,6 +15,7 @@ import {
   MenuItem,
   Snackbar,
   Alert,
+  CircularProgress,
 } from "@mui/material";
 
 import BankForm from "./bankForm";
@@ -131,6 +132,10 @@ const BanksList = () => {
     setSelectedBankId(null);
     setSelectedBank(null);
   };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
 
   return (
     <div>

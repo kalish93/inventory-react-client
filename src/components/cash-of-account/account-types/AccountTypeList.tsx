@@ -23,6 +23,7 @@ import { PERMISSIONS } from "../../../core/permissions";
 const AccountTypeList = () => {
   const dispatch = useDispatch<AppDispatch>();
   const accountTypeState = useSelector(selectAccountType);
+  const { loading } = accountTypeState;
   const accountTypes = accountTypeState.accountTypes;
   const [isFormOpen, setFormOpen] = useState(false);
   const [selectedAccountTypeId, setSelectedAccountTypeId] = useState<string | null>(null);
@@ -53,7 +54,7 @@ const AccountTypeList = () => {
     setFormOpen(false);
   };
 
-  if (!accountTypes) {
+  if (loading) {
     return <CircularProgress />;
   }
 

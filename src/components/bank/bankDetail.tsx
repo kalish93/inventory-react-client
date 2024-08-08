@@ -23,6 +23,7 @@ const BankDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const bankState = useSelector(selectBank);
+  const {loading} = bankState;
   const bank = bankState.bank;
   const {
     items: bankTransactions = [],
@@ -49,7 +50,7 @@ const BankDetail = () => {
     setPage(0);
   };
 
-  if (!bank) {
+  if (loading) {
     return <CircularProgress />;
   }
 

@@ -13,6 +13,7 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  CircularProgress,
 } from "@mui/material";
 import AccountTypeList from "./account-types/AccountTypeList";
 import { useDispatch, useSelector } from "react-redux";
@@ -55,6 +56,7 @@ const CashOfAccountList = () => {
     currentPage,
     totalCount,
   } = cashOfAccountState.cashOfAccounts;
+  const {loading} = cashOfAccountState;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [value, setValue] = useState(0);
@@ -90,6 +92,10 @@ const CashOfAccountList = () => {
     setOpenModal(false);
   };
 
+  if (loading) {
+    return <CircularProgress />;
+  }
+
   return (
     <div>
       <Tabs
@@ -98,12 +104,12 @@ const CashOfAccountList = () => {
         aria-label="simple tabs example"
         centered
       >
-        <Tab label="Cash of accounts" />
+        <Tab label="Chart of accounts" />
         <Tab label="Account types" />
       </Tabs>
       <TabPanel value={value} index={0}>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography variant="h6">Cash Of Accounts</Typography>
+          <Typography variant="h6">Chart of Accounts</Typography>
           {hasPermission(PERMISSIONS.CreateChartOfAccount) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
             Add CA
           </Button>}

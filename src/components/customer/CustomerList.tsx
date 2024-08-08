@@ -15,6 +15,7 @@ import {
   MenuItem,
   Snackbar,
   Alert,
+  CircularProgress,
 } from '@mui/material';
 import { AppDispatch } from '../../app/store';
 import { selectCustomer } from '../../features/customer/customerSlice';
@@ -129,6 +130,10 @@ const CustomerList = () => {
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
 
   return (
     <div>

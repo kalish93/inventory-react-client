@@ -18,6 +18,7 @@ import {
   Box,
   Tabs,
   Tab,
+  CircularProgress,
 } from "@mui/material";
 import { AppDispatch } from "../../app/store";
 import { selectPurchase } from "../../features/purchase/purchaseSlice";
@@ -76,7 +77,7 @@ const PurchaseList = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
-  const { error, isError } = useSelector(selectPurchase);
+  const { error, isError, loading } = useSelector(selectPurchase);
   const [selectedPurchase, setSelectedPurchase] = useState(null);
   const [value, setValue] = useState(0);
   const [openUpdateForm, setOpenUpdateForm] = useState(false); // State to control opening and closing of update form
@@ -173,6 +174,11 @@ const PurchaseList = () => {
     setOpenUpdateForm(false);
     setOpenModal(false);
   };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
+
 
   return (
     <div>

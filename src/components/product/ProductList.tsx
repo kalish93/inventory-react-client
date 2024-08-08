@@ -18,6 +18,7 @@ import {
   Tabs,
   Tab,
   Box,
+  CircularProgress,
 } from '@mui/material';
 import { AppDispatch } from '../../app/store';
 import { selectProduct } from '../../features/product/productSlice';
@@ -160,6 +161,10 @@ const ProductList = () => {
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
 
   return (
     <div>
