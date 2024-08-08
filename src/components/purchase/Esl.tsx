@@ -17,7 +17,8 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  MenuItem
+  MenuItem,
+  CircularProgress
 } from "@mui/material";
 import dayjs from "dayjs";
 import ESLPayment from "../ca-transaction/ESLPayment";
@@ -30,7 +31,7 @@ const Esl = () => {
   const dispatch = useDispatch<AppDispatch>();
   const purchaseState = useSelector(selectPurchase);
   const { items: esl = [], currentPage, totalCount } = purchaseState.eslCosts;
-  const {error} = useSelector(selectPurchase);
+  const {error, loading} = useSelector(selectPurchase);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openModal, setOpenModal] = useState(false);
@@ -122,6 +123,11 @@ const Esl = () => {
     setSnackbarSeverity(severity);
     setSnackbarOpen(true);
   };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
+
 
   return (
     <div>

@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import {
+  CircularProgress,
   Paper,
   Table,
   TableBody,
@@ -29,6 +30,7 @@ const SupplierPurchaseList = () => {
     currentPage,
     totalCount,
   } = supplierState.supplierPurchases;
+  const {loading} = supplierState;
 
   useEffect(() => {
     dispatch(getSupplierPurchases(id, page + 1, rowsPerPage));
@@ -42,6 +44,10 @@ const SupplierPurchaseList = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
 
   return (
     <div>

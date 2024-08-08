@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../app/store";
 import { selectProvision } from "../../features/provision/provisionSlice";
 import { getProvisions } from "../../features/provision/provisionActions";
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@mui/material";
+import { CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@mui/material";
 import dayjs from "dayjs";
 
 const ProvisionList = () => {
@@ -14,6 +14,7 @@ const ProvisionList = () => {
     currentPage,
     totalCount,
   } = provisionState.provisions;
+  const loading = provisionState.loading;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -29,6 +30,11 @@ const ProvisionList = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
+
   return (
     <div>
       <TablePagination

@@ -288,14 +288,14 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
             onClick={() => handleClick(3)}
             button
             component={Link}
-            to="/cash-of-accounts"
-            key="CashOfAccounts"
-            selected={isLinkActive("/cash-of-accounts")}
+            to="/chart-of-accounts"
+            key="ChartOfAccounts"
+            selected={isLinkActive("/chart-of-accounts")}
           >
             <ListItemIcon sx={{ color: "inherit" }}>
               <AccountBalanceWalletIcon />
             </ListItemIcon>
-            <ListItemText primary="Chart Of Accounts" />
+            <ListItemText primary="Chart of Accounts" />
             {open[3] ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
         )}

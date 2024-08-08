@@ -1,4 +1,5 @@
 import {
+  CircularProgress,
   Paper,
   Tab,
   Table,
@@ -56,7 +57,8 @@ const DriverPaymentList = () => {
     totalCount,
   } = driversState.driverPayments;
   const driver = driversState.driver;
-
+  const loading = driversState.loading;
+  
   useEffect(() => {
     dispatch(getDriver(id));
   }, [dispatch, id]);
@@ -77,6 +79,11 @@ const DriverPaymentList = () => {
   const handleChange = (event: any, newValue: any) => {
     setValue(newValue);
   };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
+
   return (
     <div>
       <h2 style={{ textAlign: "center" }}>

@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import {
+  CircularProgress,
   Paper,
   Table,
   TableBody,
@@ -32,6 +33,8 @@ const DriverTransportList = () => {
     totalCount,
   } = driversState.driverTransports;
 
+  const {loading} = driversState;
+
   useEffect(() => {
     dispatch(getDriverTransports(id, page + 1, rowsPerPage));
   }, [dispatch, id, page, rowsPerPage]);
@@ -44,6 +47,10 @@ const DriverTransportList = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
 
   return (
     <div>

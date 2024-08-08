@@ -13,6 +13,7 @@ import {
   IconButton,
   Snackbar,
   Alert,
+  CircularProgress,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../app/store";
@@ -86,7 +87,7 @@ const CATransactionsList = () => {
     currentPage,
     totalCount,
   } = CATransactionState.transactions;
-  const { error } = useSelector(selectTransactions);
+  const { error, loading } = useSelector(selectTransactions);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selectedCAId, setSelectedCAId] = useState(null);
@@ -214,6 +215,10 @@ const CATransactionsList = () => {
       setDeleteSubmitted(false);
     }
   }, [deleteSubmitted, error]);
+
+  if (loading) {
+    return <CircularProgress />;
+  }
 
   return (
     <div>

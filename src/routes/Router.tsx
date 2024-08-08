@@ -102,7 +102,7 @@ const routes = createBrowserRouter([
         element: <InventoryList />,
       },
       {
-        path: "cash-of-accounts",
+        path: "chart-of-accounts",
         element: <CashOfAccountList />,
       },
       {

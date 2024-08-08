@@ -6,6 +6,7 @@ import { selectPurchase } from "../../features/purchase/purchaseSlice";
 import {
   Alert,
   Button,
+  CircularProgress,
   IconButton,
   Menu,
   MenuItem,
@@ -38,7 +39,7 @@ const Transit = () => {
     currentPage,
     totalCount,
   } = purchaseState.transitFees;
-  const {error} = useSelector(selectPurchase);
+  const {error, loading} = useSelector(selectPurchase);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openModal, setOpenModal] = useState(false);
@@ -129,6 +130,10 @@ const Transit = () => {
     setSnackbarSeverity(severity);
     setSnackbarOpen(true);
   };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
 
   return (
     <div>

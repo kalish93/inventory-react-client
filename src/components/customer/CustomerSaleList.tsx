@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import {
+  CircularProgress,
   Paper,
   Table,
   TableBody,
@@ -29,7 +30,8 @@ const CustomerSaleList = () => {
     currentPage,
     totalCount,
   } = customerState.customerSales;
-
+  const {loading} = customerState;
+  
   useEffect(() => {
     dispatch(getCustomerSales(id, page + 1, rowsPerPage));
   }, [dispatch, id, page, rowsPerPage]);
@@ -42,6 +44,10 @@ const CustomerSaleList = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
 
   return (
     <div>
