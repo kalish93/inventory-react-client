@@ -105,7 +105,7 @@ const MonthlyVentillation: React.FC<ProductFormProps> = ({
         provision.saleDetail?.saleQuantity;
       eslCustomWarehouseFeeTotal +=
         provision.saleDetail.productPurchase.esl.unitEslCost *
-          provision.saleDetail?.saleQuantity;
+        provision.saleDetail?.saleQuantity;
       importTransportCostTotal +=
         provision.saleDetail?.productPurchase?.transport?.unitTransportCost *
         provision.saleDetail?.saleQuantity;

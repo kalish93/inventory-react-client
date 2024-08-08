@@ -175,9 +175,15 @@ const PurchaseList = () => {
     setOpenModal(false);
   };
 
+<<<<<<< HEAD
   if (!purchases) {
     return <CircularProgress />;
   }
+=======
+  // if (loading) {
+  //   return <CircularProgress />;
+  // }
+>>>>>>> a174a3e (fix: fix the logic error in payments)
 
 
   return (

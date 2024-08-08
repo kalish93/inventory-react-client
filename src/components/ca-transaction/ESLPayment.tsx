@@ -125,7 +125,6 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-
       const formDataToSend = {
         bankId: values.chartofAccountId1,
         date: values.date,
@@ -142,7 +141,7 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
         deposit: null,
       };
 
-      dispatch(createESLPayment(formDataToSend))
+      dispatch(createESLPayment(formDataToSend));
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
@@ -152,27 +151,36 @@ const ESLPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
 
   useEffect(() => {
     const updatedPaidforEsls = [];
+    let remainingAmount = Number(formik.values.amount);
 
-    let remainingAmount = formik.values.amount as unknown as number;
     let i = 0;
     while (remainingAmount > 0 && i < unpaidESL.length) {
       const esl = unpaidESL[i];
-      remainingAmount -= esl.cost - Number(esl.paidAmount);
+      const amountToBePaid = esl.cost - Number(esl.paidAmount);
 
-      updatedPaidforEsls.push({
-        ...esl,
-        paidAmount:
-          remainingAmount >= 0
-            ? esl.cost - Number(esl.paidAmount)
-            : esl.cost - Number(esl.paidAmount) + remainingAmount,
-        paymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
-      });
+      if (remainingAmount >= amountToBePaid) {
+        // Complete payment for this ESL
+        updatedPaidforEsls.push({
+          ...esl,
+          paidAmount: amountToBePaid,
+          paymentStatus: "Complete",
+        });
+        remainingAmount -= amountToBePaid; // Deduct full amount paid
+      } else {
+        // Partial payment for this ESL
+        updatedPaidforEsls.push({
+          ...esl,
+          paidAmount: remainingAmount, // Add only the remaining amount
+          paymentStatus: "Partially Complete",
+        });
+        remainingAmount = 0; // No remaining amount left after partial payment
+      }
+
       i++;
-
-      if (remainingAmount <= 0) break; // Exit the loop if remaining amount is <= 0
     }
+
     setPaidforEsls(updatedPaidforEsls);
-  }, [formik.values.amount, dispatch]);
+  }, [formik.values.amount, unpaidESL]);
 
   const handleCancel = () => {
     handleClose();
