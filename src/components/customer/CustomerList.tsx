@@ -131,7 +131,7 @@ const CustomerList = () => {
     setSnackbarOpen(false);
   };
 
-  if (loading) {
+  if (!customers) {
     return <CircularProgress />;
   }
 

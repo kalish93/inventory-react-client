@@ -162,7 +162,7 @@ const ProductList = () => {
     setValue(newValue);
   };
 
-  if (loading) {
+  if (!products) {
     return <CircularProgress />;
   }
 
