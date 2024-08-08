@@ -129,7 +129,7 @@ const Transport = () => {
     setSnackbarOpen(true);
   };
   
-  if (loading) {
+  if (!transport) {
     return <CircularProgress />;
   }
 
