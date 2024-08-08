@@ -120,7 +120,7 @@ const UnitOfMeasurementList = () => {
     <div>
       {hasPermission(PERMISSIONS.CreateUnitOfMeasurement) && 
       <Button variant="contained" color="primary" onClick={handleOpenModal} style={{marginBottom:'15px'}}>
-        Add UnitOfMeasurement
+        Add Unit Of Measurement
       </Button>}
       {hasPermission(PERMISSIONS.GetProductCategories) && <TableContainer component={Paper}>
         <Table>
