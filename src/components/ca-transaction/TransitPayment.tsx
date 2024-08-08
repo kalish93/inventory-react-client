@@ -153,28 +153,38 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
 
   useEffect(() => {
     const updatedPaidforTransits = [];
+    let remainingAmount = Number(formik.values.amount);
 
-    let remainingAmount = formik.values.amount as unknown as number;
     let i = 0;
     while (remainingAmount > 0 && i < unpaidTransits.length) {
-      const transit = unpaidTransits[i];
-      remainingAmount -= transit.cost - Number(transit.paidAmount);
+        const transit = unpaidTransits[i];
+        const amountToBePaid = transit.cost - Number(transit.paidAmount);
 
-      updatedPaidforTransits.push({
-        ...transit,
-        paidAmount:
-          remainingAmount >= 0
-            ? transit.cost - Number(transit.paidAmount)
-            : transit.cost - Number(transit.paidAmount) + remainingAmount,
-        paymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
-      });
-      i++;
+        let paidAmount = 0;
+        let paymentStatus = "Partially Complete";
 
-      if (remainingAmount <= 0) break; // Exit the loop if remaining amount is <= 0
+        if (remainingAmount >= amountToBePaid) {
+            paidAmount = amountToBePaid;
+            remainingAmount -= amountToBePaid;
+            paymentStatus = "Complete";
+        } else {
+            paidAmount = remainingAmount;
+            remainingAmount = 0;
+        }
+
+        updatedPaidforTransits.push({
+            ...transit,
+            paidAmount: paidAmount,
+            paymentStatus: paymentStatus,
+        });
+
+        i++;
     }
 
     setPaidforTransits(updatedPaidforTransits);
-  }, [formik.values.amount, dispatch]);
+}, [formik.values.amount, unpaidTransits]);
+
+
 
   const handleCancel = () => {
     handleClose();

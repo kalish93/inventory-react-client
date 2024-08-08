@@ -142,7 +142,7 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
         deposit: null,
       };
 
-      dispatch(createCustomTaxPayment(formDataToSend))
+      dispatch(createCustomTaxPayment(formDataToSend));
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
@@ -176,7 +176,6 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
             0
           )
         : 0;
-
 
     const totalPaid =
       paidDeclaration.length !== 0
@@ -369,11 +368,13 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
               </div>
               <div style={{ maxWidth: "33%" }}>
                 <Typography variant="subtitle1" component="div">
-                  Balance Before Payment: {amountBefore}
+                  Balance Before Payment: {amountBefore.toLocaleString()}
                 </Typography>
                 <Typography variant="subtitle1" component="div">
                   Balance After Payment:{" "}
-                  {amountBefore - Number(formik.values.amount)}
+                  {(
+                    amountBefore - Number(formik.values.amount)
+                  ).toLocaleString()}
                 </Typography>
               </div>
             </div>
@@ -382,7 +383,11 @@ const CustomTaxPayment: React.FC<ProductFormProps> = ({
               variant="contained"
               color="primary"
               type="submit"
-              disabled={!formik.isValid || formik.isSubmitting || amountBefore - Number(formik.values.amount) < 0}
+              disabled={
+                !formik.isValid ||
+                formik.isSubmitting ||
+                amountBefore - Number(formik.values.amount) < 0
+              }
             >
               Submit
             </Button>
