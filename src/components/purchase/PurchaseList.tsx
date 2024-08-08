@@ -175,9 +175,9 @@ const PurchaseList = () => {
     setOpenModal(false);
   };
 
-  if (loading) {
-    return <CircularProgress />;
-  }
+  // if (loading) {
+  //   return <CircularProgress />;
+  // }
 
 
   return (

@@ -76,7 +76,7 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
   const unpaidSales = sales.filter(
     (sale: any) =>
       sale.paymentStatus === "Incomplete" ||
-      sale.paymentStatus === "Partially Complete" 
+      sale.paymentStatus === "Partially Complete"
   );
 
   unpaidSales.reverse();
@@ -113,8 +113,7 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
       type: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-
+    onSubmit: async (values) => {
       const formDataToSend = {
         bankId: values.chartofAccountId1,
         date: values.date,
@@ -132,7 +131,7 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
         sales: paidforSales,
       };
 
-      dispatch(createCustomerPayment(formDataToSend))
+      await dispatch(createCustomerPayment(formDataToSend));
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
@@ -144,7 +143,8 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
     const customerUnpaidSales = unpaidSales.filter(
       (sale: any) => sale.customer.id === formik.values.chartofAccountId2
     );
-    let remainingAmount = formik.values.amount as unknown as number;
+    let remainingAmount = Number(formik.values.amount);
+
     let i = 0;
     while (remainingAmount > 0 && i < customerUnpaidSales.length) {
       const sale = customerUnpaidSales[i];
@@ -152,19 +152,24 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
       for (let productsale of sale.sales) {
         totalAmount += productsale.totalSales;
       }
-      //
-      remainingAmount -= totalAmount - Number(sale.paidAmount);
+
+      const amountToBePaid = totalAmount - Number(sale.paidAmount);
+      let paidAmount = 0;
+
+      if (remainingAmount >= amountToBePaid) {
+        paidAmount = amountToBePaid;
+        remainingAmount -= amountToBePaid; // Deduct full amount paid
+      } else {
+        paidAmount = remainingAmount;
+        remainingAmount = 0; // No remaining amount left after partial payment
+      }
       updatedPaidforSales.push({
         ...sale,
-        paidAmount:
-          remainingAmount >= 0
-            ? totalAmount - Number(sale.paidAmount)
-            : totalAmount - Number(sale.paidAmount) + remainingAmount,
-        paymentStatus: remainingAmount >= 0 ? "Complete" : "Partially Complete",
+        paidAmount: paidAmount,
+        paymentStatus: "Complete",
       });
-      i++;
 
-      if (remainingAmount <= 0) break; // Exit the loop if remaining amount is <= 0
+      i++;
     }
 
     setPaidforSales(updatedPaidforSales);
@@ -258,7 +263,9 @@ const CustomerPaymentForm: React.FC<ProductFormProps> = ({
 
                 <Autocomplete
                   options={customers}
-                  getOptionLabel={(option) => option.firstName + " " + option.lastName}
+                  getOptionLabel={(option) =>
+                    option.firstName + " " + option.lastName
+                  }
                   value={
                     customers.find(
                       (d: { id: string }) =>

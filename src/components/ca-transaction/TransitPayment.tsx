@@ -174,7 +174,7 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
 
         updatedPaidforTransits.push({
             ...transit,
-            paidAmount: Number(transit.paidAmount) + paidAmount,
+            paidAmount: paidAmount,
             paymentStatus: paymentStatus,
         });
 
