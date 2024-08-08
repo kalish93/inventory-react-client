@@ -160,7 +160,7 @@ const MonthlyVentillation: React.FC<ProductFormProps> = ({
       remark: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       const formDataToSend1 = {
         chartofAccountId1: incomeTaxExpense.id,
         chartofAccountId2: provisionIncomeTaxExpense.id,
@@ -179,7 +179,7 @@ const MonthlyVentillation: React.FC<ProductFormProps> = ({
         remark: values.remark,
       };
 
-      dispatch(createMonthlyJournalEntry(formDataToSend1));
+      await dispatch(createMonthlyJournalEntry(formDataToSend1));
       handleClose();
       setIsFormSubmitted(true);
       formik.resetForm();

@@ -2,19 +2,21 @@ import { INVENTORY_URL } from "../../core/api-routes";
 import { handleRequest } from "../../utils/apiService";
 
 export const InventoryService = {
-
-  getInventories: async (page = 1, pageSize = 10) => {
+  getInventories: async (page?: number, pageSize?: number) => {
     try {
-  
-      const response = await handleRequest(`${INVENTORY_URL}?page=${page}&pageSize=${pageSize}`, {
+      const url =
+        page && pageSize
+          ? `${INVENTORY_URL}?page=${page}&pageSize=${pageSize}`
+          : `${INVENTORY_URL}`;
+      const response = await handleRequest(url, {
         method: "GET",
       });
 
       if (!response.ok) {
         let errorMessage = `Bad Request: ${response.statusText}`;
 
-          const data = await response.json();
-          errorMessage = data.error || errorMessage;
+        const data = await response.json();
+        errorMessage = data.error || errorMessage;
 
         return { success: false, error: errorMessage };
       }

@@ -131,9 +131,9 @@ const Transit = () => {
     setSnackbarOpen(true);
   };
 
-  if (loading) {
-    return <CircularProgress />;
-  }
+  // if (loading) {
+  //   return <CircularProgress />;
+  // }
 
   return (
     <div>
