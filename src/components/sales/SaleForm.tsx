@@ -15,10 +15,15 @@ import {
 } from "@mui/material";
 import { AppDispatch } from "../../app/store";
 import { getProducts } from "../../features/product/productActions";
-import { createSale, getInvoiceNumber } from "../../features/sales/salesActions";
+import {
+  createSale,
+  getInvoiceNumber,
+} from "../../features/sales/salesActions";
 import { getCustomers } from "../../features/customer/customerActions";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { selectSale } from "../../features/sales/salseSlice";
+import { selectInventory } from "../../features/inventory/inventorySlice";
+import { getInventories } from "../../features/inventory/inventoryActions";
 
 interface SaleFormProps {
   open: boolean;
@@ -29,8 +34,9 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
   const dispatch = useDispatch<AppDispatch>();
   const products = useSelector((state: any) => state.product.products.items);
   const SalesState = useSelector(selectSale);
-  let {invoiceNumber} = SalesState;
-  
+  let { invoiceNumber } = SalesState;
+  const inventoryState = useSelector(selectInventory);
+  const { items: inventories } = inventoryState.inventories;
   const customers = useSelector((state: any) => state.customer.customers.items);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -58,8 +64,6 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
-  
-
 
   const [formData, setFormData] = useState({
     invoiceNumber: invoiceNumber,
@@ -91,8 +95,7 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
       productId: "",
       saleQuantity: 0,
       saleUnitPrice: 0,
-    })
-
+    });
   }, [dispatch, invoiceNumber]);
 
   useEffect(() => {
@@ -101,8 +104,11 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
 
   useEffect(() => {
     dispatch(getProducts());
-  }, [dispatch]); 
-  
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getInventories());
+  }, [dispatch]);
 
   const handleChange = (e: { target: { name: any; value: any } }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -113,6 +119,22 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
   };
 
   const handleAddProduct = () => {
+    //check the balance quantity of the added product
+    const inventory = inventories.find(
+      (i: any) =>
+        i.productId === formData.productId ||
+        i.saleDetail.productId === formData.productId
+    );
+
+    if (inventory) {
+      if (inventory.balanceQuantity < formData.saleQuantity) {
+        showSnackbar(
+          `There is not enough quantity of this product in the inventory.`,
+          "error"
+        );
+        return;
+      }
+    }
     setAddedProducts([
       ...addedProducts,
       {
@@ -183,7 +205,8 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
     if (
       formData.productId === "" ||
       formData.saleQuantity <= 0 ||
-      formData.saleUnitPrice <= 0
+      formData.saleUnitPrice <= 0 ||
+      formData.customerId === ""
     ) {
       return true;
     }
@@ -200,7 +223,7 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
   };
 
   return (
-    <div>  
+    <div>
       <Modal
         open={open}
         onClose={(e, reason) => {
@@ -242,16 +265,11 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
                 fullWidth
                 margin="normal"
                 onChange={handleChange}
-                value = {formData.invoiceNumber}
+                value={formData.invoiceNumber}
                 required
                 error={touched.invoiceNumber && !formData.invoiceNumber}
                 onBlur={() => handleBlur("invoiceNumber")}
               />
-              {touched.invoiceNumber && !formData.invoiceNumber && (
-                <FormHelperText error>
-                  Invoice number is required
-                </FormHelperText>
-              )}
               <TextField
                 name="invoiceDate"
                 label="Invoice Date"

@@ -23,12 +23,13 @@ const CreateAccountTypeForm: React.FC<CreateAccountTypeFormProps> = ({
   onSubmit,
   isSubType = false,
 }) => {
+  
   return (
     <Dialog open={open} onClose={onClose}>
       <Formik
-        initialValues={{ name: ""}}
+        initialValues={{ name: "" }}
         validate={(values) => {
-          const errors: { name?: string} = {};
+          const errors: { name?: string } = {};
           if (!values.name) {
             errors.name = "Name is required";
           }
@@ -42,10 +43,10 @@ const CreateAccountTypeForm: React.FC<CreateAccountTypeFormProps> = ({
       >
         <Form>
           <DialogTitle>
-            {isSubType ? "Create Subtype" : "Create Account Type"}
+            {isSubType ? "Add Account Subtype" : "Add Account Type"}
           </DialogTitle>
           <DialogContent>
-            <Box display="flex" flexDirection="column" mt={2}>
+            <Box display="flex" flexDirection="column">
               <Field
                 as={TextField}
                 type="text"
@@ -57,15 +58,15 @@ const CreateAccountTypeForm: React.FC<CreateAccountTypeFormProps> = ({
                 helperText={<ErrorMessage name="name" />}
               />
             </Box>
+            <div style={{ display: "flex", gap: "8px", marginTop: "1rem" }}>
+              <Button type="submit" variant="contained" color="primary">
+                Submit
+              </Button>
+              <Button onClick={onClose} variant="outlined" color="warning">
+                Cancel
+              </Button>
+            </div>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={onClose} color="secondary">
-              Cancel
-            </Button>
-            <Button type="submit" variant="contained" color="primary">
-              {isSubType ? "Create Subtype" : "Create Account Type"}
-            </Button>
-          </DialogActions>
         </Form>
       </Formik>
     </Dialog>

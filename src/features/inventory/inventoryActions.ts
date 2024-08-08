@@ -2,7 +2,7 @@ import { AppDispatch } from "../../app/store";
 import { InventoryService } from "./inventoryService";
 import { getInventoriesFailure, getInventoriesStart, getInventoriesSuccess,  } from "./inventorySlice";
 
-export const getInventories = (page: number, pageSize: number) => async (dispatch: AppDispatch) => {
+export const getInventories = (page?: number, pageSize?: number) => async (dispatch: AppDispatch) => {
     try {
       dispatch(getInventoriesStart());
   
