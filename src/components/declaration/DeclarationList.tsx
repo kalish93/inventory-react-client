@@ -154,7 +154,7 @@ const DeclarationList = () => {
     setOpenTransactionForm(false);
   };
 
-  if (loading) {
+  if (!declarations) {
     return <CircularProgress />;
   }
 
