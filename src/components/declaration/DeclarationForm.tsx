@@ -23,8 +23,8 @@ import {
   CreateDeclarationProduct,
 } from "../../models/declaration";
 
-import dayjs from "dayjs";
 import { selectDeclaration } from "../../features/declaration/declarationSlice";
+
 interface DeclarationFormProps {
   open: boolean;
   handleClose: () => void;
@@ -36,32 +36,13 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const { isError, error, loading } = useSelector(selectDeclaration);
   const products = useSelector((state: any) => state.product.products.items);
-
-  const showSnackbar = (message: string, severity: "success" | "error") => {
-    setSnackbarMessage(message);
-    setSnackbarSeverity(severity);
-    setSnackbarOpen(true);
-  };
-
-  useEffect(() => {
-    if (isFormSubmitted && !loading) {
-      if (isError) {
-        showSnackbar(error || "Unknown error", "error");
-      } else {
-        showSnackbar("Declaration created successfully.", "success");
-      }
-      setIsFormSubmitted(false);
-    }
-  }, [error, isError, loading, isFormSubmitted]);
-
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
 
   const [formData, setFormData] = useState<CreateDeclaration>({
     number: "",
@@ -85,10 +66,32 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
   const [addedProducts, setAddedProducts] = useState<
     CreateDeclarationProduct[]
   >([]);
+  const [editIndex, setEditIndex] = useState<number | null>(null); // Track the index of the product being edited
 
   useEffect(() => {
     dispatch(getProducts());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (isFormSubmitted && !loading) {
+      if (isError) {
+        showSnackbar(error || "Unknown error", "error");
+      } else {
+        showSnackbar("Declaration created successfully.", "success");
+      }
+      setIsFormSubmitted(false);
+    }
+  }, [error, isError, loading, isFormSubmitted]);
+
+  const showSnackbar = (message: string, severity: "success" | "error") => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -119,7 +122,17 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
       totalIncomeTax: formData.declarationProducts[0].totalIncomeTax,
     };
 
-    setAddedProducts((prevProducts) => [...prevProducts, newProduct]);
+    if (editIndex !== null) {
+      // If editing, replace the product at editIndex
+      const updatedProducts = [...addedProducts];
+      updatedProducts[editIndex] = newProduct;
+      setAddedProducts(updatedProducts);
+      setEditIndex(null); // Reset editIndex after updating
+    } else {
+      // If not editing, just add the product
+      setAddedProducts((prevProducts) => [...prevProducts, newProduct]);
+    }
+
     setFormData((prevData: any) => ({
       ...prevData,
       declarationProducts: [
@@ -136,18 +149,35 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
 
   const handleEditProduct = (index: number) => () => {
     const productToEdit = addedProducts[index];
+    setEditIndex(index); // Set the index of the product being edited
+    setFormData((prevData) => ({
+      ...prevData,
+      declarationProducts: [
+        {
+          productId: productToEdit.productId,
+          declarationQuantity: productToEdit.declarationQuantity,
+          totalIncomeTax: productToEdit.totalIncomeTax,
+        },
+      ],
+    }));
     setAddedProducts((prevProducts) =>
       prevProducts.filter((_, i) => i !== index)
     );
-    setFormData((prevData: any) => {
-      const newDeclarationProducts = [...prevData.declarationProducts];
-      newDeclarationProducts[index] = { ...productToEdit };
-      return {
-        ...prevData,
-        declarationProducts: newDeclarationProducts,
-      };
-    });
   };
+
+  const handleProductFormChange =
+    (index: number, field: keyof CreateDeclarationProduct) =>
+    (e: React.ChangeEvent<{ value: unknown }>) => {
+      const newProducts = [...formData.declarationProducts];
+      newProducts[index] = {
+        ...newProducts[index],
+        [field]: e.target.value as string | number,
+      };
+      setFormData((prevData) => ({
+        ...prevData,
+        declarationProducts: newProducts,
+      }));
+    };
 
   const handleSubmit = () => {
     const formDataToSend = {
@@ -190,20 +220,6 @@ const DeclarationForm: React.FC<DeclarationFormProps> = ({
     setTouched({});
     handleClose();
   };
-
-  const handleProductFormChange =
-    (index: number, field: keyof CreateDeclarationProduct) =>
-    (e: React.ChangeEvent<{ value: unknown }>) => {
-      const newProducts = [...formData.declarationProducts];
-      newProducts[index] = {
-        ...newProducts[index],
-        [field]: e.target.value as string | number,
-      };
-      setFormData((prevData) => ({
-        ...prevData,
-        declarationProducts: newProducts,
-      }));
-    };
 
   const isDeclarationFormValid = () => {
     return (
