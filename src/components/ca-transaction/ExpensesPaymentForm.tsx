@@ -66,7 +66,7 @@ const ExpensesPaymentForm = () => {
       if (isError) {
         showSnackbar(error || "Unknown error", "error");
       } else {
-        showSnackbar("Transaction registered successfully.", "success");
+        showSnackbar("Operation Expense registered successfully.", "success");
       }
       setIsFormSubmitted(false);
     }
@@ -88,7 +88,7 @@ const ExpensesPaymentForm = () => {
       chartofAccountId1: "",
       chartofAccountId2: "",
       date: "",
-      amount: null,
+      amount: "",
       transactionRemark: "",
       type: "",
     },
@@ -112,7 +112,6 @@ const ExpensesPaymentForm = () => {
       dispatch(createExpensesPayment(formDataToSend));
       setIsFormSubmitted(true);
       formik.resetForm();
-      navigate("/ca-transactions");
     },
   });
 
