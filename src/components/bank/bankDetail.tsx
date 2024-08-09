@@ -23,8 +23,7 @@ const BankDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const bankState = useSelector(selectBank);
-  const {loading} = bankState;
-  const bank = bankState.bank;
+  const { loading, bank } = bankState;
   const {
     items: bankTransactions = [],
     currentPage,
@@ -50,10 +49,11 @@ const BankDetail = () => {
     setPage(0);
   };
 
-  if (loading) {
+  console.log(bank, bankState);
+
+  if (loading || !bank) {
     return <CircularProgress />;
   }
-
   return (
     <div>
       <Typography variant="h5" gutterBottom>
@@ -97,7 +97,7 @@ const BankDetail = () => {
                 <TableCell>{item.balance?.toLocaleString()}</TableCell>
                 <TableCell>{item.type}</TableCell>
                 <TableCell>
-                  {item.chartofAccount ? item.chartofAccount.name : null}
+                  {item.cashOfAccount ? item.cashOfAccount.name : null}
                 </TableCell>
                 <TableCell>{item.exchangeRate}</TableCell>
               </TableRow>

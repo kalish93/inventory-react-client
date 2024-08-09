@@ -27,7 +27,7 @@ const initialState: BankState = {
     currentPage: 1,
     totalPages: 1,
   },
-  bank: undefined,
+  bank: null,
   loading: false,
   error: null,
   isError: false,

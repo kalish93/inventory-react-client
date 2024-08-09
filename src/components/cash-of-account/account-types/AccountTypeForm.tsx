@@ -43,7 +43,7 @@ const CreateAccountTypeForm: React.FC<CreateAccountTypeFormProps> = ({
       >
         <Form>
           <DialogTitle>
-            {isSubType ? "Add Account Subtype" : "Add Account Type"}
+            {isSubType ? "Create Account Subtype" : "Create Account Type"}
           </DialogTitle>
           <DialogContent>
             <Box display="flex" flexDirection="column">

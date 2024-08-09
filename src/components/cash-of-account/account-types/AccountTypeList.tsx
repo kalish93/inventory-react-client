@@ -63,12 +63,12 @@ const AccountTypeList = () => {
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Typography variant="h6">Account Types</Typography>
         {hasPermission(PERMISSIONS.CreateAccountType) && <Button
-          startIcon={<AddIcon />}
           variant="contained"
           color="primary"
           onClick={() => openForm("")}
+          style={{ marginBottom: "1rem" }}
         >
-          Create Account Type
+          Add Account Type
         </Button>}
       </div>
       {hasPermission(PERMISSIONS.GetAllAccountTypes) && <Grid container spacing={2}>
