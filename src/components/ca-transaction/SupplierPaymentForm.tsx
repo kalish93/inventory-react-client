@@ -80,7 +80,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
   // const osmaSupplier = suppliers.find(
   //   (supplier: any) => supplier.name === "OSMA GROUP FZE"
   // );
-  
+
   const validationSchema = yup.object({
     chartofAccountId1: yup.string().required("Bank name is required"),
     date: yup.string().required("Transaction date is required"),
@@ -98,7 +98,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
       type: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       const formDataToSend = {
         bankId: values.chartofAccountId1,
         date: values.date,
@@ -125,7 +125,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
         deposit: null,
       };
 
-      dispatch(createSupplierPayment(formDataToSend));
+      await dispatch(createSupplierPayment(formDataToSend));
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
@@ -137,7 +137,7 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
       if (isError) {
         showSnackbar(error || "Unknown error", "error");
       } else {
-        showSnackbar("Transaction registered successfully.", "success");
+        showSnackbar("Supplier payment created successfully.", "success");
       }
       setIsFormSubmitted(false);
     }
@@ -164,70 +164,101 @@ const SupplierPaymentForm: React.FC<ProductFormProps> = ({
 
   useEffect(() => {
     const updatedPaidforPurchases = [];
-    let remainingAmount = formik.values.amount as unknown as number;
-    if (formik.values.exchangeRate !== null) {
+    let remainingAmount = Number(formik.values.amount);
+    const exchangeRate = formik.values.exchangeRate;
+
+    if (exchangeRate !== null) {
       let i = 0;
       while (remainingAmount > 0 && i < unpaidPurchases.length) {
         const purchase = unpaidPurchases[i];
-        let totalAmount = 0;
-        for (let productPurchase of purchase.products) {
-          totalAmount +=
+        let totalAmount = purchase.products.reduce(
+          (
+            acc: number,
+            productPurchase: {
+              purchaseUnitPriceUSD: number;
+              purchaseQuantity: number;
+            }
+          ) =>
+            acc +
             productPurchase.purchaseUnitPriceUSD *
-            productPurchase.purchaseQuantity;
-        }
-        const amountPaidAlready = Number(purchase.paidAmountUSD);
+              productPurchase.purchaseQuantity,
+          0
+        );
+
+        const amountPaidAlreadyUSD = Number(purchase.paidAmountUSD);
         const amountPaidAlreadyETB = Number(purchase.paidAmountETB);
-        const amountToBePaid = totalAmount - amountPaidAlready;
-        remainingAmount -= amountToBePaid;
+        const amountToBePaid = totalAmount - amountPaidAlreadyUSD;
+
+        let paidUSD = 0,
+          paidETB = 0,
+          paymentStatus = "Partially Complete";
+
+        if (remainingAmount >= amountToBePaid) {
+          paidUSD = amountToBePaid;
+          paidETB = amountToBePaid * exchangeRate;
+          remainingAmount -= amountToBePaid;
+          paymentStatus = "Complete";
+        } else {
+          paidUSD = remainingAmount;
+          paidETB = remainingAmount * exchangeRate;
+          remainingAmount = 0;
+        }
+
         updatedPaidforPurchases.push({
           ...purchase,
-          paidAmountUSD:
-            amountPaidAlready + remainingAmount >= 0
-              ? amountToBePaid
-              : amountToBePaid + remainingAmount,
-          paidAmountETB:
-            amountPaidAlreadyETB + remainingAmount >= 0
-              ? amountToBePaid * formik.values.exchangeRate!!
-              : (amountToBePaid + remainingAmount) *
-                formik.values.exchangeRate!!,
-          paymentStatus:
-            remainingAmount >= 0 ? "Complete" : "Partially Complete",
+          paidAmountUSD: paidUSD,
+          paidAmountETB: paidETB,
+          paymentStatus: paymentStatus,
         });
-        i++;
 
-        if (remainingAmount <= 0) break; // Exit the loop if remaining amount is <= 0
+        i++;
       }
     } else {
       let i = 0;
       while (remainingAmount > 0 && i < unpaidPurchases.length) {
         const purchase = unpaidPurchases[i];
-        let totalAmount = 0;
-        for (let productPurchase of purchase.products) {
-          totalAmount +=
+        let totalAmount = purchase.products.reduce(
+          (
+            acc: number,
+            productPurchase: {
+              purchaseUnitPriceETB: number;
+              purchaseQuantity: number;
+            }
+          ) =>
+            acc +
             productPurchase.purchaseUnitPriceETB *
-            productPurchase.purchaseQuantity;
-        }
+              productPurchase.purchaseQuantity,
+          0
+        );
+
         const amountPaidAlreadyETB = Number(purchase.paidAmountETB);
         const amountToBePaid = totalAmount - amountPaidAlreadyETB;
-        remainingAmount -= amountToBePaid;
+
+        let paidETB = 0,
+          paymentStatus = "Partially Complete";
+
+        if (remainingAmount >= amountToBePaid) {
+          paidETB = amountToBePaid;
+          remainingAmount -= amountToBePaid;
+          paymentStatus = "Complete";
+        } else {
+          paidETB = remainingAmount;
+          remainingAmount = 0;
+        }
+
         updatedPaidforPurchases.push({
           ...purchase,
           paidAmountUSD: 0,
-          paidAmountETB:
-           amountPaidAlreadyETB + remainingAmount >= 0
-              ? amountToBePaid
-              : amountToBePaid + remainingAmount,
-          paymentStatus:
-            remainingAmount >= 0 ? "Complete" : "Partially Complete",
+          paidAmountETB: amountPaidAlreadyETB + paidETB,
+          paymentStatus: paymentStatus,
         });
-        i++;
 
-        if (remainingAmount <= 0) break;
+        i++;
       }
     }
 
     setPaidforPurchases(updatedPaidforPurchases);
-  }, [formik.values.amount, formik.values.exchangeRate, dispatch]);
+  }, [formik.values.amount, formik.values.exchangeRate, unpaidPurchases]);
 
   const selectedSupplier = suppliers.find(
     (s: any) => s.id === formik.values.chartofAccountId2
