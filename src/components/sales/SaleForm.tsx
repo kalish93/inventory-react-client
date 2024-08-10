@@ -122,8 +122,8 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
     //check the balance quantity of the added product
     const inventory = inventories.find(
       (i: any) =>
-        i.productPurchase.product.id === formData.productId ||
-        i.saleDetail.productId === formData.productId
+        i.productPurchase?.product?.id === formData.productId ||
+        i.saleDetail?.productId === formData.productId
     );
 
     if (inventory) {
@@ -221,6 +221,10 @@ const SaleForm: React.FC<SaleFormProps> = ({ open, handleClose }) => {
       addedProducts.length === 0
     );
   };
+
+  if (!inventories || !products || !customers) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
