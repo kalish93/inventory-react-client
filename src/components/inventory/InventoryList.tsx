@@ -42,8 +42,6 @@ const InventoryList = () => {
     setPage(0);
   };
 
-  console.log(inventories);
-
   if (loading) {
     return <CircularProgress />;
   }
