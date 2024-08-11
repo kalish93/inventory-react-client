@@ -1,6 +1,5 @@
 export const IS_DEVELOPMENT_MODE  = true;
 // export const BASE_URL = 'http://localhost:4000/api';
-// export const BASE_URL = 'https://inventory-backend-5ome.onrender.com/api';
 export const BASE_URL = 'https://f-o-r-automatisation-backend-t545.onrender.com/api';
 export const LOGIN_URL = `${BASE_URL}/login`
 export const USERS_URL = `${BASE_URL}/users`

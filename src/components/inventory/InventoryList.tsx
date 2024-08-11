@@ -88,8 +88,8 @@ const InventoryList = () => {
                 </TableCell>
                 <TableCell>
                   {inventory.sale
-                    ? inventory.saleDetail?.product?.name
-                    : inventory.productPurchase.product.name}
+                    ? inventory.product?.name
+                    : inventory.product?.name}
                 </TableCell>
                 <TableCell>
                   {inventory.productPurchase?.purchaseQuantity}

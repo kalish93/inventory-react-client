@@ -108,39 +108,53 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
         )}
 
         {hasPermission(PERMISSIONS.GetInventory) && (
-          <ListItem
-            onClick={() => handleClick(0)}
-            button
-            component={Link}
-            to="/inventory"
-            key="Inventory"
-            selected={isLinkActive("/inventory")}
-          >
-            <ListItemIcon sx={{ color: "inherit" }}>
-              <InventoryIcon />
-            </ListItemIcon>
-            <ListItemText primary="Inventory" />
-            {open[0] ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-        )}
-
-        <Collapse in={open[0]} timeout="auto" unmountOnExit>
-          {hasPermission(PERMISSIONS.GetProducts) && (
+          <>
             <ListItem
-              sx={{ pl: 4 }}
               button
+              to="/inventory"
               component={Link}
-              to="/products"
-              key="Products"
-              selected={isLinkActive("/products")}
+              key="Inventory"
+              selected={isLinkActive("/inventory")}
+              onClick={(e) => {
+                const target = e.target as Element;
+                if (target.closest(".expand-icon")) {
+                  e.preventDefault(); // Prevent navigation when clicking the expand/collapse icon
+                  handleClick(0); // Handle expand/collapse
+                }
+              }}
             >
               <ListItemIcon sx={{ color: "inherit" }}>
-                <ShoppingCartIcon />
+                <InventoryIcon />
               </ListItemIcon>
-              <ListItemText primary="Products" />
+              <ListItemText primary="Inventory" />
+              <ListItemIcon
+                sx={{ color: "inherit", minWidth: 0 }}
+                className="expand-icon"
+              >
+                {open[0] ? <ExpandLess /> : <ExpandMore />}
+              </ListItemIcon>
             </ListItem>
-          )}
-        </Collapse>
+
+            <Collapse in={open[0]} timeout="auto" unmountOnExit>
+              {hasPermission(PERMISSIONS.GetProducts) && (
+                <ListItem
+                  sx={{ pl: 4 }}
+                  button
+                  to="/products"
+                  component={Link}
+                  key="Products"
+                  selected={isLinkActive("/products")}
+                >
+                  <ListItemIcon sx={{ color: "inherit" }}>
+                    <ShoppingCartIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Products" />
+                </ListItem>
+              )}
+            </Collapse>
+          </>
+        )}
+
         {hasPermission(PERMISSIONS.GetUsers) && (
           <ListItem
             button
@@ -158,7 +172,13 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
 
         {hasPermission(PERMISSIONS.GetCustomers) && (
           <ListItem
-            onClick={() => handleClick(1)}
+            onClick={(e) => {
+              const target = e.target as Element;
+              if (target.closest(".expand-icon")) {
+                e.preventDefault(); // Prevent navigation when clicking the expand/collapse icon
+                handleClick(1); // Handle expand/collapse
+              }
+            }}
             button
             component={Link}
             to="/customers"
@@ -168,8 +188,13 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
             <ListItemIcon sx={{ color: "inherit" }}>
               <PeopleIcon />
             </ListItemIcon>
-            <ListItemText primary="Customers" />
-            {open[1] ? <ExpandLess /> : <ExpandMore />}
+            <ListItemText primary="Customers"  />
+            <ListItemIcon
+                sx={{ color: "inherit", minWidth: 0 }}
+                className="expand-icon"
+              >
+                {open[1] ? <ExpandLess /> : <ExpandMore />}
+              </ListItemIcon>
           </ListItem>
         )}
         <Collapse in={open[1]} timeout="auto" unmountOnExit>
@@ -219,7 +244,13 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
         )}
         {hasPermission(PERMISSIONS.GetSuppliers) && (
           <ListItem
-            onClick={() => handleClick(2)}
+            onClick={(e) => {
+              const target = e.target as Element;
+              if (target.closest(".expand-icon")) {
+                e.preventDefault(); // Prevent navigation when clicking the expand/collapse icon
+                handleClick(2); // Handle expand/collapse
+              }
+            }}
             button
             component={Link}
             to="/suppliers"
@@ -230,7 +261,12 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
               <HandshakeIcon />
             </ListItemIcon>
             <ListItemText primary="Suppliers" />
-            {open[2] ? <ExpandLess /> : <ExpandMore />}
+            <ListItemIcon
+                sx={{ color: "inherit", minWidth: 0 }}
+                className="expand-icon"
+              >
+                {open[2] ? <ExpandLess /> : <ExpandMore />}
+              </ListItemIcon>
           </ListItem>
         )}
         <Collapse in={open[2]} timeout="auto" unmountOnExit>
@@ -285,7 +321,13 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
           hasPermission(PERMISSIONS.GetAllAccountTypes) ||
           hasPermission(PERMISSIONS.GetAllAccountSubTypes)) && (
           <ListItem
-            onClick={() => handleClick(3)}
+            onClick={(e) => {
+              const target = e.target as Element;
+              if (target.closest(".expand-icon")) {
+                e.preventDefault(); // Prevent navigation when clicking the expand/collapse icon
+                handleClick(3); // Handle expand/collapse
+              }
+            }}
             button
             component={Link}
             to="/chart-of-accounts"
@@ -296,7 +338,12 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
               <AccountBalanceWalletIcon />
             </ListItemIcon>
             <ListItemText primary="Chart of Accounts" />
-            {open[3] ? <ExpandLess /> : <ExpandMore />}
+            <ListItemIcon
+                sx={{ color: "inherit", minWidth: 0 }}
+                className="expand-icon"
+              >
+                {open[3] ? <ExpandLess /> : <ExpandMore />}
+              </ListItemIcon>
           </ListItem>
         )}
         <Collapse in={open[3]} timeout="auto" unmountOnExit>
