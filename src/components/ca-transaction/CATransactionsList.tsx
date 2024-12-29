@@ -216,7 +216,7 @@ const CATransactionsList = () => {
     }
   }, [deleteSubmitted, error]);
 
-  if (loading) {
+  if (!CATransactions) {
     return <CircularProgress />;
   }
 
@@ -282,89 +282,102 @@ const CATransactionsList = () => {
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {CATransactions &&
-                CATransactions.map((ca: any) => (
-                  <TableRow key={ca.id}>
-                    <TableCell>{dayjs(ca.date).format("MM/DD/YYYY")}</TableCell>
-                    <TableCell>{ca.type}</TableCell>
-                    <TableCell>
-                      {ca.purchase?.number ||
-                        ca.sale?.invoiceNumber ||
-                        (ca.number >= 1
-                          ? ca.number
-                          : ca.number === 0
-                          ? "START"
-                          : null)}
-                    </TableCell>
-                    <TableCell>{ca.remark}</TableCell>
-                    <TableCell>{ca.debit?.toLocaleString()}</TableCell>
-                    <TableCell>{ca.credit?.toLocaleString()}</TableCell>
-                    <TableCell>
-                      {ca.productPurchase?.product?.name ??
-                        ca.saleDetail?.product?.name ??
-                        ca.productDeclaration?.product?.name}
-                    </TableCell>
-                    <TableCell>
-                      {ca.customer
-                        ? ca.customer?.firstName + " " + ca.customer?.lastName
-                        : null}
-                    </TableCell>
-                    <TableCell>{ca.supplier?.name}</TableCell>
-                    <TableCell>
-                      {ca.chartofAccount?.name ??
-                        ca.bankTransaction?.bank?.name}
-                    </TableCell>
-                    <TableCell>{ca.exchangeRate}</TableCell>
-                    <TableCell>{ca.USDAmount}</TableCell>
-                    <TableCell>{ca.accountPayableRecievableDetail}</TableCell>
-
-                    {(ca.type === "Expense" || ca.type === "Journal Entry") && (
+            {loading ? (
+              <TableBody>
+                <TableRow>
+                  <TableCell colSpan={9}>
+                    <CircularProgress />
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            ) : (
+              <TableBody>
+                {CATransactions &&
+                  CATransactions.map((ca: any) => (
+                    <TableRow key={ca.id}>
                       <TableCell>
-                        <IconButton
-                          aria-label="Actions"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            event.preventDefault(); // Prevent default behavior
-                            handleMenuOpen(event, ca.id, ca);
-                          }}
-                          style={{ margin: 0, padding: 0 }}
-                        >
-                          <MoreVertIcon />
-                        </IconButton>
-                        <Menu
-                          id="actions-menu"
-                          MenuListProps={{
-                            "aria-labelledby": "long-button",
-                          }}
-                          anchorEl={anchorEl}
-                          open={Boolean(anchorEl)}
-                          onClose={handleMenuClose}
-                          PaperProps={{
-                            style: {
-                              width: "20ch",
-                              boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
-                            },
-                          }}
-                        >
-                          {hasPermission(PERMISSIONS.DeletePurchase) &&
-                            ca.type === "Journal Entry" && (
-                              <MenuItem
-                                onClick={(event) => {
-                                  event.stopPropagation();
-                                  event.preventDefault();
-                                  openConfirmationModal();
-                                }}
-                              >
-                                Delete
-                              </MenuItem>
-                            )}
-                        </Menu>
+                        {dayjs(ca.date).format("MM/DD/YYYY")}
                       </TableCell>
-                    )}
-                  </TableRow>
-                ))}
-            </TableBody>
+                      <TableCell>{ca.type}</TableCell>
+                      <TableCell>
+                        {ca.purchase?.number ||
+                          ca.sale?.invoiceNumber ||
+                          (ca.number >= 1
+                            ? ca.number
+                            : ca.number === 0
+                            ? "START"
+                            : null)}
+                      </TableCell>
+                      <TableCell>{ca.remark}</TableCell>
+                      <TableCell>{ca.debit?.toLocaleString()}</TableCell>
+                      <TableCell>{ca.credit?.toLocaleString()}</TableCell>
+                      <TableCell>
+                        {ca.productPurchase?.product?.name ??
+                          ca.saleDetail?.product?.name ??
+                          ca.productDeclaration?.product?.name}
+                      </TableCell>
+                      <TableCell>
+                        {ca.customer
+                          ? ca.customer?.firstName + " " + ca.customer?.lastName
+                          : null}
+                      </TableCell>
+                      <TableCell>{ca.supplier?.name}</TableCell>
+                      <TableCell>
+                        {ca.chartofAccount?.name ??
+                          ca.bankTransaction?.bank?.name}
+                      </TableCell>
+                      <TableCell>{ca.exchangeRate}</TableCell>
+                      <TableCell>{ca.USDAmount}</TableCell>
+                      <TableCell>{ca.accountPayableRecievableDetail}</TableCell>
+
+                      {(ca.type === "Expense" ||
+                        ca.type === "Journal Entry") && (
+                        <TableCell>
+                          <IconButton
+                            aria-label="Actions"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              event.preventDefault(); // Prevent default behavior
+                              handleMenuOpen(event, ca.id, ca);
+                            }}
+                            style={{ margin: 0, padding: 0 }}
+                          >
+                            <MoreVertIcon />
+                          </IconButton>
+                          <Menu
+                            id="actions-menu"
+                            MenuListProps={{
+                              "aria-labelledby": "long-button",
+                            }}
+                            anchorEl={anchorEl}
+                            open={Boolean(anchorEl)}
+                            onClose={handleMenuClose}
+                            PaperProps={{
+                              style: {
+                                width: "20ch",
+                                boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
+                              },
+                            }}
+                          >
+                            {hasPermission(PERMISSIONS.DeletePurchase) &&
+                              ca.type === "Journal Entry" && (
+                                <MenuItem
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                    event.preventDefault();
+                                    openConfirmationModal();
+                                  }}
+                                >
+                                  Delete
+                                </MenuItem>
+                              )}
+                          </Menu>
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  ))}
+              </TableBody>
+            )}
           </Table>
         </TableContainer>
       )}

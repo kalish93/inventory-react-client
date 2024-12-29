@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../app/store";
 import { selectPurchase } from "../../features/purchase/purchaseSlice";
-import { deleteEslCost, getEslCosts } from "../../features/purchase/purchaseActions";
+import {
+  deleteEslCost,
+  getEslCosts,
+} from "../../features/purchase/purchaseActions";
 import {
   Alert,
   Button,
@@ -18,7 +21,7 @@ import {
   TablePagination,
   TableRow,
   MenuItem,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
 import dayjs from "dayjs";
 import ESLPayment from "../ca-transaction/ESLPayment";
@@ -31,13 +34,13 @@ const Esl = () => {
   const dispatch = useDispatch<AppDispatch>();
   const purchaseState = useSelector(selectPurchase);
   const { items: esl = [], currentPage, totalCount } = purchaseState.eslCosts;
-  const {error, loading} = useSelector(selectPurchase);
+  const { error, loading } = useSelector(selectPurchase);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openModal, setOpenModal] = useState(false);
   const [selectedPaymentId, setSelectedPaymentId] = useState(null);
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
-  const [deleteSubmitted, setDeleteSubmitted] = useState(false); 
+  const [deleteSubmitted, setDeleteSubmitted] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -87,7 +90,6 @@ const Esl = () => {
     closeConfirmationModal();
   };
 
-
   const handleDeleteEslPayment = () => {
     handleMenuClose();
     if (selectedPaymentId !== null) {
@@ -128,7 +130,6 @@ const Esl = () => {
     return <CircularProgress />;
   }
 
-
   return (
     <div>
       {hasPermission(PERMISSIONS.CreateEslPayment) && (
@@ -166,48 +167,58 @@ const Esl = () => {
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {esl.map((item: any) => (
-              <TableRow key={item.id}>
-                <TableCell>{dayjs(item.date).format("MM/DD/YYYY")}</TableCell>
-                <TableCell>{item.cost}</TableCell>
-                <TableCell>{item.purchase?.truckNumber}</TableCell>
-                <TableCell>
-                  {item?.productPurchase?.declaration?.number}
+          {loading ? (
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan={9}>
+                  <CircularProgress />
                 </TableCell>
-                <TableCell>{item.unitEslCost?.toFixed(2)}</TableCell>
-                <TableCell>{item.purchase?.number}</TableCell>
-                <TableCell>{item.type}</TableCell>
-                <TableCell>{item.paidAmount}</TableCell>
-                <TableCell>{item.paymentStatus}</TableCell>
-                {hasPermission(PERMISSIONS.DeleteEslPayment) && item.type === "Payment" && ( <TableCell>
-                      <IconButton
-                        aria-label="Actions"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          event.preventDefault(); // Prevent default behavior
-                          handleMenuOpen(event, item.id, item);
-                        }}
-                        style={{ margin: 0, padding: 0 }}
-                      >
-                        <MoreVertIcon />
-                      </IconButton>
-                      <Menu
-                        id="actions-menu"
-                        MenuListProps={{
-                          "aria-labelledby": "long-button",
-                        }}
-                        anchorEl={anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={handleMenuClose}
-                        PaperProps={{
-                          style: {
-                            width: "20ch",
-                            boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
-                          },
-                        }}
-                      >
-                       
+              </TableRow>
+            </TableBody>
+          ) : (
+            <TableBody>
+              {esl.map((item: any) => (
+                <TableRow key={item.id}>
+                  <TableCell>{dayjs(item.date).format("MM/DD/YYYY")}</TableCell>
+                  <TableCell>{item.cost}</TableCell>
+                  <TableCell>{item.purchase?.truckNumber}</TableCell>
+                  <TableCell>
+                    {item?.productPurchase?.declaration?.number}
+                  </TableCell>
+                  <TableCell>{item.unitEslCost?.toFixed(2)}</TableCell>
+                  <TableCell>{item.purchase?.number}</TableCell>
+                  <TableCell>{item.type}</TableCell>
+                  <TableCell>{item.paidAmount}</TableCell>
+                  <TableCell>{item.paymentStatus}</TableCell>
+                  {hasPermission(PERMISSIONS.DeleteEslPayment) &&
+                    item.type === "Payment" && (
+                      <TableCell>
+                        <IconButton
+                          aria-label="Actions"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            event.preventDefault(); // Prevent default behavior
+                            handleMenuOpen(event, item.id, item);
+                          }}
+                          style={{ margin: 0, padding: 0 }}
+                        >
+                          <MoreVertIcon />
+                        </IconButton>
+                        <Menu
+                          id="actions-menu"
+                          MenuListProps={{
+                            "aria-labelledby": "long-button",
+                          }}
+                          anchorEl={anchorEl}
+                          open={Boolean(anchorEl)}
+                          onClose={handleMenuClose}
+                          PaperProps={{
+                            style: {
+                              width: "20ch",
+                              boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
+                            },
+                          }}
+                        >
                           <MenuItem
                             onClick={(event) => {
                               event.stopPropagation();
@@ -217,37 +228,37 @@ const Esl = () => {
                           >
                             Delete
                           </MenuItem>
-                        
-                      </Menu>
-                    </TableCell>
+                        </Menu>
+                      </TableCell>
                     )}
-              </TableRow>
-            ))}
-          </TableBody>
+                </TableRow>
+              ))}
+            </TableBody>
+          )}
         </Table>
       </TableContainer>
       <ESLPayment open={openModal} handleClose={() => handleCloseModal()} />
       <ConfirmationModal
-          open={confirmationModalOpen}
-          onClose={closeConfirmationModal}
-          onConfirm={handleConfirmAction}
-          title="Delete Transit Payment"
-          content="Are you sure you want to delete transit payment Entry?"
-        />
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
+        open={confirmationModalOpen}
+        onClose={closeConfirmationModal}
+        onConfirm={handleConfirmAction}
+        title="Delete Transit Payment"
+        content="Are you sure you want to delete transit payment Entry?"
+      />
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
           onClose={handleCloseSnackbar}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          severity={snackbarSeverity as "success" | "error"}
+          sx={{ width: "100%" }}
         >
-          <Alert
-            onClose={handleCloseSnackbar}
-            severity={snackbarSeverity as "success" | "error"}
-            sx={{ width: "100%" }}
-          >
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
