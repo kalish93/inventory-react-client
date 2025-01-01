@@ -21,7 +21,11 @@ import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { selectSale } from "../../features/sales/salseSlice";
 import { AppDispatch } from "../../app/store";
-import { getSales, deleteSale, getInvoiceNumber } from "../../features/sales/salesActions";
+import {
+  getSales,
+  deleteSale,
+  getInvoiceNumber,
+} from "../../features/sales/salesActions";
 import SaleForm from "./SaleForm";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ConfirmationModal from "../common/confirmationModal";
@@ -70,7 +74,7 @@ const SalesList = () => {
     if (selectedSaleId !== null) {
       dispatch(deleteSale(selectedSaleId))
         .then(() => {
-          dispatch(getSales(1,10))
+          dispatch(getSales(1, 10));
           setDeleteSubmitted(true);
         })
         .catch(() => {
@@ -88,7 +92,7 @@ const SalesList = () => {
       }
       setDeleteSubmitted(false);
     }
-    dispatch(getSales(1,10));
+    dispatch(getSales(1, 10));
   }, [deleteSubmitted, error]);
 
   const handleMenuOpen = (event: any, saleId: any, sale: any) => {
@@ -142,7 +146,7 @@ const SalesList = () => {
     setOpenUpdateModal(true);
   };
 
-  if (loading) {
+  if (!sales) {
     return <CircularProgress />;
   }
 
@@ -175,51 +179,60 @@ const SalesList = () => {
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {sales.map((sale: any) => (
-                <TableRow
-                  key={sale.id}
-                  component={Link}
-                  to={`/sales/${sale.id}`}
-                  style={{ textDecoration: "none" }}
-                >
-                  <TableCell>{sale.invoiceNumber}</TableCell>
-                  <TableCell>
-                    {dayjs(sale.invoiceDate).format("MM/DD/YYYY")}
+            {loading ? (
+              <TableBody>
+                <TableRow>
+                  <TableCell colSpan={9}>
+                    <CircularProgress />
                   </TableCell>
-                  <TableCell>
-                    {sale.customer?.firstName + " " + sale.customer?.lastName}
-                  </TableCell>
-                  <TableCell>{sale.paidAmount?.toLocaleString()}</TableCell>
-                  <TableCell>{sale.paymentStatus}</TableCell>
-                  <TableCell>
-                    <IconButton
-                      aria-label="Actions"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        event.preventDefault(); // Prevent default behavior
-                        handleMenuOpen(event, sale.id, sale);
-                      }}
-                      style={{ margin: 0, padding: 0 }}
-                    >
-                      <MoreVertIcon />
-                    </IconButton>
-                    <Menu
-                      id="actions-menu"
-                      MenuListProps={{
-                        "aria-labelledby": "long-button",
-                      }}
-                      anchorEl={anchorEl}
-                      open={Boolean(anchorEl)}
-                      onClose={handleMenuClose}
-                      PaperProps={{
-                        style: {
-                          width: "20ch",
-                          boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
-                        },
-                      }}
-                    >
-                      {/* {hasPermission(PERMISSIONS.UpdateSale) && (
+                </TableRow>
+              </TableBody>
+            ) : (
+              <TableBody>
+                {sales.map((sale: any) => (
+                  <TableRow
+                    key={sale.id}
+                    component={Link}
+                    to={`/sales/${sale.id}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <TableCell>{sale.invoiceNumber}</TableCell>
+                    <TableCell>
+                      {dayjs(sale.invoiceDate).format("MM/DD/YYYY")}
+                    </TableCell>
+                    <TableCell>
+                      {sale.customer?.firstName + " " + sale.customer?.lastName}
+                    </TableCell>
+                    <TableCell>{sale.paidAmount?.toLocaleString()}</TableCell>
+                    <TableCell>{sale.paymentStatus}</TableCell>
+                    <TableCell>
+                      <IconButton
+                        aria-label="Actions"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          event.preventDefault(); // Prevent default behavior
+                          handleMenuOpen(event, sale.id, sale);
+                        }}
+                        style={{ margin: 0, padding: 0 }}
+                      >
+                        <MoreVertIcon />
+                      </IconButton>
+                      <Menu
+                        id="actions-menu"
+                        MenuListProps={{
+                          "aria-labelledby": "long-button",
+                        }}
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleMenuClose}
+                        PaperProps={{
+                          style: {
+                            width: "20ch",
+                            boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
+                          },
+                        }}
+                      >
+                        {/* {hasPermission(PERMISSIONS.UpdateSale) && (
                         <MenuItem
                           onClick={(event) => {
                             event.stopPropagation();
@@ -230,22 +243,23 @@ const SalesList = () => {
                           Update
                         </MenuItem>
                       )} */}
-                      {hasPermission(PERMISSIONS.DeleteSale) && (
-                        <MenuItem
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            event.preventDefault();
-                            openConfirmationModal();
-                          }}
-                        >
-                          Delete
-                        </MenuItem>
-                      )}
-                    </Menu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
+                        {hasPermission(PERMISSIONS.DeleteSale) && (
+                          <MenuItem
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              event.preventDefault();
+                              openConfirmationModal();
+                            }}
+                          >
+                            Delete
+                          </MenuItem>
+                        )}
+                      </Menu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            )}
           </Table>
         </TableContainer>
       )}
