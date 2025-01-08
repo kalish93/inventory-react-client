@@ -1,3 +1,4 @@
+// Desc: This component is used to create a monthly journal entry for the provision of import taxes, ESL fees, transport fees, and transit fees.
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {

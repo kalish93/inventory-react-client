@@ -1,3 +1,4 @@
+// Desc: This file contains the form for creating a customer payment transaction.
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {

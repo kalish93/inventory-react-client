@@ -1,3 +1,4 @@
+// Desc: This file contains the CreateCashOfAccountForm component which is a form for creating a new cash of account.
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -130,7 +131,7 @@ const CreateCashOfAccountForm: React.FC<CreateCashOfAccountFormProps> = ({
                 ))}
               </Field>
             </FormControl>
-            <div style={{ display: "flex", gap: "8px", marginTop:"1rem" }}>
+            <div style={{ display: "flex", gap: "8px", marginTop: "1rem" }}>
               <Button type="submit" variant="contained" color="primary">
                 Submit
               </Button>

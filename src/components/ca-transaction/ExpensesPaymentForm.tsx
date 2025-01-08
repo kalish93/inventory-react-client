@@ -1,3 +1,4 @@
+// Desc: This component is used to create a new expenses payment transaction.
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -13,7 +14,10 @@ import {
 } from "@mui/material";
 import { AppDispatch } from "../../app/store";
 import { selectTransactions } from "../../features/ca-transaction/transactionSlice";
-import { createCATransaction, createExpensesPayment } from "../../features/ca-transaction/transactionActions";
+import {
+  createCATransaction,
+  createExpensesPayment,
+} from "../../features/ca-transaction/transactionActions";
 import {
   getCashOfAccounts,
   getCashOfAccountExpenses,
@@ -192,7 +196,7 @@ const ExpensesPaymentForm = () => {
             renderInput={(params) => (
               <TextField
                 {...params}
-                sx={{ marginBottom: 1}}
+                sx={{ marginBottom: 1 }}
                 label="Expense Name"
                 variant="outlined"
                 fullWidth

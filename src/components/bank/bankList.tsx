@@ -1,3 +1,4 @@
+// Desc: This file contains the BankList component which is responsible for rendering the list of banks in the system.
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {

@@ -1,3 +1,4 @@
+// Desc: This file contains the UserForm component which is a form for creating a new user.
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
@@ -131,7 +132,9 @@ const UserForm: React.FC<UserFormProps> = ({ open, handleClose }) => {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.firstName}
-              error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+              error={
+                formik.touched.firstName && Boolean(formik.errors.firstName)
+              }
             />
             <FormHelperText error>
               {formik.touched.firstName && formik.errors.firstName}

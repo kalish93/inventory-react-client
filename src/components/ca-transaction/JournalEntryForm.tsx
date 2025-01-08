@@ -1,3 +1,4 @@
+// Desc: This file contains the form for creating a journal entry transaction
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -149,7 +150,7 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
         }
       ),
   });
-  
+
   const formik = useFormik({
     initialValues: {
       chartofAccountId1: "",
@@ -397,7 +398,11 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
                   required
                   error={formik.touched.debit && Boolean(formik.errors.debit)}
                   onBlur={formik.handleBlur}
-                  helperText={formik.touched.debit && formik.errors.debit ? formik.errors.debit : ''}
+                  helperText={
+                    formik.touched.debit && formik.errors.debit
+                      ? formik.errors.debit
+                      : ""
+                  }
                 />
 
                 <TextField
@@ -411,7 +416,11 @@ const JournalEntryForm: React.FC<ProductFormProps> = ({
                   value={formik.values.credit}
                   error={formik.touched.credit && Boolean(formik.errors.credit)}
                   onBlur={formik.handleBlur}
-                  helperText={formik.touched.credit && formik.errors.credit ? formik.errors.credit : ''}
+                  helperText={
+                    formik.touched.credit && formik.errors.credit
+                      ? formik.errors.credit
+                      : ""
+                  }
                 />
 
                 <TextField

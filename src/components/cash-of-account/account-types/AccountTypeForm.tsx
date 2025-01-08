@@ -1,3 +1,4 @@
+// Desc: This file contains the AccountTypeForm component which is a form for creating a new account type.
 import React from "react";
 import {
   Box,
@@ -23,7 +24,6 @@ const CreateAccountTypeForm: React.FC<CreateAccountTypeFormProps> = ({
   onSubmit,
   isSubType = false,
 }) => {
-  
   return (
     <Dialog open={open} onClose={onClose}>
       <Formik

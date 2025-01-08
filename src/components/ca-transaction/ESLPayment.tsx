@@ -1,3 +1,5 @@
+//Note: The ESLPayment component is used to handle ESL warehouse fees payment.
+//It is a modal form that is displayed when the user clicks on the ESL warehouse fees payment button.
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {

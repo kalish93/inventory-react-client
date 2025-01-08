@@ -1,3 +1,8 @@
+// Desc: This component is used to update the user details.
+// It is a modal form that is displayed when the user clicks on the edit button in the user list.
+// The form is pre-populated with the user details and the user can update the details and submit the form.
+// The form is validated using Yup. The form is submitted using the updateUser action from the user slice.
+// The form also displays a snackbar to show the success or error message after the form is submitted.
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
@@ -28,7 +33,11 @@ interface UpdateUserFormProps {
   user: any;
 }
 
-const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ open, handleClose, user }) => {
+const UpdateUserForm: React.FC<UpdateUserFormProps> = ({
+  open,
+  handleClose,
+  user,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const roles = useSelector((state: any) => state.role.roles);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -43,11 +52,10 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ open, handleClose, user
     setSnackbarOpen(true);
   };
 
-
   useEffect(() => {
     dispatch(getRoles());
   }, [dispatch]);
-  
+
   const formik = useFormik({
     initialValues: {
       userName: user?.userName || "",
@@ -98,12 +106,15 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ open, handleClose, user
 
   return (
     <div>
-      <Modal open={open} onClose={(e, reason) => {
+      <Modal
+        open={open}
+        onClose={(e, reason) => {
           if (reason === "backdropClick") {
             return;
           }
           handleClose();
-        }}>
+        }}
+      >
         <Box
           sx={{
             position: "absolute",
@@ -120,7 +131,7 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ open, handleClose, user
             Update User
           </Typography>
           <form onSubmit={formik.handleSubmit}>
-          <TextField
+            <TextField
               name="firstName"
               label="First name"
               variant="outlined"
@@ -129,10 +140,13 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ open, handleClose, user
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.firstName}
-              error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+              error={
+                formik.touched.firstName && Boolean(formik.errors.firstName)
+              }
             />
             <FormHelperText error>
-              {formik.touched.firstName && formik.errors.firstName as React.ReactNode}
+              {formik.touched.firstName &&
+                (formik.errors.firstName as React.ReactNode)}
             </FormHelperText>
             <TextField
               name="lastName"
@@ -146,7 +160,8 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ open, handleClose, user
               error={formik.touched.lastName && Boolean(formik.errors.lastName)}
             />
             <FormHelperText error>
-              {formik.touched.lastName && formik.errors.lastName as React.ReactNode}
+              {formik.touched.lastName &&
+                (formik.errors.lastName as React.ReactNode)}
             </FormHelperText>
             <TextField
               name="userName"
@@ -160,9 +175,10 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ open, handleClose, user
               error={formik.touched.userName && Boolean(formik.errors.userName)}
             />
             <FormHelperText error>
-              {formik.touched.userName && formik.errors.userName as React.ReactNode}
+              {formik.touched.userName &&
+                (formik.errors.userName as React.ReactNode)}
             </FormHelperText>
-            
+
             <FormControl fullWidth margin="normal" variant="filled">
               <InputLabel>Role</InputLabel>
               <Select
@@ -180,7 +196,8 @@ const UpdateUserForm: React.FC<UpdateUserFormProps> = ({ open, handleClose, user
                   ))}
               </Select>
               <FormHelperText error>
-                {formik.touched.roleId && formik.errors.roleId as React.ReactNode}
+                {formik.touched.roleId &&
+                  (formik.errors.roleId as React.ReactNode)}
               </FormHelperText>
             </FormControl>
             <Button

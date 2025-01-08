@@ -1,3 +1,4 @@
+// Desc: This file contains the CashOfAccountList component which is a list of cash of accounts.
 import React, { useEffect, useState } from "react";
 import {
   Tabs,
@@ -56,7 +57,7 @@ const CashOfAccountList = () => {
     currentPage,
     totalCount,
   } = cashOfAccountState.cashOfAccounts;
-  const {loading} = cashOfAccountState;
+  const { loading } = cashOfAccountState;
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [value, setValue] = useState(0);
@@ -110,9 +111,15 @@ const CashOfAccountList = () => {
       <TabPanel value={value} index={0}>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Typography variant="h6">Chart of Accounts</Typography>
-          {hasPermission(PERMISSIONS.CreateChartOfAccount) && <Button variant="contained" color="primary" onClick={handleOpenModal}>
-            Add CA
-          </Button>}
+          {hasPermission(PERMISSIONS.CreateChartOfAccount) && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleOpenModal}
+            >
+              Add CA
+            </Button>
+          )}
         </div>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}

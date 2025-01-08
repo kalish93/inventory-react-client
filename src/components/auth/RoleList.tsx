@@ -1,3 +1,4 @@
+// Note: This is a component for listing roles, adding, updating and deleting roles. It also allows to assign/revoke permissions to/from roles.
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../app/store";
@@ -117,57 +118,72 @@ const RoleList = () => {
 
   return (
     <div>
-      {hasPermission(PERMISSIONS.CreateRole) && 
-      <Button variant="contained" color="primary" onClick={handleOpenModal}>
-        Add Role
-      </Button>}
-      {hasPermission(PERMISSIONS.GetRoles) && <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {roles.map((role: any) => (
-              <TableRow key={role.id}>
-                <TableCell>{role.name}</TableCell>
-                <TableCell>
-                  <IconButton
-                    aria-label="Actions"
-                    onClick={(event) => handleMenuOpen(event, role.id, role)}
-                    style={{ margin: 0, padding: 0 }}
-                  >
-                    <MoreVertIcon />
-                  </IconButton>
-                  <Menu
-                    id="actions-menu"
-                    MenuListProps={{
-                      "aria-labelledby": "long-button",
-                    }}
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                    PaperProps={{
-                      style: {
-                        boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
-                      },
-                    }}
-                  >
-                    {hasPermission(PERMISSIONS.UpdateRole) && <MenuItem onClick={handleOpenModal}>Update</MenuItem>}
-                    {hasPermission(PERMISSIONS.DeleteRole) && <MenuItem onClick={openConfirmationModal}>Delete</MenuItem>}
-                    {hasPermission(PERMISSIONS.AssignRevokePermissions) && <MenuItem onClick={handleAssignRevokePermissions}>
-                      Assign/Revoke Permissions
-                    </MenuItem>}
-                  </Menu>
-                </TableCell>
+      {hasPermission(PERMISSIONS.CreateRole) && (
+        <Button variant="contained" color="primary" onClick={handleOpenModal}>
+          Add Role
+        </Button>
+      )}
+      {hasPermission(PERMISSIONS.GetRoles) && (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>}
-      <RoleForm open={openModal} handleClose={handleCloseModal} selectedRole={selectedRole}/>
+            </TableHead>
+            <TableBody>
+              {roles.map((role: any) => (
+                <TableRow key={role.id}>
+                  <TableCell>{role.name}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      aria-label="Actions"
+                      onClick={(event) => handleMenuOpen(event, role.id, role)}
+                      style={{ margin: 0, padding: 0 }}
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
+                    <Menu
+                      id="actions-menu"
+                      MenuListProps={{
+                        "aria-labelledby": "long-button",
+                      }}
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={handleMenuClose}
+                      PaperProps={{
+                        style: {
+                          boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
+                        },
+                      }}
+                    >
+                      {hasPermission(PERMISSIONS.UpdateRole) && (
+                        <MenuItem onClick={handleOpenModal}>Update</MenuItem>
+                      )}
+                      {hasPermission(PERMISSIONS.DeleteRole) && (
+                        <MenuItem onClick={openConfirmationModal}>
+                          Delete
+                        </MenuItem>
+                      )}
+                      {hasPermission(PERMISSIONS.AssignRevokePermissions) && (
+                        <MenuItem onClick={handleAssignRevokePermissions}>
+                          Assign/Revoke Permissions
+                        </MenuItem>
+                      )}
+                    </Menu>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+      <RoleForm
+        open={openModal}
+        handleClose={handleCloseModal}
+        selectedRole={selectedRole}
+      />
       <ConfirmationModal
         open={confirmationModalOpen}
         onClose={closeConfirmationModal}
@@ -189,7 +205,6 @@ const RoleList = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-      
     </div>
   );
 };

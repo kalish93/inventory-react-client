@@ -1,3 +1,4 @@
+// Desc: This component is used to create a transit payment transaction
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -141,9 +142,9 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
         payee: transitSupplier.id,
         payment: values.amount,
         deposit: null,
-      }
+      };
 
-      dispatch(createTransitPayment(formDataToSend))
+      dispatch(createTransitPayment(formDataToSend));
       setIsFormSubmitted(true);
       handleClose();
       formik.resetForm();
@@ -157,34 +158,32 @@ const TransitPayment: React.FC<ProductFormProps> = ({ open, handleClose }) => {
 
     let i = 0;
     while (remainingAmount > 0 && i < unpaidTransits.length) {
-        const transit = unpaidTransits[i];
-        const amountToBePaid = transit.cost - Number(transit.paidAmount);
+      const transit = unpaidTransits[i];
+      const amountToBePaid = transit.cost - Number(transit.paidAmount);
 
-        let paidAmount = 0;
-        let paymentStatus = "Partially Complete";
+      let paidAmount = 0;
+      let paymentStatus = "Partially Complete";
 
-        if (remainingAmount >= amountToBePaid) {
-            paidAmount = amountToBePaid;
-            remainingAmount -= amountToBePaid;
-            paymentStatus = "Complete";
-        } else {
-            paidAmount = remainingAmount;
-            remainingAmount = 0;
-        }
+      if (remainingAmount >= amountToBePaid) {
+        paidAmount = amountToBePaid;
+        remainingAmount -= amountToBePaid;
+        paymentStatus = "Complete";
+      } else {
+        paidAmount = remainingAmount;
+        remainingAmount = 0;
+      }
 
-        updatedPaidforTransits.push({
-            ...transit,
-            paidAmount: paidAmount,
-            paymentStatus: paymentStatus,
-        });
+      updatedPaidforTransits.push({
+        ...transit,
+        paidAmount: paidAmount,
+        paymentStatus: paymentStatus,
+      });
 
-        i++;
+      i++;
     }
 
     setPaidforTransits(updatedPaidforTransits);
-}, [formik.values.amount, unpaidTransits]);
-
-
+  }, [formik.values.amount, unpaidTransits]);
 
   const handleCancel = () => {
     handleClose();

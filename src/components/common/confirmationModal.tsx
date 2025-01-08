@@ -1,4 +1,5 @@
-import React from 'react';
+// Desc: This file contains the ConfirmationModal component which is a modal for confirming an action.
+import React from "react";
 import {
   Dialog,
   DialogTitle,
@@ -6,17 +7,23 @@ import {
   DialogContentText,
   DialogActions,
   Button,
-} from '@mui/material';
+} from "@mui/material";
 
 interface ConfirmationModalProps {
-    open: boolean;
-    onClose: () => void;
-    onConfirm: () => void;
-    title: string;
-    content: string;
-  }
-  
-  const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, onConfirm, title, content }) => {
+  open: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title: string;
+  content: string;
+}
+
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
+  open,
+  onClose,
+  onConfirm,
+  title,
+  content,
+}) => {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>{title}</DialogTitle>

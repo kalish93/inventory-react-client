@@ -1,3 +1,4 @@
+// Desc: This file contains the AccountTypeList component which is a list of account types.
 import React, { useEffect, useState } from "react";
 import {
   Card,
@@ -26,7 +27,9 @@ const AccountTypeList = () => {
   const { loading } = accountTypeState;
   const accountTypes = accountTypeState.accountTypes;
   const [isFormOpen, setFormOpen] = useState(false);
-  const [selectedAccountTypeId, setSelectedAccountTypeId] = useState<string | null>(null);
+  const [selectedAccountTypeId, setSelectedAccountTypeId] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     dispatch(getAccountTypes());
@@ -39,7 +42,12 @@ const AccountTypeList = () => {
 
   const handleCreateSubType = (values: any) => {
     if (selectedAccountTypeId) {
-      dispatch(createAccountSubType({ ...values, accountTypeId: selectedAccountTypeId }));
+      dispatch(
+        createAccountSubType({
+          ...values,
+          accountTypeId: selectedAccountTypeId,
+        })
+      );
       setFormOpen(false);
     }
   };
@@ -62,43 +70,49 @@ const AccountTypeList = () => {
     <div>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Typography variant="h6">Account Types</Typography>
-        {hasPermission(PERMISSIONS.CreateAccountType) && <Button
-          variant="contained"
-          color="primary"
-          onClick={() => openForm("")}
-          style={{ marginBottom: "1rem" }}
-        >
-          Add Account Type
-        </Button>}
+        {hasPermission(PERMISSIONS.CreateAccountType) && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => openForm("")}
+            style={{ marginBottom: "1rem" }}
+          >
+            Add Account Type
+          </Button>
+        )}
       </div>
-      {hasPermission(PERMISSIONS.GetAllAccountTypes) && <Grid container spacing={2}>
-        {accountTypes.map((accountType: any) => (
-          <Grid item key={accountType.id} xs={12} sm={6} md={4}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">{accountType.name}</Typography>
-                <Typography variant="subtitle1">Account Subtypes:</Typography>
-                <ul>
-                  {accountType.accountSubTypes.map((subtype: any) => (
-                    <li key={subtype.id}>{subtype.name}</li>
-                  ))}
-                </ul>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => openForm(accountType.id)}
-                >
-                  Add sub type
-                </Button>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>}
+      {hasPermission(PERMISSIONS.GetAllAccountTypes) && (
+        <Grid container spacing={2}>
+          {accountTypes.map((accountType: any) => (
+            <Grid item key={accountType.id} xs={12} sm={6} md={4}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6">{accountType.name}</Typography>
+                  <Typography variant="subtitle1">Account Subtypes:</Typography>
+                  <ul>
+                    {accountType.accountSubTypes.map((subtype: any) => (
+                      <li key={subtype.id}>{subtype.name}</li>
+                    ))}
+                  </ul>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => openForm(accountType.id)}
+                  >
+                    Add sub type
+                  </Button>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      )}
       <CreateAccountTypeForm
         open={isFormOpen}
         onClose={closeForm}
-        onSubmit={selectedAccountTypeId ? handleCreateSubType : handleCreateAccountType}
+        onSubmit={
+          selectedAccountTypeId ? handleCreateSubType : handleCreateAccountType
+        }
         isSubType={selectedAccountTypeId ? true : false}
       />
     </div>

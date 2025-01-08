@@ -1,3 +1,4 @@
+// Code to display bank details
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../app/store";

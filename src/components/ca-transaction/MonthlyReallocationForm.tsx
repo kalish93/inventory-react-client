@@ -1,3 +1,12 @@
+// Desc: This component is used to create a monthly journal entry for the provision of monthly re-allocation of the following transactions:
+// - Income Tax Expense
+// - Provision for Import Taxes
+// - ESL Cost
+// - Provision for ESL Fees
+// - Import Transport Cost
+// - Provision for Transport Fees
+// - Transit fees
+// - Provision for Transit Fees
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -34,7 +43,10 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { getSupplier, getSuppliers } from "../../features/supplier/supplierActions";
+import {
+  getSupplier,
+  getSuppliers,
+} from "../../features/supplier/supplierActions";
 
 interface ProductFormProps {
   open: boolean;

@@ -1,3 +1,4 @@
+// This file contains all the API routes used in the application.
 export const IS_DEVELOPMENT_MODE = true;
 export const BASE_URL = "http://localhost:4000/api";
 // export const BASE_URL = 'https://f-o-r-automatisation-backend-t545.onrender.com/api';

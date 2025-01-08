@@ -1,3 +1,4 @@
+// Note: This component is used to assign or revoke permissions to a role.
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../app/store";
@@ -96,15 +97,16 @@ const PermissionList = () => {
         }}
       >
         <Typography variant="h5">Assign/Revoke Permissions</Typography>
-        {hasPermission(PERMISSIONS.AssignRevokePermissions) && 
-        <Button
-          style={{ marginRight: "50px" }}
-          variant="contained"
-          color="primary"
-          onClick={handleSaveChanges}
-        >
-          Save
-        </Button>}
+        {hasPermission(PERMISSIONS.AssignRevokePermissions) && (
+          <Button
+            style={{ marginRight: "50px" }}
+            variant="contained"
+            color="primary"
+            onClick={handleSaveChanges}
+          >
+            Save
+          </Button>
+        )}
       </div>
       <Grid container spacing={2}>
         {permissions.map((permission) => (

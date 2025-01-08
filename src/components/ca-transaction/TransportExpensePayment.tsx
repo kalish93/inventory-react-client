@@ -1,3 +1,4 @@
+// Desc: This file contains the form for registering transport expense payment transactions.
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -15,9 +16,7 @@ import { selectTransactions } from "../../features/ca-transaction/transactionSli
 import { getCashOfAccounts } from "../../features/cash-of-account/cashOfAccountActions";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import {
-  getBanks,
-} from "../../features/bank/bankActions";
+import { getBanks } from "../../features/bank/bankActions";
 import {
   getPurchases,
   getTransportCost,
@@ -156,7 +155,6 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-   
       const formDataToSend = {
         bankId: values.chartofAccountId1,
         date: values.date,
@@ -171,14 +169,12 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
         transports: paidforTransports,
         payee: TransporterSupplier?.id,
         payment: values.amount,
-        deposit: null
-      }
+        deposit: null,
+      };
 
       Promise.all([
-        
         dispatch(createTransportCost(formDataToSend)),
-        dispatch(getTransportCost(1, 10))
-
+        dispatch(getTransportCost(1, 10)),
       ]);
       setIsFormSubmitted(true);
       handleClose();
@@ -246,7 +242,6 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
     handleClose();
     formik.resetForm();
   };
-  
 
   return (
     <div>
@@ -404,7 +399,7 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
 
               <div style={{ maxWidth: "33%" }}>
                 <TextField
-                style={{ marginTop: "0rem"}}
+                  style={{ marginTop: "0rem" }}
                   name="date"
                   label="Transaction Date"
                   variant="outlined"
@@ -466,7 +461,11 @@ const TransportExpensePayment: React.FC<ProductFormProps> = ({
               variant="contained"
               color="primary"
               type="submit"
-              disabled={!formik.isValid || formik.isSubmitting || amountBefore - Number(formik.values.amount) < 0}
+              disabled={
+                !formik.isValid ||
+                formik.isSubmitting ||
+                amountBefore - Number(formik.values.amount) < 0
+              }
             >
               Submit
             </Button>

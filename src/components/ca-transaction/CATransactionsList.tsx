@@ -1,3 +1,4 @@
+// Note: This is the component to list all the CA transactions in the system.
 import React, { useEffect, useState } from "react";
 import {
   Button,

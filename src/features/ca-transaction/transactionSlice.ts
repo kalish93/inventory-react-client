@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { List, PaginatedList } from "../../models/commons/paginatedList";
 import { CATransaction } from "../../models/ca-transaction";
-import { createMonthlyJournalEntry } from "./transactionActions";
 
 interface CATransactionState {
   monthlyTransactions: List<CATransaction>;
@@ -122,7 +121,7 @@ const transactionSlice = createSlice({
 
     deleteJournalEntrySuccess: (state, action) => {
       const deleted = action.payload;
-      const deletedIds = deleted.map((item: { id: any; }) => item.id);
+      const deletedIds = deleted.map((item: { id: any }) => item.id);
 
       state.transactions = {
         items: state.transactions?.items

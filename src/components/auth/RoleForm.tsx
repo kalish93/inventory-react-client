@@ -1,3 +1,4 @@
+// Desc: This file contains the form for creating and updating roles.
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -21,7 +22,11 @@ interface RoleFormProps {
   selectedRole?: any;
 }
 
-const RoleForm: React.FC<RoleFormProps> = ({ open, handleClose, selectedRole }) => {
+const RoleForm: React.FC<RoleFormProps> = ({
+  open,
+  handleClose,
+  selectedRole,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -40,10 +45,10 @@ const RoleForm: React.FC<RoleFormProps> = ({ open, handleClose, selectedRole }) 
       if (isError) {
         showSnackbar(error || "Unknown error", "error");
       } else {
-        if(selectedRole){
-        showSnackbar('Role Updated Successfully.', "success");
-        } else{
-        showSnackbar('Role created Successfully.', "success");
+        if (selectedRole) {
+          showSnackbar("Role Updated Successfully.", "success");
+        } else {
+          showSnackbar("Role created Successfully.", "success");
         }
       }
       setIsFormSubmitted(false);
@@ -126,7 +131,9 @@ const RoleForm: React.FC<RoleFormProps> = ({ open, handleClose, selectedRole }) 
               onBlur={formik.handleBlur}
               value={formik.values.name}
               error={formik.touched.name && Boolean(formik.errors.name)}
-              helperText={formik.touched.name && formik.errors.name as React.ReactNode}
+              helperText={
+                formik.touched.name && (formik.errors.name as React.ReactNode)
+              }
             />
             <div style={{ display: "flex", gap: "8px" }}>
               <Button
@@ -135,7 +142,7 @@ const RoleForm: React.FC<RoleFormProps> = ({ open, handleClose, selectedRole }) 
                 type="submit"
                 disabled={!formik.isValid || formik.isSubmitting}
               >
-                { selectedRole ? "Update" : "Submit"}
+                {selectedRole ? "Update" : "Submit"}
               </Button>
               <Button variant="outlined" color="warning" onClick={handleCancel}>
                 cancel

@@ -1,3 +1,4 @@
+// Note: Sidebar component for the application
 import React, { Dispatch, SetStateAction, useState } from "react";
 import {
   Collapse,
@@ -188,13 +189,13 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
             <ListItemIcon sx={{ color: "inherit" }}>
               <PeopleIcon />
             </ListItemIcon>
-            <ListItemText primary="Customers"  />
+            <ListItemText primary="Customers" />
             <ListItemIcon
-                sx={{ color: "inherit", minWidth: 0 }}
-                className="expand-icon"
-              >
-                {open[1] ? <ExpandLess /> : <ExpandMore />}
-              </ListItemIcon>
+              sx={{ color: "inherit", minWidth: 0 }}
+              className="expand-icon"
+            >
+              {open[1] ? <ExpandLess /> : <ExpandMore />}
+            </ListItemIcon>
           </ListItem>
         )}
         <Collapse in={open[1]} timeout="auto" unmountOnExit>
@@ -262,11 +263,11 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
             </ListItemIcon>
             <ListItemText primary="Suppliers" />
             <ListItemIcon
-                sx={{ color: "inherit", minWidth: 0 }}
-                className="expand-icon"
-              >
-                {open[2] ? <ExpandLess /> : <ExpandMore />}
-              </ListItemIcon>
+              sx={{ color: "inherit", minWidth: 0 }}
+              className="expand-icon"
+            >
+              {open[2] ? <ExpandLess /> : <ExpandMore />}
+            </ListItemIcon>
           </ListItem>
         )}
         <Collapse in={open[2]} timeout="auto" unmountOnExit>
@@ -339,11 +340,11 @@ const Sidebar = ({ showDrawer, setShowDrawer }: SideBarProps) => {
             </ListItemIcon>
             <ListItemText primary="Chart of Accounts" />
             <ListItemIcon
-                sx={{ color: "inherit", minWidth: 0 }}
-                className="expand-icon"
-              >
-                {open[3] ? <ExpandLess /> : <ExpandMore />}
-              </ListItemIcon>
+              sx={{ color: "inherit", minWidth: 0 }}
+              className="expand-icon"
+            >
+              {open[3] ? <ExpandLess /> : <ExpandMore />}
+            </ListItemIcon>
           </ListItem>
         )}
         <Collapse in={open[3]} timeout="auto" unmountOnExit>

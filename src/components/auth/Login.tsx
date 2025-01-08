@@ -1,3 +1,4 @@
+// Desc: Login component for the application
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
@@ -18,7 +19,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch } from "../../app/store";
-import inventoryImage from '../../assets/inventory.png'
+import inventoryImage from "../../assets/inventory.png";
 
 const LoginComponent: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -67,12 +68,32 @@ const LoginComponent: React.FC = () => {
 
   return (
     <Grid container style={{ height: "100vh" }}>
-      <Grid item xs={6} style={{ backgroundColor: "#222831", padding: "2rem" , display:'flex', flexDirection:'column-reverse', alignItems:'center', justifyContent:'center'}}>
-        <Typography variant="h3" color="white" gutterBottom style={{textAlign:'center'}}>
+      <Grid
+        item
+        xs={6}
+        style={{
+          backgroundColor: "#222831",
+          padding: "2rem",
+          display: "flex",
+          flexDirection: "column-reverse",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Typography
+          variant="h3"
+          color="white"
+          gutterBottom
+          style={{ textAlign: "center" }}
+        >
           Welcome to F.O.R Inventory Management
         </Typography>
-        <img src={inventoryImage} alt="Inventory" style={{ maxWidth: "100%" }} />
-        </Grid>
+        <img
+          src={inventoryImage}
+          alt="Inventory"
+          style={{ maxWidth: "100%" }}
+        />
+      </Grid>
 
       <Grid item xs={6} style={{ padding: "2rem" }}>
         <div
@@ -99,8 +120,7 @@ const LoginComponent: React.FC = () => {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     error={
-                      formik.touched.username &&
-                      Boolean(formik.errors.username)
+                      formik.touched.username && Boolean(formik.errors.username)
                     }
                   />
                   <FormHelperText error>
@@ -117,8 +137,7 @@ const LoginComponent: React.FC = () => {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     error={
-                      formik.touched.password &&
-                      Boolean(formik.errors.password)
+                      formik.touched.password && Boolean(formik.errors.password)
                     }
                   />
                   <FormHelperText error>
@@ -126,7 +145,7 @@ const LoginComponent: React.FC = () => {
                   </FormHelperText>
                 </FormControl>
                 <Button
-                  style={{padding:'10px 0 10px 0', fontSize:'16px'}}
+                  style={{ padding: "10px 0 10px 0", fontSize: "16px" }}
                   type="submit"
                   variant="contained"
                   color="primary"

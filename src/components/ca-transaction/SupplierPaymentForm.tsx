@@ -1,3 +1,4 @@
+//Desc: This component is used to create a new supplier payment transaction.
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
